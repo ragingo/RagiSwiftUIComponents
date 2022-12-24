@@ -14,6 +14,11 @@
 		523DCD7929557AB200D0BA72 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 523DCD7829557AB200D0BA72 /* Preview Assets.xcassets */; };
 		523DCD7E29557ABF00D0BA72 /* RagiSwiftUIComponents.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 523DCD5F29557A3D00D0BA72 /* RagiSwiftUIComponents.framework */; };
 		523DCD7F29557ABF00D0BA72 /* RagiSwiftUIComponents.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 523DCD5F29557A3D00D0BA72 /* RagiSwiftUIComponents.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		523DCD8A2955CC3700D0BA72 /* Card.swift in Sources */ = {isa = PBXBuildFile; fileRef = 523DCD892955CC3700D0BA72 /* Card.swift */; };
+		523DCD8C2955D10200D0BA72 /* CardMedia.swift in Sources */ = {isa = PBXBuildFile; fileRef = 523DCD8B2955D10200D0BA72 /* CardMedia.swift */; };
+		523DCD8E2955D11700D0BA72 /* CardHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 523DCD8D2955D11700D0BA72 /* CardHeader.swift */; };
+		523DCD902955D12900D0BA72 /* CardContent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 523DCD8F2955D12900D0BA72 /* CardContent.swift */; };
+		523DCD922955D13B00D0BA72 /* CardActions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 523DCD912955D13B00D0BA72 /* CardActions.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -49,6 +54,11 @@
 		523DCD7329557AB000D0BA72 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		523DCD7529557AB200D0BA72 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		523DCD7829557AB200D0BA72 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		523DCD892955CC3700D0BA72 /* Card.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Card.swift; sourceTree = "<group>"; };
+		523DCD8B2955D10200D0BA72 /* CardMedia.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardMedia.swift; sourceTree = "<group>"; };
+		523DCD8D2955D11700D0BA72 /* CardHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardHeader.swift; sourceTree = "<group>"; };
+		523DCD8F2955D12900D0BA72 /* CardContent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardContent.swift; sourceTree = "<group>"; };
+		523DCD912955D13B00D0BA72 /* CardActions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardActions.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -93,6 +103,7 @@
 		523DCD6129557A3D00D0BA72 /* RagiSwiftUIComponents */ = {
 			isa = PBXGroup;
 			children = (
+				523DCD862955CAAE00D0BA72 /* Components */,
 				523DCD6229557A3D00D0BA72 /* RagiSwiftUIComponents.h */,
 			);
 			path = RagiSwiftUIComponents;
@@ -130,6 +141,42 @@
 			children = (
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		523DCD862955CAAE00D0BA72 /* Components */ = {
+			isa = PBXGroup;
+			children = (
+				523DCD872955CABA00D0BA72 /* Surfaces */,
+			);
+			path = Components;
+			sourceTree = "<group>";
+		};
+		523DCD872955CABA00D0BA72 /* Surfaces */ = {
+			isa = PBXGroup;
+			children = (
+				523DCD882955CAC800D0BA72 /* Card */,
+			);
+			path = Surfaces;
+			sourceTree = "<group>";
+		};
+		523DCD882955CAC800D0BA72 /* Card */ = {
+			isa = PBXGroup;
+			children = (
+				523DCD932955DD7E00D0BA72 /* Views */,
+			);
+			path = Card;
+			sourceTree = "<group>";
+		};
+		523DCD932955DD7E00D0BA72 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				523DCD892955CC3700D0BA72 /* Card.swift */,
+				523DCD912955D13B00D0BA72 /* CardActions.swift */,
+				523DCD8F2955D12900D0BA72 /* CardContent.swift */,
+				523DCD8D2955D11700D0BA72 /* CardHeader.swift */,
+				523DCD8B2955D10200D0BA72 /* CardMedia.swift */,
+			);
+			path = Views;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -245,6 +292,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				523DCD8C2955D10200D0BA72 /* CardMedia.swift in Sources */,
+				523DCD922955D13B00D0BA72 /* CardActions.swift in Sources */,
+				523DCD902955D12900D0BA72 /* CardContent.swift in Sources */,
+				523DCD8A2955CC3700D0BA72 /* Card.swift in Sources */,
+				523DCD8E2955D11700D0BA72 /* CardHeader.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -448,6 +500,7 @@
 		523DCD7B29557AB200D0BA72 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
@@ -476,6 +529,7 @@
 		523DCD7C29557AB200D0BA72 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
