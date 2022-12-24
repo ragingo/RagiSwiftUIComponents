@@ -37,10 +37,10 @@ extension CardMedia {
         }
     }
 
-    public init<AsyncImageContent>(
+    public init<AsyncImageContent: View>(
         url: URL,
         @ViewBuilder asyncImageContent: @escaping (AsyncImagePhase) -> AsyncImageContent
-    ) where Content == AsyncImage<AsyncImageContent>, AsyncImageContent: View {
+    ) where Content == AsyncImage<AsyncImageContent> {
         self.init {
             AsyncImage(url: url) {
                 asyncImageContent($0)
@@ -92,9 +92,10 @@ struct CardMedia_Previews: PreviewProvider {
                 if let image = imagePhrase.image {
                     image
                         .resizable()
-                        .aspectRatio(contentMode: .fit)
-                        .frame(width: 300, height: 200)
+                        .aspectRatio(contentMode: .fill)
+                        .frame(width: 300, height: 100, alignment: .top)
                         .background(.black)
+                        .clipped()
                 } else if imagePhrase.error != nil {
                     Image("exclamationmark.triangle.fill")
                 } else {
