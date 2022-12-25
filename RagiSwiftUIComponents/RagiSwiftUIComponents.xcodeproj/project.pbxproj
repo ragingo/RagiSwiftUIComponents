@@ -20,6 +20,7 @@
 		523DCD902955D12900D0BA72 /* CardContent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 523DCD8F2955D12900D0BA72 /* CardContent.swift */; };
 		523DCD922955D13B00D0BA72 /* CardActions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 523DCD912955D13B00D0BA72 /* CardActions.swift */; };
 		524557B329574BAE00CF6EFB /* CardHeader+Initializers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 524557B229574BAE00CF6EFB /* CardHeader+Initializers.swift */; };
+		524557B529589C0300CF6EFB /* Card+Initializers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 524557B429589C0300CF6EFB /* Card+Initializers.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -61,6 +62,7 @@
 		523DCD8F2955D12900D0BA72 /* CardContent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardContent.swift; sourceTree = "<group>"; };
 		523DCD912955D13B00D0BA72 /* CardActions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardActions.swift; sourceTree = "<group>"; };
 		524557B229574BAE00CF6EFB /* CardHeader+Initializers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CardHeader+Initializers.swift"; sourceTree = "<group>"; };
+		524557B429589C0300CF6EFB /* Card+Initializers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Card+Initializers.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -173,11 +175,12 @@
 			isa = PBXGroup;
 			children = (
 				523DCD892955CC3700D0BA72 /* Card.swift */,
+				524557B429589C0300CF6EFB /* Card+Initializers.swift */,
 				523DCD912955D13B00D0BA72 /* CardActions.swift */,
 				523DCD8F2955D12900D0BA72 /* CardContent.swift */,
 				523DCD8D2955D11700D0BA72 /* CardHeader.swift */,
-				523DCD8B2955D10200D0BA72 /* CardMedia.swift */,
 				524557B229574BAE00CF6EFB /* CardHeader+Initializers.swift */,
+				523DCD8B2955D10200D0BA72 /* CardMedia.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -298,6 +301,7 @@
 				523DCD8C2955D10200D0BA72 /* CardMedia.swift in Sources */,
 				523DCD922955D13B00D0BA72 /* CardActions.swift in Sources */,
 				523DCD902955D12900D0BA72 /* CardContent.swift in Sources */,
+				524557B529589C0300CF6EFB /* Card+Initializers.swift in Sources */,
 				523DCD8A2955CC3700D0BA72 /* Card.swift in Sources */,
 				523DCD8E2955D11700D0BA72 /* CardHeader.swift in Sources */,
 				524557B329574BAE00CF6EFB /* CardHeader+Initializers.swift in Sources */,
