@@ -54,21 +54,13 @@ extension CardHeader {
         @ViewBuilder action: @escaping () -> Action
     ) where Content == HStack<
         TupleView<(
+            EmptyView,
             VStack<TupleView<(Title, Subheader)>>,
             Spacer,
             Action
         )>
     > {
-        self.init {
-            HStack(alignment: .center, spacing: 16) {
-                VStack(alignment: .leading, spacing: 0) {
-                    title()
-                    subheader()
-                }
-                Spacer()
-                action()
-            }
-        }
+        self.init(title: title, subheader: subheader, avator: { EmptyView() }, action: action)
     }
 }
 
@@ -86,19 +78,11 @@ extension CardHeader {
         TupleView<(
             Avator,
             VStack<TupleView<(Title, Subheader)>>,
-            Spacer
+            Spacer,
+            EmptyView
         )>
     > {
-        self.init {
-            HStack(alignment: .center, spacing: 16) {
-                avator()
-                VStack(alignment: .leading, spacing: 0) {
-                    title()
-                    subheader()
-                }
-                Spacer()
-            }
-        }
+        self.init(title: title, subheader: subheader, avator: avator, action: { EmptyView() })
     }
 }
 
@@ -112,19 +96,13 @@ extension CardHeader {
         @ViewBuilder subheader: @escaping () -> Subheader
     ) where Content == HStack<
         TupleView<(
+            EmptyView,
             VStack<TupleView<(Title, Subheader)>>,
-            Spacer
+            Spacer,
+            EmptyView
         )>
     > {
-        self.init {
-            HStack(alignment: .center, spacing: 16) {
-                VStack(alignment: .leading, spacing: 0) {
-                    title()
-                    subheader()
-                }
-                Spacer()
-            }
-        }
+        self.init(title: title, subheader: subheader, avator: { EmptyView() }, action: { EmptyView() })
     }
 }
 
@@ -141,19 +119,12 @@ extension CardHeader {
     ) where Content == HStack<
         TupleView<(
             Avator,
-            Title,
+            VStack<TupleView<(Title, EmptyView)>>,
             Spacer,
             Action
         )>
     > {
-        self.init {
-            HStack(alignment: .center, spacing: 16) {
-                avator()
-                title()
-                Spacer()
-                action()
-            }
-        }
+        self.init(title: title, subheader: { EmptyView() }, avator: avator, action: action)
     }
 }
 
@@ -167,18 +138,13 @@ extension CardHeader {
         @ViewBuilder action: @escaping () -> Action
     ) where Content == HStack<
         TupleView<(
-            Title,
+            EmptyView,
+            VStack<TupleView<(Title, EmptyView)>>,
             Spacer,
             Action
         )>
     > {
-        self.init {
-            HStack(alignment: .center, spacing: 16) {
-                title()
-                Spacer()
-                action()
-            }
-        }
+        self.init(title: title, subheader: { EmptyView() }, avator: { EmptyView() }, action: action)
     }
 }
 
@@ -193,17 +159,12 @@ extension CardHeader {
     ) where Content == HStack<
         TupleView<(
             Avator,
-            Title,
-            Spacer
+            VStack<TupleView<(Title, EmptyView)>>,
+            Spacer,
+            EmptyView
         )>
     > {
-        self.init {
-            HStack(alignment: .center, spacing: 16) {
-                avator()
-                title()
-                Spacer()
-            }
-        }
+        self.init(title: title, subheader: { EmptyView() }, avator: avator, action: { EmptyView() })
     }
 }
 
@@ -215,15 +176,12 @@ extension CardHeader {
         @ViewBuilder title: @escaping () -> Title
     ) where Content == HStack<
         TupleView<(
-            Title,
-            Spacer
+            EmptyView,
+            VStack<TupleView<(Title, EmptyView)>>,
+            Spacer,
+            EmptyView
         )>
     > {
-        self.init {
-            HStack(alignment: .center, spacing: 16) {
-                title()
-                Spacer()
-            }
-        }
+        self.init(title: title, subheader: { EmptyView() }, avator: { EmptyView() }, action: { EmptyView() })
     }
 }
