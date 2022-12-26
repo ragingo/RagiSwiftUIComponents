@@ -11,11 +11,10 @@ import SwiftUI
 /// https://mui.com/material-ui/react-card/
 /// https://mui.com/material-ui/api/card/
 public struct Card<Content: View>: View {
-    public struct Properties {
-        var backgroundColor: Color?
+    @Environment(\.cardStyle) var cardStyle
 
-        public init(backgroundColor: Color? = nil) {
-            self.backgroundColor = backgroundColor
+    public struct Properties {
+        public init() {
         }
     }
 
@@ -32,10 +31,10 @@ public struct Card<Content: View>: View {
 
     public var body: some View {
         content()
-            .background(properties?.backgroundColor)
+            .background(cardStyle.background)
             .overlay {
                 RoundedRectangle(cornerRadius: 12)
-                    .strokeBorder()
+                    .strokeBorder(cardStyle.borderColor ?? .gray)
             }
             .clipShape(
                 RoundedRectangle(cornerRadius: 12)
@@ -51,7 +50,7 @@ struct Card_Previews: PreviewProvider {
         ScrollView {
             VStack(spacing: 0) {
                 Card(
-                    properties: .init(backgroundColor: .blue.opacity(0.2)),
+                    properties: .init(),
                     header: {
                         CardHeader(
                             title: { Text("title") },
@@ -89,6 +88,10 @@ struct Card_Previews: PreviewProvider {
                         }
                     }
                 )
+                .cardStyle(CardCustomStyle(
+                    background: { Color.blue.blur(radius: 4) },
+                    borderColor: .red
+                ))
                 .padding()
             }
         }
