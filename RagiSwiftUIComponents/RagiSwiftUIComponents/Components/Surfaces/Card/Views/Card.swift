@@ -8,8 +8,7 @@
 import SwiftUI
 
 /// https://m3.material.io/components/cards/guidelines
-/// https://mui.com/material-ui/react-card/
-/// https://mui.com/material-ui/api/card/
+/// https://www.figma.com/community/file/1035203688168086460
 public struct Card<Content: View>: View {
     @Environment(\.cardStyle) var cardStyle
 
@@ -30,15 +29,17 @@ public struct Card<Content: View>: View {
     }
 
     public var body: some View {
-        content()
-            .background(cardStyle.background)
-            .overlay {
-                RoundedRectangle(cornerRadius: 12)
-                    .strokeBorder(cardStyle.borderColor ?? .gray)
-            }
-            .clipShape(
-                RoundedRectangle(cornerRadius: 12)
-            )
+        // TODO: これをいい感じに直す
+        switch cardStyle {
+        case is CardPlainStyle:
+            (cardStyle as! CardPlainStyle).makeBody(configuration: .init(content: .init(body: .init(content()))))
+        case is CardOutlinedStyle:
+            (cardStyle as! CardOutlinedStyle).makeBody(configuration: .init(content: .init(body: .init(content()))))
+        case is CardFilledStyle: 
+            (cardStyle as! CardFilledStyle).makeBody(configuration: .init(content: .init(body: .init(content()))))
+        default:
+            (cardStyle as? CardPlainStyle)?.makeBody(configuration: .init(content: .init(body: .init(content()))))
+        }
     }
 }
 
@@ -53,10 +54,28 @@ struct Card_Previews: PreviewProvider {
                     properties: .init(),
                     header: {
                         CardHeader(
-                            title: { Text("title") },
-                            subheader: { Text("subheader") },
-                            avator: { Image(systemName: "star") },
-                            action: { Image(systemName: "pencil") }
+                            title: {
+                                Text("title")
+                                    .font(.title2)
+                            },
+                            subheader: {
+                                Text("subheader")
+                                    .font(.subheadline)
+                            },
+                            avator: {
+                                Image(systemName: "star")
+                            },
+                            action: {
+                                Button(
+                                    action: {},
+                                    label: {
+                                        Image(systemName: "ellipsis")
+                                            .rotationEffect(.degrees(90))
+                                            .frame(width: 48, height: 48)
+                                    }
+                                )
+                                .buttonStyle(.plain)
+                            }
                         )
                     },
                     media: {
@@ -88,10 +107,11 @@ struct Card_Previews: PreviewProvider {
                         }
                     }
                 )
-                .cardStyle(CardCustomStyle(
-                    background: { Color.blue.blur(radius: 4) },
-                    borderColor: .red
-                ))
+                .cardStyle(CardFilledStyle())
+//                .cardStyle(CardCustomStyle(
+//                    background: { Color.blue.blur(radius: 4) },
+//                    borderColor: .red
+//                ))
                 .padding()
             }
         }

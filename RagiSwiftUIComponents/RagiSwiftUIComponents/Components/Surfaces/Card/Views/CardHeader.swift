@@ -8,8 +8,6 @@
 import SwiftUI
 
 /// https://m3.material.io/components/cards/guidelines
-/// https://mui.com/material-ui/react-card/
-/// https://mui.com/material-ui/api/card-header/
 public struct CardHeader<Content: View>: View {
     private let content: () -> Content
 
@@ -19,7 +17,9 @@ public struct CardHeader<Content: View>: View {
 
     public var body: some View {
         content()
-            .padding(16)
+            .padding(.vertical, 12)
+            .padding(.leading, 16)
+            .padding(.trailing, 4)
     }
 }
 

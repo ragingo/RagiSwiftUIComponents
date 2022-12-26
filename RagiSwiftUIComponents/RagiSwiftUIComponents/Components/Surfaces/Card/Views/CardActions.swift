@@ -8,8 +8,6 @@
 import SwiftUI
 
 /// https://m3.material.io/components/cards/guidelines
-/// https://mui.com/material-ui/react-card/
-/// https://mui.com/material-ui/api/card-actions/
 public struct CardActions<Content: View>: View {
     private let content: () -> Content
 

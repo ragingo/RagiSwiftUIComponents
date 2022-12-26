@@ -22,6 +22,7 @@
 		524557B329574BAE00CF6EFB /* CardHeader+Initializers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 524557B229574BAE00CF6EFB /* CardHeader+Initializers.swift */; };
 		524557B529589C0300CF6EFB /* Card+Initializers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 524557B429589C0300CF6EFB /* Card+Initializers.swift */; };
 		524557B82959521A00CF6EFB /* CardStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 524557B72959521A00CF6EFB /* CardStyle.swift */; };
+		524557BA2959DC5000CF6EFB /* CardConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 524557B92959DC5000CF6EFB /* CardConstants.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -65,6 +66,7 @@
 		524557B229574BAE00CF6EFB /* CardHeader+Initializers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CardHeader+Initializers.swift"; sourceTree = "<group>"; };
 		524557B429589C0300CF6EFB /* Card+Initializers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Card+Initializers.swift"; sourceTree = "<group>"; };
 		524557B72959521A00CF6EFB /* CardStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardStyle.swift; sourceTree = "<group>"; };
+		524557B92959DC5000CF6EFB /* CardConstants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardConstants.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -170,6 +172,7 @@
 			children = (
 				524557B62959520D00CF6EFB /* Styles */,
 				523DCD932955DD7E00D0BA72 /* Views */,
+				524557B92959DC5000CF6EFB /* CardConstants.swift */,
 			);
 			path = Card;
 			sourceTree = "<group>";
@@ -316,6 +319,7 @@
 				523DCD8A2955CC3700D0BA72 /* Card.swift in Sources */,
 				524557B82959521A00CF6EFB /* CardStyle.swift in Sources */,
 				523DCD8E2955D11700D0BA72 /* CardHeader.swift in Sources */,
+				524557BA2959DC5000CF6EFB /* CardConstants.swift in Sources */,
 				524557B329574BAE00CF6EFB /* CardHeader+Initializers.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

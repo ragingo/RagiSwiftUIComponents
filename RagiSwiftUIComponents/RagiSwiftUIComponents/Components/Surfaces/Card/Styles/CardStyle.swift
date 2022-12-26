@@ -9,25 +9,56 @@ import SwiftUI
 import UIKit
 
 public protocol CardStyle {
-    var background: AnyView { get }
-    var borderColor: Color? { get }
+    associatedtype Body: View
+    typealias Configuration = CardStyleConfiguration
+
+    @ViewBuilder func makeBody(configuration: Self.Configuration) -> Self.Body
 }
 
-public struct CardCustomStyle: CardStyle {
-    public var background: AnyView
-    public var borderColor: Color?
+public struct CardStyleConfiguration {
+    public struct Content: View {
+        public let body: AnyView
+    }
 
-    public init(
-        @ViewBuilder background: @escaping () -> some View = { EmptyView() },
-        borderColor: Color? = nil
-    ) {
-        self.background = AnyView(background())
-        self.borderColor = borderColor
+    public let content: Content
+}
+
+public struct CardPlainStyle: CardStyle {
+    public func makeBody(configuration: Configuration) -> some View {
+        configuration.content
+    }
+}
+
+public struct CardOutlinedStyle: CardStyle {
+    public func makeBody(configuration: Configuration) -> some View {
+        configuration.content
+            .background(.white)
+            .overlay {
+                RoundedRectangle(cornerRadius: CardConstants.borderRadius)
+                    .strokeBorder(.gray)
+            }
+            .clipShape(
+                RoundedRectangle(cornerRadius: CardConstants.borderRadius)
+            )
+    }
+}
+
+public struct CardFilledStyle: CardStyle {
+    public func makeBody(configuration: Configuration) -> some View {
+        configuration.content
+            .background(.gray)
+            .overlay {
+                RoundedRectangle(cornerRadius: CardConstants.borderRadius)
+                    .fill(.clear)
+            }
+            .clipShape(
+                RoundedRectangle(cornerRadius: CardConstants.borderRadius)
+            )
     }
 }
 
 private struct CardStyleKey: EnvironmentKey {
-    static let defaultValue: any CardStyle = CardCustomStyle()
+    static let defaultValue: any CardStyle = CardPlainStyle()
 }
 
 extension EnvironmentValues {
