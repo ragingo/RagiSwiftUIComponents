@@ -9,8 +9,13 @@ import SwiftUI
 
 public struct CardElevatedStyle: CardStyle {
     private let background: () -> AnyView
+    private let elevation: Elevation
 
-    public init<Background: View>(@ViewBuilder background: @escaping () -> Background) {
+    public init<Background: View>(
+        elevation: Elevation = .level1,
+        @ViewBuilder background: @escaping () -> Background
+    ) {
+        self.elevation = elevation
         self.background = { AnyView(background()) }
     }
 
@@ -24,14 +29,15 @@ public struct CardElevatedStyle: CardStyle {
             .clipShape(
                 RoundedRectangle(cornerRadius: CardConstants.borderRadius)
             )
-            .shadow(elevation: .level1, cornerRadius: CardConstants.borderRadius)
+            .shadow(elevation: elevation, cornerRadius: CardConstants.borderRadius)
     }
 }
 
 extension CardStyle where Self == CardElevatedStyle {
     public static func elevated<Background: View>(
+        elevation: Elevation = .level1,
         @ViewBuilder background: @escaping () -> Background = { Color(uiColor: .systemGray6) }
     ) -> CardElevatedStyle {
-        CardElevatedStyle(background: background)
+        CardElevatedStyle(elevation: elevation, background: background)
     }
 }
