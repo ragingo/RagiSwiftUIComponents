@@ -31,9 +31,39 @@ struct CardDebugView: View {
     private func makeAllPatterns() -> some View {
         ScrollView {
             LazyVStack {
-                makeCard()
-                makeCard(title: Text("title"))
-                makeCard(title: Text("title"), subheader: Text("subheader"))
+                Card(
+                    header: { makeCardHeader(title: Text("title")) }
+                )
+                Card(
+                    header: { makeCardHeader() },
+                    media: { makeCardMedia() }
+                )
+                Card(
+                    header: { makeCardHeader() },
+                    content: { makeCardContent() }
+                )
+                Card(
+                    header: { makeCardHeader() },
+                    actions: { makeCardActions() }
+                )
+                Card(
+                    header: { makeCardHeader() },
+                    media: { makeCardMedia() },
+                    content: { makeCardContent() },
+                    actions: { makeCardActions() }
+                )
+                Card(
+                    header: { makeCardHeader(title: Text("title")) },
+                    media: { makeCardMedia() },
+                    content: { makeCardContent() },
+                    actions: { makeCardActions() }
+                )
+                Card(
+                    header: { makeCardHeader(title: Text("title"), subheader: Text("subheader")) },
+                    media: { makeCardMedia() },
+                    content: { makeCardContent() },
+                    actions: { makeCardActions() }
+                )
             }
             .cardStyle(.outline())
             .padding()
