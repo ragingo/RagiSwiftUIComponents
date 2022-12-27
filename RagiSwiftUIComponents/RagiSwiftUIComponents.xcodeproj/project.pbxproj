@@ -23,6 +23,8 @@
 		524557B529589C0300CF6EFB /* Card+Initializers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 524557B429589C0300CF6EFB /* Card+Initializers.swift */; };
 		524557B82959521A00CF6EFB /* CardStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 524557B72959521A00CF6EFB /* CardStyle.swift */; };
 		524557BA2959DC5000CF6EFB /* CardConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 524557B92959DC5000CF6EFB /* CardConstants.swift */; };
+		52857DAB295AB1D100E538D8 /* CardOutlinedStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52857DAA295AB1D100E538D8 /* CardOutlinedStyle.swift */; };
+		52857DAD295AB1E800E538D8 /* CardFilledStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52857DAC295AB1E800E538D8 /* CardFilledStyle.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -67,6 +69,8 @@
 		524557B429589C0300CF6EFB /* Card+Initializers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Card+Initializers.swift"; sourceTree = "<group>"; };
 		524557B72959521A00CF6EFB /* CardStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardStyle.swift; sourceTree = "<group>"; };
 		524557B92959DC5000CF6EFB /* CardConstants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardConstants.swift; sourceTree = "<group>"; };
+		52857DAA295AB1D100E538D8 /* CardOutlinedStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardOutlinedStyle.swift; sourceTree = "<group>"; };
+		52857DAC295AB1E800E538D8 /* CardFilledStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardFilledStyle.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -112,6 +116,7 @@
 			isa = PBXGroup;
 			children = (
 				523DCD862955CAAE00D0BA72 /* Components */,
+				52857DA8295AA54800E538D8 /* Styles */,
 				523DCD6229557A3D00D0BA72 /* RagiSwiftUIComponents.h */,
 			);
 			path = RagiSwiftUIComponents;
@@ -197,6 +202,23 @@
 				524557B72959521A00CF6EFB /* CardStyle.swift */,
 			);
 			path = Styles;
+			sourceTree = "<group>";
+		};
+		52857DA8295AA54800E538D8 /* Styles */ = {
+			isa = PBXGroup;
+			children = (
+				52857DA9295AA55400E538D8 /* Card */,
+			);
+			path = Styles;
+			sourceTree = "<group>";
+		};
+		52857DA9295AA55400E538D8 /* Card */ = {
+			isa = PBXGroup;
+			children = (
+				52857DAA295AB1D100E538D8 /* CardOutlinedStyle.swift */,
+				52857DAC295AB1E800E538D8 /* CardFilledStyle.swift */,
+			);
+			path = Card;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -314,11 +336,13 @@
 			files = (
 				523DCD8C2955D10200D0BA72 /* CardMedia.swift in Sources */,
 				523DCD922955D13B00D0BA72 /* CardActions.swift in Sources */,
+				52857DAD295AB1E800E538D8 /* CardFilledStyle.swift in Sources */,
 				523DCD902955D12900D0BA72 /* CardContent.swift in Sources */,
 				524557B529589C0300CF6EFB /* Card+Initializers.swift in Sources */,
 				523DCD8A2955CC3700D0BA72 /* Card.swift in Sources */,
 				524557B82959521A00CF6EFB /* CardStyle.swift in Sources */,
 				523DCD8E2955D11700D0BA72 /* CardHeader.swift in Sources */,
+				52857DAB295AB1D100E538D8 /* CardOutlinedStyle.swift in Sources */,
 				524557BA2959DC5000CF6EFB /* CardConstants.swift in Sources */,
 				524557B329574BAE00CF6EFB /* CardHeader+Initializers.swift in Sources */,
 			);

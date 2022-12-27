@@ -29,40 +29,28 @@ public struct CardPlainStyle: CardStyle {
     }
 }
 
-public struct CardOutlinedStyle: CardStyle {
-    public func makeBody(configuration: Configuration) -> some View {
-        configuration.content
-            .background(.white)
-            .overlay {
-                RoundedRectangle(cornerRadius: CardConstants.borderRadius)
-                    .strokeBorder(.gray)
-            }
-            .clipShape(
-                RoundedRectangle(cornerRadius: CardConstants.borderRadius)
-            )
-    }
-}
+struct TypedCardStyle: CardStyle {
+    typealias Body = AnyView
 
-public struct CardFilledStyle: CardStyle {
-    public func makeBody(configuration: Configuration) -> some View {
-        configuration.content
-            .background(.gray)
-            .overlay {
-                RoundedRectangle(cornerRadius: CardConstants.borderRadius)
-                    .fill(.clear)
-            }
-            .clipShape(
-                RoundedRectangle(cornerRadius: CardConstants.borderRadius)
-            )
+    let body: (Configuration) -> AnyView
+
+    init<S: CardStyle>(_ style: S) {
+        self.body = { configuration in
+            AnyView(style.makeBody(configuration: configuration))
+        }
+    }
+
+    func makeBody(configuration: Configuration) -> AnyView {
+        body(configuration)
     }
 }
 
 private struct CardStyleKey: EnvironmentKey {
-    static let defaultValue: any CardStyle = CardPlainStyle()
+    static let defaultValue = TypedCardStyle(CardPlainStyle())
 }
 
 extension EnvironmentValues {
-    var cardStyle: any CardStyle {
+    var cardStyle: TypedCardStyle {
         get {
             self[CardStyleKey.self]
         }
@@ -74,6 +62,6 @@ extension EnvironmentValues {
 
 public extension View {
     func cardStyle<S>(_ style: S) -> some View where S: CardStyle {
-        environment(\.cardStyle, style)
+        environment(\.cardStyle, TypedCardStyle(style))
     }
 }

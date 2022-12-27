@@ -29,17 +29,7 @@ public struct Card<Content: View>: View {
     }
 
     public var body: some View {
-        // TODO: これをいい感じに直す
-        switch cardStyle {
-        case is CardPlainStyle:
-            (cardStyle as! CardPlainStyle).makeBody(configuration: .init(content: .init(body: .init(content()))))
-        case is CardOutlinedStyle:
-            (cardStyle as! CardOutlinedStyle).makeBody(configuration: .init(content: .init(body: .init(content()))))
-        case is CardFilledStyle: 
-            (cardStyle as! CardFilledStyle).makeBody(configuration: .init(content: .init(body: .init(content()))))
-        default:
-            (cardStyle as? CardPlainStyle)?.makeBody(configuration: .init(content: .init(body: .init(content()))))
-        }
+        cardStyle.makeBody(configuration: .init(content: .init(body: .init(content()))))
     }
 }
 
@@ -107,11 +97,7 @@ struct Card_Previews: PreviewProvider {
                         }
                     }
                 )
-                .cardStyle(CardFilledStyle())
-//                .cardStyle(CardCustomStyle(
-//                    background: { Color.blue.blur(radius: 4) },
-//                    borderColor: .red
-//                ))
+                .cardStyle(.outline)
                 .padding()
             }
         }
