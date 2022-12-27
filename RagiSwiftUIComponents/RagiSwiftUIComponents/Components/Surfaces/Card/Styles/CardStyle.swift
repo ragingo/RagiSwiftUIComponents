@@ -26,6 +26,7 @@ public struct CardStyleConfiguration {
 public struct CardPlainStyle: CardStyle {
     public func makeBody(configuration: Configuration) -> some View {
         configuration.content
+            .background(Color(uiColor: .systemGray6))
     }
 }
 

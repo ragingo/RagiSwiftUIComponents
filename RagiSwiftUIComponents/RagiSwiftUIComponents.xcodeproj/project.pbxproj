@@ -23,8 +23,11 @@
 		524557B529589C0300CF6EFB /* Card+Initializers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 524557B429589C0300CF6EFB /* Card+Initializers.swift */; };
 		524557B82959521A00CF6EFB /* CardStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 524557B72959521A00CF6EFB /* CardStyle.swift */; };
 		524557BA2959DC5000CF6EFB /* CardConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 524557B92959DC5000CF6EFB /* CardConstants.swift */; };
+		5249E62B295ABDC9006ECDE0 /* CardElevatedStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5249E62A295ABDC9006ECDE0 /* CardElevatedStyle.swift */; };
+		5249E62E295AC1B0006ECDE0 /* Shadow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5249E62D295AC1B0006ECDE0 /* Shadow.swift */; };
 		52857DAB295AB1D100E538D8 /* CardOutlinedStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52857DAA295AB1D100E538D8 /* CardOutlinedStyle.swift */; };
 		52857DAD295AB1E800E538D8 /* CardFilledStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52857DAC295AB1E800E538D8 /* CardFilledStyle.swift */; };
+		52857DAF295ABC8000E538D8 /* Elevation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52857DAE295ABC8000E538D8 /* Elevation.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -69,8 +72,11 @@
 		524557B429589C0300CF6EFB /* Card+Initializers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Card+Initializers.swift"; sourceTree = "<group>"; };
 		524557B72959521A00CF6EFB /* CardStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardStyle.swift; sourceTree = "<group>"; };
 		524557B92959DC5000CF6EFB /* CardConstants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardConstants.swift; sourceTree = "<group>"; };
+		5249E62A295ABDC9006ECDE0 /* CardElevatedStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardElevatedStyle.swift; sourceTree = "<group>"; };
+		5249E62D295AC1B0006ECDE0 /* Shadow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Shadow.swift; sourceTree = "<group>"; };
 		52857DAA295AB1D100E538D8 /* CardOutlinedStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardOutlinedStyle.swift; sourceTree = "<group>"; };
 		52857DAC295AB1E800E538D8 /* CardFilledStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardFilledStyle.swift; sourceTree = "<group>"; };
+		52857DAE295ABC8000E538D8 /* Elevation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Elevation.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -116,6 +122,7 @@
 			isa = PBXGroup;
 			children = (
 				523DCD862955CAAE00D0BA72 /* Components */,
+				5249E62C295AC17D006ECDE0 /* Effects */,
 				52857DA8295AA54800E538D8 /* Styles */,
 				523DCD6229557A3D00D0BA72 /* RagiSwiftUIComponents.h */,
 			);
@@ -204,10 +211,19 @@
 			path = Styles;
 			sourceTree = "<group>";
 		};
+		5249E62C295AC17D006ECDE0 /* Effects */ = {
+			isa = PBXGroup;
+			children = (
+				5249E62D295AC1B0006ECDE0 /* Shadow.swift */,
+			);
+			path = Effects;
+			sourceTree = "<group>";
+		};
 		52857DA8295AA54800E538D8 /* Styles */ = {
 			isa = PBXGroup;
 			children = (
 				52857DA9295AA55400E538D8 /* Card */,
+				52857DAE295ABC8000E538D8 /* Elevation.swift */,
 			);
 			path = Styles;
 			sourceTree = "<group>";
@@ -217,6 +233,7 @@
 			children = (
 				52857DAA295AB1D100E538D8 /* CardOutlinedStyle.swift */,
 				52857DAC295AB1E800E538D8 /* CardFilledStyle.swift */,
+				5249E62A295ABDC9006ECDE0 /* CardElevatedStyle.swift */,
 			);
 			path = Card;
 			sourceTree = "<group>";
@@ -339,11 +356,14 @@
 				52857DAD295AB1E800E538D8 /* CardFilledStyle.swift in Sources */,
 				523DCD902955D12900D0BA72 /* CardContent.swift in Sources */,
 				524557B529589C0300CF6EFB /* Card+Initializers.swift in Sources */,
+				5249E62E295AC1B0006ECDE0 /* Shadow.swift in Sources */,
 				523DCD8A2955CC3700D0BA72 /* Card.swift in Sources */,
 				524557B82959521A00CF6EFB /* CardStyle.swift in Sources */,
 				523DCD8E2955D11700D0BA72 /* CardHeader.swift in Sources */,
 				52857DAB295AB1D100E538D8 /* CardOutlinedStyle.swift in Sources */,
+				52857DAF295ABC8000E538D8 /* Elevation.swift in Sources */,
 				524557BA2959DC5000CF6EFB /* CardConstants.swift in Sources */,
+				5249E62B295ABDC9006ECDE0 /* CardElevatedStyle.swift in Sources */,
 				524557B329574BAE00CF6EFB /* CardHeader+Initializers.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

@@ -97,7 +97,7 @@ struct Card_Previews: PreviewProvider {
                         }
                     }
                 )
-                .cardStyle(.outline)
+                .cardStyle(.outline())
                 .padding()
             }
         }

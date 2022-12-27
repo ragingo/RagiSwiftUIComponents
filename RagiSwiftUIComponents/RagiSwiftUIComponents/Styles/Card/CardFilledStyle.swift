@@ -8,9 +8,15 @@
 import SwiftUI
 
 public struct CardFilledStyle: CardStyle {
+    private let background: () -> AnyView
+
+    public init<Background: View>(@ViewBuilder background: @escaping () -> Background) {
+        self.background = { AnyView(background()) }
+    }
+
     public func makeBody(configuration: Configuration) -> some View {
         configuration.content
-            .background(.gray)
+            .background(background())
             .overlay {
                 RoundedRectangle(cornerRadius: CardConstants.borderRadius)
                     .fill(.clear)
@@ -22,5 +28,9 @@ public struct CardFilledStyle: CardStyle {
 }
 
 extension CardStyle where Self == CardFilledStyle {
-    public static var filled: CardFilledStyle { .init() }
+    public static func filled<Background: View>(
+        @ViewBuilder background: @escaping () -> Background = { Color(uiColor: .systemGray6) }
+    ) -> CardFilledStyle {
+        CardFilledStyle(background: background)
+    }
 }
