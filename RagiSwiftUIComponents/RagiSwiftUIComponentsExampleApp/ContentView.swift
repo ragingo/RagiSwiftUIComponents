@@ -9,13 +9,46 @@ import SwiftUI
 
 struct ContentView: View {
     var body: some View {
-        VStack {
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundColor(.accentColor)
-            Text("Hello, world!")
+        NavigationView {
+            List {
+                makeLink(
+                    icon: { Image(systemName: "creditcard.fill") },
+                    destination: { CardDebugView() },
+                    description: "Card の動作確認用画面"
+                )
+            }
         }
-        .padding()
+        .navigationViewStyle(.stack)
+        .navigationBarTitleDisplayMode(.inline)
+    }
+
+    @ViewBuilder
+    private func makeLink(
+        @ViewBuilder icon: @escaping () -> some View,
+        @ViewBuilder destination: @escaping () -> some View,
+        description: String
+    ) -> some View {
+        let destination = destination()
+        let title = String(describing: type(of: destination))
+
+        NavigationLink(
+            destination: {
+                destination
+                    .navigationTitle(title)
+            },
+            label: {
+                icon()
+
+                VStack(alignment: .leading) {
+                    Text(title)
+                        .font(.title2)
+
+                    Text(description)
+                        .font(.footnote)
+                        .foregroundColor(.gray)
+                }
+            }
+        )
     }
 }
 
