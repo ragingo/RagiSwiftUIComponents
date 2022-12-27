@@ -30,6 +30,12 @@ public struct CardPlainStyle: CardStyle {
     }
 }
 
+extension CardStyle where Self == CardPlainStyle {
+    public static func plain() -> CardPlainStyle {
+        CardPlainStyle()
+    }
+}
+
 struct TypedCardStyle: CardStyle {
     typealias Body = AnyView
 
