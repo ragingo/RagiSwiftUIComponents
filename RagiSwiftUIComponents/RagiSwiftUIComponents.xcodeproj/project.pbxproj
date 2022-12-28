@@ -170,17 +170,9 @@
 		523DCD862955CAAE00D0BA72 /* Components */ = {
 			isa = PBXGroup;
 			children = (
-				523DCD872955CABA00D0BA72 /* Surfaces */,
-			);
-			path = Components;
-			sourceTree = "<group>";
-		};
-		523DCD872955CABA00D0BA72 /* Surfaces */ = {
-			isa = PBXGroup;
-			children = (
 				523DCD882955CAC800D0BA72 /* Card */,
 			);
-			path = Surfaces;
+			path = Components;
 			sourceTree = "<group>";
 		};
 		523DCD882955CAC800D0BA72 /* Card */ = {
