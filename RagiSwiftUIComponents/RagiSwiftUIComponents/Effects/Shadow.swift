@@ -52,6 +52,8 @@ public struct ShadowModifier: ViewModifier {
 }
 
 /// 参考実装: https://github.com/material-components/material-components-ios/blob/develop/components/ShadowLayer/src/MDCShadowLayer.m
+/// MEMO: android 版は実現方法が全然違うっぽい。
+/// https://github.com/material-components/material-components-android/blob/1.7.0/lib/java/com/google/android/material/shape/MaterialShapeDrawable.java
 private struct ShadowMetrics {
     let elevation: Elevation
 
