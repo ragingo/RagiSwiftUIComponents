@@ -28,7 +28,7 @@ public struct CardOutlinedStyle: CardStyle {
 }
 
 extension CardStyle where Self == CardOutlinedStyle {
-    public static func outline<Background: View>(
+    public static func outlined<Background: View>(
         @ViewBuilder background: @escaping () -> Background = { Color(uiColor: .systemGray6) }
     ) -> CardOutlinedStyle {
         CardOutlinedStyle(background: background)

@@ -65,7 +65,7 @@ struct CardDebugView: View {
                     actions: { makeCardActions() }
                 )
             }
-            .cardStyle(.outline())
+            .cardStyle(.outlined())
             .padding()
         }
     }
@@ -80,7 +80,7 @@ struct CardDebugView: View {
 
                 heading("outline")
                 makeCard()
-                    .cardStyle(.outline(background: { Color.blue.opacity(0.2) }))
+                    .cardStyle(.outlined(background: { Color.blue.opacity(0.2) }))
 
                 heading("filled")
                 makeCard()
