@@ -12,8 +12,8 @@ public struct Slider: View {
     private let sliderTrackSpaceName = UUID()
 
     public var body: some View {
-        GeometryReader { geometory in
-            SliderTrack(size: .init(width: geometory.size.width, height: 4))
+        GeometryReader { geometry in
+            SliderTrack(size: .init(width: geometry.size.width, height: 4))
                 .overlay {
                     SliderHandle {
                         Circle()
@@ -24,7 +24,7 @@ public struct Slider: View {
                     }
                     .gesture(DragGesture(coordinateSpace: .named(sliderTrackSpaceName))
                         .onChanged { value in
-                            let x = min(max(value.location.x, 0), geometory.size.width)
+                            let x = min(max(value.location.x, 0), geometry.size.width)
                             handlePositionX = x
                         }
                     )
