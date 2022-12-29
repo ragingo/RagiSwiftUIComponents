@@ -25,29 +25,30 @@ public struct ShadowModifier: ViewModifier {
     }
 
     public func body(content: Content) -> some View {
-        ZStack {
-            RoundedRectangle(cornerRadius: cornerRadius)
-                .fill(.black.opacity(shadowMetrics.bottomShadowOpacity))
-                .blur(radius: shadowMetrics.bottomShadowRadius)
-                .padding(.init(
-                    top: 0,
-                    leading: 0,
-                    bottom: -shadowMetrics.bottomShadowOffset.y,
-                    trailing: -shadowMetrics.bottomShadowOffset.x
-                ))
-
-            RoundedRectangle(cornerRadius: cornerRadius)
-                .fill(.black.opacity(shadowMetrics.topShadowOpacity))
-                .blur(radius: shadowMetrics.topShadowRadius)
-                .padding(.init(
-                    top: 0,
-                    leading: 0,
-                    bottom: -shadowMetrics.topShadowOffset.y,
-                    trailing: -shadowMetrics.topShadowOffset.x
-                ))
-
-            content
-        }
+        content
+            .background {
+                ZStack {
+                    RoundedRectangle(cornerRadius: cornerRadius)
+                        .fill(.black.opacity(shadowMetrics.bottomShadowOpacity))
+                        .blur(radius: shadowMetrics.bottomShadowRadius)
+                        .padding(.init(
+                            top: 0,
+                            leading: 0,
+                            bottom: -shadowMetrics.bottomShadowOffset.y,
+                            trailing: -shadowMetrics.bottomShadowOffset.x
+                        ))
+                    
+                    RoundedRectangle(cornerRadius: cornerRadius)
+                        .fill(.black.opacity(shadowMetrics.topShadowOpacity))
+                        .blur(radius: shadowMetrics.topShadowRadius)
+                        .padding(.init(
+                            top: 0,
+                            leading: 0,
+                            bottom: -shadowMetrics.topShadowOffset.y,
+                            trailing: -shadowMetrics.topShadowOffset.x
+                        ))
+                }
+            }
     }
 }
 

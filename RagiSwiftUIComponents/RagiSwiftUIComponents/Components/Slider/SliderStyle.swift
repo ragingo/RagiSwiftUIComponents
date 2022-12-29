@@ -56,7 +56,7 @@ public struct SliderPlainStyle: SliderStyle {
             Circle()
                 .fill(.white)
                 .frame(width: 20, height: 20)
-                .shadow(radius: 4)
+                .shadow(elevation: .level1, cornerRadius: 10)
         }
         .offset(y: Self.trackHeight * 0.5)
     }
