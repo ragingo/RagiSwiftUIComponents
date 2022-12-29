@@ -10,65 +10,77 @@ import SwiftUI
 public struct Slider: View {
     @State private var handlePositionX: CGFloat = 0
     private let sliderTrackSpaceName = UUID()
-    private let trackHeight: CGFloat = 4
+    private var onValueChanged: ((Double) -> Void)?
+
+    @Environment(\.sliderStyle) var sliderStyle
 
     public var body: some View {
         GeometryReader { geometry in
-            SliderTrack(size: .init(width: geometry.size.width, height: trackHeight))
-                .coordinateSpace(name: sliderTrackSpaceName)
-                .overlay {
-                    SliderHandle {
-                        Circle()
-                            .fill(.white)
-                            .frame(width: 20, height: 20)
-                            .shadow(radius: 4)
-                    }
-                    .position(x: handlePositionX, y: trackHeight * 0.5)
-                }
-                .gesture(DragGesture(minimumDistance: 0, coordinateSpace: .named(sliderTrackSpaceName))
-                    .onChanged { value in
-                        let x = min(max(value.location.x, 0), geometry.size.width)
-                        handlePositionX = x
-                    }
-                )
+            sliderStyle.makeBody(configuration: .init(content: .init(body: .init(
+                makeTrackContainer(maxWidth: geometry.size.width)
+            ))))
+            .onChange(of: handlePositionX) { _ in
+                onValueChanged?(handlePositionX / geometry.size.width)
+            }
         }
         .fixedSize(horizontal: false, vertical: true)
+    }
+
+    public func onValueChanged(_ action: @escaping (Double) -> Void) -> Self {
+        var slider = self
+        slider.onValueChanged = action
+        return slider
+    }
+
+    private func makeTrackContainer(maxWidth: CGFloat) -> some View {
+        ZStack(alignment: .topLeading) {
+            makeInactiveTrack(maxWidth: maxWidth)
+            makeActiveTrack(maxWidth: maxWidth)
+        }
+        .gesture(DragGesture(minimumDistance: 0, coordinateSpace: .named(sliderTrackSpaceName))
+            .onChanged { value in
+                let x = min(max(value.location.x, 0), maxWidth)
+                handlePositionX = x
+            }
+        )
+    }
+
+    private func makeInactiveTrack(maxWidth: CGFloat) -> some View {
+        sliderStyle.makeInactiveTrack(configuration: .init(content: .init(body: .init(
+            SliderTrack(width: .constant(maxWidth))
+        ))))
+        .coordinateSpace(name: sliderTrackSpaceName)
+    }
+
+    private func makeActiveTrack(maxWidth: CGFloat) -> some View {
+        sliderStyle.makeActiveTrack(configuration: .init(content: .init(body: .init(
+            SliderTrack(width: $handlePositionX)
+        ))))
+        .overlay {
+            sliderStyle.makeHandle(configuration: .init())
+                .position(x: handlePositionX)
+        }
     }
 }
 
 struct Slider_Previews: PreviewProvider {
-    static var previews: some View {
-        Slider()
-            .padding(50)
-    }
-}
+    struct PreviewView: View {
+        @State private var positionRatio = 0.0
 
-public struct SliderTrack: View {
-    private let color: Color
-    private let size: CGSize
+        var body: some View {
+            VStack {
+                Text("\(positionRatio)")
 
-    public init(color: Color = Color(uiColor: .systemBlue), size: CGSize) {
-        self.color = color
-        self.size = size
-    }
-
-    public var body: some View {
-        Path { path in
-            path.addRect(.init(origin: .zero, size: size))
+                Slider()
+                    .onValueChanged {
+                        positionRatio = $0
+                    }
+                    .padding(.horizontal, 50)
+            }
         }
-        .fill(color)
-    }
-}
-
-
-public struct SliderHandle<Content: View>: View {
-    private let content: () -> Content
-
-    public init(@ViewBuilder content: @escaping () -> Content) {
-        self.content = content
     }
 
-    public var body: some View {
-        content()
+    static var previews: some View {
+        PreviewView()
     }
 }
