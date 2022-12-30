@@ -9,7 +9,9 @@ import SwiftUI
 
 public struct Slider: View {
     @Environment(\.sliderStyle) var sliderStyle
+    @State private var isDragging = false
     @State private var handlePositionX: CGFloat = 0
+    @State private var label = ""
     private let sliderTrackSpaceName = UUID()
     private var onValueChanged: ((Double) -> Void)?
 
@@ -30,6 +32,7 @@ public struct Slider: View {
                 onValueChanged?(newValue)
             }
             .onChange(of: value.wrappedValue) { _ in
+                label = "\(Int(value.wrappedValue * 100))"
                 handlePositionX = geometry.size.width * value.wrappedValue
             }
         }
@@ -51,6 +54,10 @@ public struct Slider: View {
             .onChanged { value in
                 let x = min(max(value.location.x, 0), maxWidth)
                 handlePositionX = x
+                isDragging = true
+            }
+            .onEnded { _ in
+                isDragging = false
             }
         )
     }
@@ -68,6 +75,13 @@ public struct Slider: View {
         ))))
         .overlay {
             sliderStyle.makeHandle(configuration: .init())
+                .overlay {
+                    SliderLabel(color: .gray.opacity(0.5), label: $label, font: .system(size: 8))
+                        .scaleEffect(1.6)
+                        .offset(y: -32)
+                        .opacity(isDragging ? 1.0 : 0.0)
+                        .animation(.easeInOut, value: isDragging)
+                }
                 .position(x: handlePositionX)
         }
     }
