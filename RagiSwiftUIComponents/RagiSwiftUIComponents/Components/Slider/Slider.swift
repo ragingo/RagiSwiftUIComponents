@@ -8,11 +8,16 @@
 import SwiftUI
 
 public struct Slider: View {
+    @Environment(\.sliderStyle) var sliderStyle
     @State private var handlePositionX: CGFloat = 0
     private let sliderTrackSpaceName = UUID()
     private var onValueChanged: ((Double) -> Void)?
 
-    @Environment(\.sliderStyle) var sliderStyle
+    private var value: Binding<Double>
+
+    public init(value: Binding<Double> = .constant(0)) {
+        self.value = value
+    }
 
     public var body: some View {
         GeometryReader { geometry in
@@ -20,7 +25,12 @@ public struct Slider: View {
                 makeTrackContainer(maxWidth: geometry.size.width)
             ))))
             .onChange(of: handlePositionX) { _ in
-                onValueChanged?(handlePositionX / geometry.size.width)
+                let newValue = handlePositionX / geometry.size.width
+                value.wrappedValue = newValue
+                onValueChanged?(newValue)
+            }
+            .onChange(of: value.wrappedValue) { _ in
+                handlePositionX = geometry.size.width * value.wrappedValue
             }
         }
         .fixedSize(horizontal: false, vertical: true)
@@ -65,17 +75,25 @@ public struct Slider: View {
 
 struct Slider_Previews: PreviewProvider {
     struct PreviewView: View {
-        @State private var positionRatio = 0.0
+        @State private var value1 = 0.0
+        @State private var value2 = 0.0
 
         var body: some View {
             VStack {
-                Text("\(positionRatio)")
+                Text("value1: \(value1)")
+                Text("value2: \(value2)")
 
-                Slider()
+                Slider(value: $value2)
                     .onValueChanged {
-                        positionRatio = $0
+                        value1 = $0
                     }
                     .padding(.horizontal, 50)
+
+                Button {
+                    value2 = 0
+                } label: {
+                    Text("reset")
+                }
             }
         }
     }
