@@ -82,7 +82,6 @@ public struct Slider<Label: View>: View {
                     label()
                         .opacity(isDragging ? 1.0 : 0.0)
                         .animation(.easeInOut, value: isDragging)
-
                 }
                 .position(x: handlePositionX)
         }
