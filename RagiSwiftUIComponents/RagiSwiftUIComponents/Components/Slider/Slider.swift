@@ -7,18 +7,22 @@
 
 import SwiftUI
 
-public struct Slider: View {
+public struct Slider<Label: View>: View {
     @Environment(\.sliderStyle) var sliderStyle
     @State private var isDragging = false
     @State private var handlePositionX: CGFloat = 0
-    @State private var label = ""
     private let sliderTrackSpaceName = UUID()
     private var onValueChanged: ((Double) -> Void)?
 
     private var value: Binding<Double>
+    private var label: () -> Label
 
-    public init(value: Binding<Double> = .constant(0)) {
+    public init(
+        value: Binding<Double> = .constant(0),
+        @ViewBuilder label: @escaping () -> Label
+    ) {
         self.value = value
+        self.label = label
     }
 
     public var body: some View {
@@ -32,7 +36,6 @@ public struct Slider: View {
                 onValueChanged?(newValue)
             }
             .onChange(of: value.wrappedValue) { _ in
-                label = "\(Int(value.wrappedValue * 100))"
                 handlePositionX = geometry.size.width * value.wrappedValue
             }
         }
@@ -76,14 +79,19 @@ public struct Slider: View {
         .overlay {
             sliderStyle.makeHandle(configuration: .init())
                 .overlay {
-                    SliderLabel(color: .gray.opacity(0.5), label: $label, font: .system(size: 8))
-                        .scaleEffect(1.6)
-                        .offset(y: -32)
+                    label()
                         .opacity(isDragging ? 1.0 : 0.0)
                         .animation(.easeInOut, value: isDragging)
+
                 }
                 .position(x: handlePositionX)
         }
+    }
+}
+
+extension Slider {
+    public init() where Label == EmptyView {
+        self.init(label: { EmptyView() })
     }
 }
 
@@ -91,23 +99,34 @@ struct Slider_Previews: PreviewProvider {
     struct PreviewView: View {
         @State private var value1 = 0.0
         @State private var value2 = 0.0
+        @State private var label = ""
 
         var body: some View {
             VStack {
                 Text("value1: \(value1)")
                 Text("value2: \(value2)")
 
-                Slider(value: $value2)
-                    .onValueChanged {
-                        value1 = $0
+                Slider(
+                    value: $value2,
+                    label: {
+                        SliderLabel(color: .gray.opacity(0.2), label: $label, font: .system(size: 10))
+                            .scaleEffect(2)
+                            .offset(y: -32)
                     }
-                    .padding(.horizontal, 50)
+                )
+                .onValueChanged {
+                    value1 = $0
+                }
+                .padding(.horizontal, 50)
 
                 Button {
                     value2 = 0
                 } label: {
                     Text("reset")
                 }
+            }
+            .onChange(of: value2) { _ in
+                label = "\(Int(value2 * 100)) %"
             }
         }
     }
