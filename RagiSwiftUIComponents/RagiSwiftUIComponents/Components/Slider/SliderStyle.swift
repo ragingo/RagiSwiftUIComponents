@@ -27,6 +27,7 @@ public struct SliderTrackConfiguration {
 }
 
 public struct SliderHandleConfiguration {
+    public var isPressed: Bool
 }
 
 public struct SliderConfiguration {
@@ -57,6 +58,13 @@ public struct SliderPlainStyle: SliderStyle {
                 .fill(.white)
                 .frame(width: 20, height: 20)
                 .shadow(elevation: .level1, cornerRadius: 10)
+                .background(
+                    Circle()
+                        .fill(.gray.opacity(0.2))
+                        .scaleEffect(2.0)
+                        .opacity(configuration.isPressed ? 1 : 0)
+                        .animation(.default, value: configuration.isPressed)
+                )
         }
         .offset(y: Self.trackHeight * 0.5)
     }

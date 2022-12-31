@@ -77,7 +77,7 @@ public struct Slider<Label: View>: View {
             SliderTrack(width: $handlePositionX)
         ))))
         .overlay {
-            sliderStyle.makeHandle(configuration: .init())
+            sliderStyle.makeHandle(configuration: .init(isPressed: isDragging))
                 .overlay {
                     label()
                         .opacity(isDragging ? 1.0 : 0.0)
