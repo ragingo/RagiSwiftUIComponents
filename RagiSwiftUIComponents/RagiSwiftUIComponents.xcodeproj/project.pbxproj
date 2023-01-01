@@ -35,6 +35,7 @@
 		52857DAB295AB1D100E538D8 /* CardOutlinedStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52857DAA295AB1D100E538D8 /* CardOutlinedStyle.swift */; };
 		52857DAD295AB1E800E538D8 /* CardFilledStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52857DAC295AB1E800E538D8 /* CardFilledStyle.swift */; };
 		52857DAF295ABC8000E538D8 /* Elevation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52857DAE295ABC8000E538D8 /* Elevation.swift */; };
+		52CE190B296089F7008FB630 /* VideoPlayerSlider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52CE190A296089F7008FB630 /* VideoPlayerSlider.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -91,6 +92,7 @@
 		52857DAA295AB1D100E538D8 /* CardOutlinedStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardOutlinedStyle.swift; sourceTree = "<group>"; };
 		52857DAC295AB1E800E538D8 /* CardFilledStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardFilledStyle.swift; sourceTree = "<group>"; };
 		52857DAE295ABC8000E538D8 /* Elevation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Elevation.swift; sourceTree = "<group>"; };
+		52CE190A296089F7008FB630 /* VideoPlayerSlider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoPlayerSlider.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -182,6 +184,7 @@
 			children = (
 				523DCD882955CAC800D0BA72 /* Card */,
 				5249E634295C641C006ECDE0 /* Slider */,
+				5249E63F296089A2006ECDE0 /* VideoPlayer */,
 			);
 			path = Components;
 			sourceTree = "<group>";
@@ -244,6 +247,22 @@
 				5249E639295D5DD2006ECDE0 /* SliderTrack.swift */,
 				5249E63B295D6011006ECDE0 /* SliderStyle.swift */,
 				5249E63D295F0637006ECDE0 /* SliderLabel.swift */,
+			);
+			path = Slider;
+			sourceTree = "<group>";
+		};
+		5249E63F296089A2006ECDE0 /* VideoPlayer */ = {
+			isa = PBXGroup;
+			children = (
+				5249E640296089D6006ECDE0 /* Slider */,
+			);
+			path = VideoPlayer;
+			sourceTree = "<group>";
+		};
+		5249E640296089D6006ECDE0 /* Slider */ = {
+			isa = PBXGroup;
+			children = (
+				52CE190A296089F7008FB630 /* VideoPlayerSlider.swift */,
 			);
 			path = Slider;
 			sourceTree = "<group>";
@@ -383,6 +402,7 @@
 				523DCD8C2955D10200D0BA72 /* CardMedia.swift in Sources */,
 				523DCD922955D13B00D0BA72 /* CardActions.swift in Sources */,
 				52857DAD295AB1E800E538D8 /* CardFilledStyle.swift in Sources */,
+				52CE190B296089F7008FB630 /* VideoPlayerSlider.swift in Sources */,
 				523DCD902955D12900D0BA72 /* CardContent.swift in Sources */,
 				5249E63A295D5DD2006ECDE0 /* SliderTrack.swift in Sources */,
 				5249E63C295D6011006ECDE0 /* SliderStyle.swift in Sources */,
