@@ -8,29 +8,32 @@
 import SwiftUI
 
 public struct Expander<Header: View, Content: View>: View {
+    @Environment(\.expanderStyle) var expanderStyle
+    private var isExpanded: Binding<Bool>
     private let header: (Binding<Bool>) -> Header
     private let content: (Binding<Bool>) -> Content
-
-    @Binding private var isExpanded: Bool
 
     public init(
         isExpanded: Binding<Bool>,
         header: @escaping (Binding<Bool>) -> Header,
         content: @escaping (Binding<Bool>) -> Content
     ) {
-        self._isExpanded = isExpanded
+        self.isExpanded = isExpanded
         self.header = header
         self.content = content
     }
 
     public var body: some View {
-        VStack(spacing: 0) {
-            header($isExpanded)
-            content($isExpanded)
-                .frame(minHeight: 0, maxHeight: isExpanded ? nil : 0)
-                .clipped()
-                .allowsHitTesting(isExpanded)
-        }
+        expanderStyle.makeBody(configuration: .init(
+            isExpanded: isExpanded,
+            header: .init(body: .init(header(isExpanded))),
+            content: .init(body: .init(
+                content(isExpanded)
+                    .frame(minHeight: 0, maxHeight: isExpanded.wrappedValue ? nil : 0)
+                    .clipped()
+                    .allowsHitTesting(isExpanded.wrappedValue)
+            ))
+        ))
     }
 }
 
@@ -47,21 +50,7 @@ struct Expander_Previews: PreviewProvider {
                 Expander(
                     isExpanded: $isExpanded1,
                     header: { isExpanded in
-                        ExpanderHeader(
-                            isExpanded: isExpanded,
-                            label: {
-                                Text(isExpanded.wrappedValue ? "expanded" : "collapsed")
-                            },
-                            toggleIcon: {
-                                Image(systemName: "chevron.right")
-                                    .rotationEffect(isExpanded.wrappedValue ? .degrees(90) : .zero)
-                            }
-                        )
-                        .padding()
-                        .overlay(
-                            RoundedRectangle(cornerRadius: 8)
-                                .strokeBorder(Color.gray, lineWidth: 1)
-                        )
+                        Text(isExpanded.wrappedValue ? "expanded" : "collapsed")
                     },
                     content: { _ in
                         List(1...100, id: \.self) { item in
@@ -79,6 +68,7 @@ struct Expander_Previews: PreviewProvider {
                 .alert(isPresented: $showAlert1) {
                     .init(title: Text("selectedItem: \(selectedItem ?? -1)"))
                 }
+                .expanderStyle(.outlined(border: .init(color: .gray, radius: 10, lineWidth: 1)))
 
                 Expander(
                     isExpanded: $isExpanded2,
