@@ -7,8 +7,9 @@
 
 import Foundation
 import AVFoundation
+import Combine
 
-class InternalVideoPlayer {
+class InternalVideoPlayer: ObservableObject {
     private var asset: AVURLAsset?
     private let player: AVPlayer
     private(set) var playerLayer: AVPlayerLayer
@@ -18,42 +19,24 @@ class InternalVideoPlayer {
         self.playerLayer = AVPlayerLayer(player: self.player)
     }
 
-    func execute(command: PlayCommand) async {
-        switch command {
-        case .open(let url):
-            await onOpen(url: url)
-        case .play:
-            await onPlay()
-        case .pause:
-            await onPause()
-        case .stop:
-            await onPause()
-        }
-    }
-
-    private func onOpen(url: URL) async {
+    func open(url: URL) async {
         let asset = AVURLAsset(url: url)
+        self.asset = asset
+
         let playerItem = AVPlayerItem(asset: asset)
         player.replaceCurrentItem(with: playerItem)
     }
 
-    private func onPlay() async {
-        await player.play()
+    @MainActor
+    func play() {
+        player.play()
     }
 
-    private func onPause() async {
-        await player.pause()
+    @MainActor
+    func pause() {
+        player.pause()
     }
 
-    private func onStop() async {
-    }
-}
-
-extension InternalVideoPlayer {
-    enum PlayCommand {
-        case open(url: URL)
-        case play
-        case pause
-        case stop
+    func stop() async {
     }
 }
