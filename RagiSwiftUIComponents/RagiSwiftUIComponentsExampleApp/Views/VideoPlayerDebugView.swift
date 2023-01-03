@@ -27,7 +27,7 @@ struct VideoPlayerDebugView: View {
             } label: {
                 Image(systemName: isPlaying ? "pause.fill" : "play.fill")
             }
-            VideoPlayer(url: url, autoPlay: false, playerCommand: playerCommand.eraseToAnyPublisher())
+            VideoPlayer(url: url, autoPlay: true, playerCommand: playerCommand.eraseToAnyPublisher())
                 // MEMO: ID がないと、 playerCommand を送った直後に VideoPlayer とその内部で保持しているオブジェクトが破棄されてしまう・・・
                 .id(videoPlayerID)
                 .onAppear {

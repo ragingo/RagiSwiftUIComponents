@@ -10,9 +10,16 @@ import AVFoundation
 import Combine
 
 class InternalVideoPlayer: ObservableObject {
+    enum Properties {
+        case status(value: AVPlayerItem.Status)
+    }
+
     private var asset: AVURLAsset?
     private let player: AVPlayer
     private(set) var playerLayer: AVPlayerLayer
+    private var keyValueObservations: [NSKeyValueObservation] = []
+
+    @MainActor let properties = PassthroughSubject<Properties, Never>()
 
     init() {
         self.player = AVPlayer()
@@ -25,6 +32,12 @@ class InternalVideoPlayer: ObservableObject {
 
         let playerItem = AVPlayerItem(asset: asset)
         player.replaceCurrentItem(with: playerItem)
+
+        addObservingTarget {
+            playerItem.observe(\.status) { [weak self] playerItem, _ in
+                self?.properties.send(.status(value: playerItem.status))
+            }
+        }
     }
 
     @MainActor
@@ -38,5 +51,21 @@ class InternalVideoPlayer: ObservableObject {
     }
 
     func stop() async {
+    }
+
+    func videoSize() async -> CGSize? {
+        guard let asset else { return nil }
+
+        if let tracks = try? await asset.load(.tracks) {
+            if let videoTrack = tracks.first(where: { $0.mediaType == .video }) {
+                return try? await videoTrack.load(.naturalSize)
+            }
+        }
+
+        return nil
+    }
+
+    private func addObservingTarget(closure: () -> NSKeyValueObservation) {
+        keyValueObservations += [closure()]
     }
 }

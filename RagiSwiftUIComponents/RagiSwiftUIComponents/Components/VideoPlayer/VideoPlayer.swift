@@ -40,12 +40,25 @@ public struct VideoPlayer: View {
             }
             .onAppear {
                 Task {
-                    await player.open(url: url)
                     if autoPlay {
-                        player.play()
+                        await player.open(url: url)
                     }
                 }
             }
+            .onReceive(player.properties) { properties in
+                switch properties {
+                case .status(let value):
+                    if value == .readyToPlay {
+                        onReadyToPlay()
+                    }
+                }
+            }
+    }
+
+    private func onReadyToPlay() {
+        if autoPlay {
+            player.play()
+        }
     }
 }
 
@@ -78,7 +91,7 @@ struct VideoPlayer_Previews: PreviewProvider {
                     Image(systemName: isPlaying ? "pause.fill" : "play.fill")
                 }
 
-                VideoPlayer(url: videoURL, autoPlay: false, playerCommand: playerCommand.eraseToAnyPublisher())
+                VideoPlayer(url: videoURL, autoPlay: true, playerCommand: playerCommand.eraseToAnyPublisher())
                     .id(videoPlayerID)
             }
         }
