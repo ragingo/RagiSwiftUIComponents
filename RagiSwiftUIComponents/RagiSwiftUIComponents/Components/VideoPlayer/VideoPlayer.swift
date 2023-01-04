@@ -7,6 +7,7 @@
 
 import SwiftUI
 import Combine
+import AVFoundation
 
 public struct VideoPlayer: View {
     @StateObject private var player = InternalVideoPlayer()
@@ -15,6 +16,9 @@ public struct VideoPlayer: View {
     private let playerCommand: AnyPublisher<PlayerCommand, Never>
     private let url: URL
     private let autoPlay: Bool
+
+    private var durationChanged: ((Double) -> Void)?
+    private var positionChanged: ((Double) -> Void)?
 
     public init(url: URL, autoPlay: Bool = true, playerCommand: AnyPublisher<PlayerCommand, Never>) {
         self.url = url
@@ -50,16 +54,39 @@ public struct VideoPlayer: View {
             .onReceive(player.properties) { properties in
                 switch properties {
                 case .status(let value):
-                    if value == .readyToPlay {
-                        onReadyToPlay()
-                    }
+                    onStatusChanged(value: value)
+                case .duration(let value):
+                    durationChanged?(value)
+                case .position(let value):
+                    positionChanged?(value)
                 }
             }
     }
 
-    private func onReadyToPlay() {
-        if autoPlay {
-            player.play()
+    public func onDurationChanged(_ perform: @escaping (Double) -> Void) -> VideoPlayer {
+        var videoPlayer = self
+        videoPlayer.durationChanged = perform
+        return videoPlayer
+    }
+
+    public func onPositionChanged(_ perform: @escaping (Double) -> Void) -> VideoPlayer {
+        var videoPlayer = self
+        videoPlayer.positionChanged = perform
+        return videoPlayer
+    }
+
+    private func onStatusChanged(value: AVPlayerItem.Status) {
+        switch value {
+        case .unknown:
+            break
+        case .readyToPlay:
+            if autoPlay {
+                player.play()
+            }
+        case .failed:
+            break
+        @unknown default:
+            break
         }
     }
 }
@@ -96,6 +123,7 @@ struct VideoPlayer_Previews: PreviewProvider {
             }
         }
     }
+
     static var previews: some View {
         PreviewView()
     }
