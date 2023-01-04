@@ -33,11 +33,7 @@ class InternalVideoPlayer: ObservableObject {
         let playerItem = AVPlayerItem(asset: asset)
         player.replaceCurrentItem(with: playerItem)
 
-        addObservingTarget {
-            playerItem.observe(\.status) { [weak self] playerItem, _ in
-                self?.properties.send(.status(value: playerItem.status))
-            }
-        }
+        observeProperties()
     }
 
     @MainActor
@@ -65,7 +61,17 @@ class InternalVideoPlayer: ObservableObject {
         return nil
     }
 
-    private func addObservingTarget(closure: () -> NSKeyValueObservation) {
-        keyValueObservations += [closure()]
+    private func observeProperties() {
+        addObservingTarget {
+            player.currentItem?.observe(\.status) { [weak self] playerItem, _ in
+                self?.properties.send(.status(value: playerItem.status))
+            }
+        }
+    }
+
+    private func addObservingTarget(closure: () -> NSKeyValueObservation?) {
+        if let kvo = closure() {
+            keyValueObservations += [kvo]
+        }
     }
 }
