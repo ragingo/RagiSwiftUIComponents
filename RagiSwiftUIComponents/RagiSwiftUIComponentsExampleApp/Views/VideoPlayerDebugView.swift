@@ -13,7 +13,6 @@ struct VideoPlayerDebugView: View {
     private let url = URL(string: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4")!
     @State private var playerCommand = PassthroughSubject<VideoPlayer.PlayerCommand, Never>()
     @State private var isPlaying = false
-    private let videoPlayerID = UUID()
 
     var body: some View {
         VStack {
@@ -28,8 +27,6 @@ struct VideoPlayerDebugView: View {
                 Image(systemName: isPlaying ? "pause.fill" : "play.fill")
             }
             VideoPlayer(url: url, autoPlay: true, playerCommand: playerCommand.eraseToAnyPublisher())
-                // MEMO: ID がないと、 playerCommand を送った直後に VideoPlayer とその内部で保持しているオブジェクトが破棄されてしまう・・・
-                .id(videoPlayerID)
                 .onAppear {
                     playerCommand.send(.open(url: url))
                 }

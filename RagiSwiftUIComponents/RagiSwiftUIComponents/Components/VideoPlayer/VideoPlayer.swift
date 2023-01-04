@@ -10,6 +10,7 @@ import Combine
 
 public struct VideoPlayer: View {
     @StateObject private var player = InternalVideoPlayer()
+    private let videoPlayerID = UUID()
 
     private let playerCommand: AnyPublisher<PlayerCommand, Never>
     private let url: URL
@@ -23,6 +24,7 @@ public struct VideoPlayer: View {
 
     public var body: some View {
         VideoSurfaceView(playerLayer: player.playerLayer)
+            .id(videoPlayerID)
             .aspectRatio(16.0 / 9.0, contentMode: .fit)
             .onReceive(playerCommand) { command in
                 Task {
@@ -76,7 +78,6 @@ struct VideoPlayer_Previews: PreviewProvider {
         private let videoURL = URL(string: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4")!
         private let playerCommand = PassthroughSubject<VideoPlayer.PlayerCommand, Never>()
         @State private var isPlaying = false
-        private let videoPlayerID = UUID()
 
         var body: some View {
             VStack {
@@ -92,7 +93,6 @@ struct VideoPlayer_Previews: PreviewProvider {
                 }
 
                 VideoPlayer(url: videoURL, autoPlay: true, playerCommand: playerCommand.eraseToAnyPublisher())
-                    .id(videoPlayerID)
             }
         }
     }
