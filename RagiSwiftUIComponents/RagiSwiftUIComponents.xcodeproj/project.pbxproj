@@ -43,6 +43,7 @@
 		52C6BFA82963243A009F92DC /* VideoSurfaceView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52C6BFA72963243A009F92DC /* VideoSurfaceView.swift */; };
 		52C6BFAA296325AD009F92DC /* VideoPlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52C6BFA9296325AD009F92DC /* VideoPlayer.swift */; };
 		52C6BFAC296447E6009F92DC /* VideoPlayerDebugView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52C6BFAB296447E6009F92DC /* VideoPlayerDebugView.swift */; };
+		52C6BFAE2965553A009F92DC /* KVOBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52C6BFAD2965553A009F92DC /* KVOBuilder.swift */; };
 		52CE190B296089F7008FB630 /* VideoPlayerSlider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52CE190A296089F7008FB630 /* VideoPlayerSlider.swift */; };
 /* End PBXBuildFile section */
 
@@ -108,6 +109,7 @@
 		52C6BFA72963243A009F92DC /* VideoSurfaceView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoSurfaceView.swift; sourceTree = "<group>"; };
 		52C6BFA9296325AD009F92DC /* VideoPlayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoPlayer.swift; sourceTree = "<group>"; };
 		52C6BFAB296447E6009F92DC /* VideoPlayerDebugView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoPlayerDebugView.swift; sourceTree = "<group>"; };
+		52C6BFAD2965553A009F92DC /* KVOBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KVOBuilder.swift; sourceTree = "<group>"; };
 		52CE190A296089F7008FB630 /* VideoPlayerSlider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoPlayerSlider.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -330,6 +332,7 @@
 			children = (
 				52C6BFA529631B93009F92DC /* InternalVideoPlayer.swift */,
 				52C6BFA72963243A009F92DC /* VideoSurfaceView.swift */,
+				52C6BFAD2965553A009F92DC /* KVOBuilder.swift */,
 			);
 			path = Core;
 			sourceTree = "<group>";
@@ -457,6 +460,7 @@
 				52C6BF9E2962F6F0009F92DC /* ExpanderHeader.swift in Sources */,
 				5249E63A295D5DD2006ECDE0 /* SliderTrack.swift in Sources */,
 				5249E63C295D6011006ECDE0 /* SliderStyle.swift in Sources */,
+				52C6BFAE2965553A009F92DC /* KVOBuilder.swift in Sources */,
 				524557B529589C0300CF6EFB /* Card+Initializers.swift in Sources */,
 				5249E62E295AC1B0006ECDE0 /* Shadow.swift in Sources */,
 				52C6BFA82963243A009F92DC /* VideoSurfaceView.swift in Sources */,
