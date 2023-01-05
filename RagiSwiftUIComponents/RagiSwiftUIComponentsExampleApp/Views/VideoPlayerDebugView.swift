@@ -20,7 +20,6 @@ struct VideoPlayerDebugView: View {
     @State private var isSeeking = false
     @State private var isPictureInPictureMode = false
     @State private var isPictureInPicturePossible = false
-    @State private var isPictureInPictureActivated = false
 
     var body: some View {
         VStack(spacing: 0) {
@@ -43,19 +42,10 @@ struct VideoPlayerDebugView: View {
                 isPictureInPicturePossible = isPossible
             }
             .onPictureInPictureActivated { isActivated in
-                isPictureInPictureActivated = isActivated
+                isPictureInPictureMode = isActivated
             }
             .onPictureInPictureStarting {
                 isPictureInPictureMode = true
-            }
-            .onPictureInPictureStarted {
-                isPictureInPictureMode = true
-            }
-            .onPictureInPictureStopping {
-                isPictureInPictureMode = false
-            }
-            .onPictureInPictureStopped {
-                isPictureInPictureMode = false
             }
             .onAppear {
                 playerCommand.send(.open(url: url))
@@ -76,7 +66,7 @@ struct VideoPlayerDebugView: View {
                 )
             }
             .overlay {
-                if isPictureInPictureMode || isPictureInPictureActivated {
+                if isPictureInPictureMode {
                     Rectangle()
                         .fill(LinearGradient(colors: [.green, .blue], startPoint: .topLeading, endPoint: .bottomTrailing))
                         .overlay {
