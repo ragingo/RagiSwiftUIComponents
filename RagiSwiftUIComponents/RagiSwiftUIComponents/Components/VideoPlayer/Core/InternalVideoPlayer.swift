@@ -21,8 +21,9 @@ final class InternalVideoPlayer: ObservableObject {
     private(set) var playerLayer: AVPlayerLayer
     private var keyValueObservations: [NSKeyValueObservation] = []
     private var timeObserverToken: Any?
+    @MainActor private let _properties = PassthroughSubject<Properties, Never>()
 
-    @MainActor let _properties = PassthroughSubject<Properties, Never>()
+    let pictureInPictureController: PictureInPictureController
     @MainActor var properties: AnyPublisher<Properties, Never> {
         _properties.eraseToAnyPublisher()
     }
@@ -30,6 +31,7 @@ final class InternalVideoPlayer: ObservableObject {
     init() {
         self.player = AVPlayer()
         self.playerLayer = AVPlayerLayer(player: self.player)
+        self.pictureInPictureController = PictureInPictureController(playerLayer: self.playerLayer)
     }
 
     deinit {

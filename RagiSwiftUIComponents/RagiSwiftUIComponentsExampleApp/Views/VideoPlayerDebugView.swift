@@ -17,6 +17,8 @@ struct VideoPlayerDebugView: View {
     @State private var showOverlay = false
     @State private var duration = 0.0
     @State private var position = 0.0
+    @State private var isPictureInPictureMode = false
+    @State private var isPictureInPictureActivated = false
 
     var body: some View {
         VStack(spacing: 0) {
@@ -31,6 +33,21 @@ struct VideoPlayerDebugView: View {
             }
             .onPositionChanged { position in
                 self.position = position
+            }
+            .onPictureInPictureActivated { isActivated in
+                isPictureInPictureActivated = isActivated
+            }
+            .onPictureInPictureStarting {
+                isPictureInPictureMode = true
+            }
+            .onPictureInPictureStarted {
+                isPictureInPictureMode = true
+            }
+            .onPictureInPictureStopping {
+                isPictureInPictureMode = false
+            }
+            .onPictureInPictureStopped {
+                isPictureInPictureMode = false
             }
             .onAppear {
                 playerCommand.send(.open(url: url))
@@ -47,6 +64,16 @@ struct VideoPlayerDebugView: View {
                     playerCommand: $playerCommand,
                     pictureInPictureEnabled: $pictureInPictureEnabled
                 )
+            }
+            .overlay {
+                if isPictureInPictureMode || isPictureInPictureActivated {
+                    Rectangle()
+                        .fill(LinearGradient(colors: [.green, .blue], startPoint: .topLeading, endPoint: .bottomTrailing))
+                        .overlay {
+                            Text("Picture in Picture 実行中！")
+                                .font(.largeTitle)
+                        }
+                }
             }
 
             Spacer()
@@ -79,6 +106,7 @@ private struct VideoPlayerOverlay: View {
                         pictureInPictureEnabled.toggle()
                     } label: {
                         Image(systemName: "pip.enter")
+                            .foregroundColor(.white)
                     }
                 }
 

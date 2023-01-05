@@ -20,6 +20,11 @@ public struct VideoPlayer: View {
 
     private var durationChanged: ((Double) -> Void)?
     private var positionChanged: ((Double) -> Void)?
+    private var pictureInPictureActivated: ((Bool) -> Void)?
+    private var pictureInPictureStarting: (() -> Void)?
+    private var pictureInPictureStarted: (() -> Void)?
+    private var pictureInPictureStopping: (() -> Void)?
+    private var pictureInPictureStopped: (() -> Void)?
 
     public init(
         url: URL,
@@ -34,7 +39,7 @@ public struct VideoPlayer: View {
     }
 
     public var body: some View {
-        VideoSurfaceView(playerLayer: player.playerLayer, pictureInPictureEnabled: pictureInPictureEnabled)
+        VideoSurfaceView(playerLayer: player.playerLayer)
             .id(videoPlayerID)
             .aspectRatio(16.0 / 9.0, contentMode: .fit)
             .onReceive(playerCommand) { command in
@@ -68,6 +73,28 @@ public struct VideoPlayer: View {
                     positionChanged?(value)
                 }
             }
+            .onChange(of: pictureInPictureEnabled.wrappedValue) { isEnabled in
+                if isEnabled {
+                    player.pictureInPictureController.start()
+                } else {
+                    player.pictureInPictureController.stop()
+                }
+            }
+            .onReceive(player.pictureInPictureController.properties) { properties in
+                switch properties {
+                case .isActive(let value):
+                    pictureInPictureActivated?(value)
+                case .starting:
+                    pictureInPictureStarting?()
+                case .started:
+                    pictureInPictureStarted?()
+                case .stopping:
+                    pictureInPictureStopping?()
+                case .stopped:
+                    pictureInPictureEnabled.wrappedValue = false
+                    pictureInPictureStopped?()
+                }
+            }
     }
 
     public func onDurationChanged(_ perform: @escaping (Double) -> Void) -> VideoPlayer {
@@ -79,6 +106,36 @@ public struct VideoPlayer: View {
     public func onPositionChanged(_ perform: @escaping (Double) -> Void) -> VideoPlayer {
         var videoPlayer = self
         videoPlayer.positionChanged = perform
+        return videoPlayer
+    }
+
+    public func onPictureInPictureActivated(_ perform: @escaping (Bool) -> Void) -> VideoPlayer {
+        var videoPlayer = self
+        videoPlayer.pictureInPictureActivated = perform
+        return videoPlayer
+    }
+
+    public func onPictureInPictureStarting(_ perform: @escaping () -> Void) -> VideoPlayer {
+        var videoPlayer = self
+        videoPlayer.pictureInPictureStarting = perform
+        return videoPlayer
+    }
+
+    public func onPictureInPictureStarted(_ perform: @escaping () -> Void) -> VideoPlayer {
+        var videoPlayer = self
+        videoPlayer.pictureInPictureStarted = perform
+        return videoPlayer
+    }
+
+    public func onPictureInPictureStopping(_ perform: @escaping () -> Void) -> VideoPlayer {
+        var videoPlayer = self
+        videoPlayer.pictureInPictureStopping = perform
+        return videoPlayer
+    }
+
+    public func onPictureInPictureStopped(_ perform: @escaping () -> Void) -> VideoPlayer {
+        var videoPlayer = self
+        videoPlayer.pictureInPictureStopped = perform
         return videoPlayer
     }
 
