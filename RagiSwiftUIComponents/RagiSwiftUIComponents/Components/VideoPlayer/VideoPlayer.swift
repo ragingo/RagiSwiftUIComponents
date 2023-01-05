@@ -62,8 +62,9 @@ public struct VideoPlayer: View {
             }
             .onAppear {
                 Task {
+                    await player.open(url: url)
                     if autoPlay {
-                        await player.open(url: url)
+                        player.play()
                     }
                 }
             }
