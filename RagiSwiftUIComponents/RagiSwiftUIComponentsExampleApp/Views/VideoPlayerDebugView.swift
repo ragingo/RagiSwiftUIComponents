@@ -108,10 +108,11 @@ private struct VideoPlayerOverlay: View {
             VStack {
                 HStack {
                     Spacer()
+
                     Button {
                         isPictureInPictureEnabled.toggle()
                     } label: {
-                        Image(systemName: "pip.enter")
+                        Image(systemName: isPictureInPicturePossible ? "pip.enter" : "rectangle.on.rectangle.slash.fill")
                             .foregroundColor(.white)
                     }
                     .disabled(!isPictureInPicturePossible)
