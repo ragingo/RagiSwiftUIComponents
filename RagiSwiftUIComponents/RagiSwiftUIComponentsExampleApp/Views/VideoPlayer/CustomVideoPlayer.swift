@@ -1,16 +1,15 @@
 //
-//  VideoPlayerDebugView.swift
+//  CustomVideoPlayer.swift
 //  RagiSwiftUIComponentsExampleApp
 //
-//  Created by ragingo on 2023/01/03.
+//  Created by ragingo on 2023/01/05.
 //
 
 import Combine
 import SwiftUI
 import RagiSwiftUIComponents
 
-struct VideoPlayerDebugView: View {
-    private let url = URL(string: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4")!
+struct CustomVideoPlayer: View {
     @State private var playerCommand = PassthroughSubject<VideoPlayer.PlayerCommand, Never>()
     @State private var isPictureInPictureEnabled = false
     @State private var isPlaying = false
@@ -21,10 +20,12 @@ struct VideoPlayerDebugView: View {
     @State private var isPictureInPictureMode = false
     @State private var isPictureInPicturePossible = false
 
+    let selectedVideo: Video
+
     var body: some View {
         VStack(spacing: 0) {
             VideoPlayer(
-                url: url,
+                url: selectedVideo.url,
                 autoPlay: false,
                 playerCommand: playerCommand.eraseToAnyPublisher(),
                 isPictureInPictureEnabled: $isPictureInPictureEnabled
@@ -46,9 +47,6 @@ struct VideoPlayerDebugView: View {
             }
             .onPictureInPictureStarting {
                 isPictureInPictureMode = true
-            }
-            .onAppear {
-                playerCommand.send(.open(url: url))
             }
             .onTapGesture {
                 showOverlay.toggle()
@@ -191,8 +189,10 @@ private func formatTime(seconds: Double) -> String {
     return String(format: "%02d:%02d", m, s)
 }
 
-struct VideoPlayerDebugView_Previews: PreviewProvider {
+struct CustomVideoPlayer_Previews: PreviewProvider {
+    private static let url = URL(string: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4")!
+
     static var previews: some View {
-        VideoPlayerDebugView()
+        CustomVideoPlayer(selectedVideo: .init(title: "BigBuckBunny", url: url))
     }
 }
