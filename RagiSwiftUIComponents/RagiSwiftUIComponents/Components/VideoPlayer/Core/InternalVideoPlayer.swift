@@ -26,7 +26,9 @@ final class InternalVideoPlayer: ObservableObject {
 
     let pictureInPictureController: PictureInPictureController
     @MainActor var properties: AnyPublisher<Properties, Never> {
-        _properties.eraseToAnyPublisher()
+        _properties
+            .receive(on: DispatchQueue.main)
+            .eraseToAnyPublisher()
     }
 
     init() {
