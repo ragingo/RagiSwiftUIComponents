@@ -20,6 +20,7 @@ public struct VideoPlayer: View {
 
     private var durationChanged: ((Double) -> Void)?
     private var positionChanged: ((Double) -> Void)?
+    private var seeking: ((Bool) -> Void)?
     private var pictureInPicturePossible: ((Bool) -> Void)?
     private var pictureInPictureActivated: ((Bool) -> Void)?
     private var pictureInPictureStarting: (() -> Void)?
@@ -54,6 +55,8 @@ public struct VideoPlayer: View {
                         player.pause()
                     case .stop:
                         await player.stop()
+                    case .seek(let seconds):
+                        await player.seek(seconds: seconds)
                     }
                 }
             }
@@ -72,6 +75,8 @@ public struct VideoPlayer: View {
                     durationChanged?(value)
                 case .position(let value):
                     positionChanged?(value)
+                case .seeking(let value):
+                    seeking?(value)
                 }
             }
             .onChange(of: isPictureInPictureEnabled.wrappedValue) { isEnabled in
@@ -109,6 +114,12 @@ public struct VideoPlayer: View {
     public func onPositionChanged(_ perform: @escaping (Double) -> Void) -> VideoPlayer {
         var videoPlayer = self
         videoPlayer.positionChanged = perform
+        return videoPlayer
+    }
+
+    public func onSeeking(_ perform: @escaping (Bool) -> Void) -> VideoPlayer {
+        var videoPlayer = self
+        videoPlayer.seeking = perform
         return videoPlayer
     }
 
@@ -170,6 +181,7 @@ extension VideoPlayer {
         case play
         case pause
         case stop
+        case seek(seconds: Double)
     }
 }
 

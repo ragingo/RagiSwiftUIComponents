@@ -17,6 +17,7 @@ struct VideoPlayerDebugView: View {
     @State private var showOverlay = false
     @State private var duration = 0.0
     @State private var position = 0.0
+    @State private var isSeeking = false
     @State private var isPictureInPictureMode = false
     @State private var isPictureInPicturePossible = false
     @State private var isPictureInPictureActivated = false
@@ -34,6 +35,9 @@ struct VideoPlayerDebugView: View {
             }
             .onPositionChanged { position in
                 self.position = position
+            }
+            .onSeeking { isSeeking in
+                self.isSeeking = isSeeking
             }
             .onPictureInPicturePossible { isPossible in
                 isPictureInPicturePossible = isPossible
@@ -65,6 +69,7 @@ struct VideoPlayerDebugView: View {
                     isPlaying: $isPlaying,
                     duration: $duration,
                     position: $position,
+                    isSeeking: $isSeeking,
                     playerCommand: $playerCommand,
                     isPictureInPicturePossible: $isPictureInPicturePossible,
                     isPictureInPictureEnabled: $isPictureInPictureEnabled
@@ -93,10 +98,10 @@ private struct VideoPlayerOverlay: View {
     @Binding var isPlaying: Bool
     @Binding var duration: Double
     @Binding var position: Double
+    @Binding var isSeeking: Bool
     @Binding var playerCommand: PassthroughSubject<VideoPlayer.PlayerCommand, Never>
     @Binding var isPictureInPicturePossible: Bool
     @Binding var isPictureInPictureEnabled: Bool
-    @State private var isIdling = false
     @State private var isSliderHandleDragging = false
     @State private var sliderValue = 0.0 // second(s)
     @State private var presentTask: Task<(), Never>? {
@@ -123,7 +128,7 @@ private struct VideoPlayerOverlay: View {
                 Spacer()
 
                 HStack(spacing: 4) {
-                    Text(formatTime(seconds: isSliderHandleDragging ? sliderValue : position))
+                    Text(formatTime(seconds: isSliderHandleDragging || isSeeking ? sliderValue : position))
                         .foregroundColor(.white)
                     Text("/")
                         .foregroundColor(.gray)
@@ -156,31 +161,19 @@ private struct VideoPlayerOverlay: View {
         .id(id)
         .background(.black.opacity(0.5))
         .opacity(isPresented ? 1 : 0)
-        .onChange(of: isPresented) { _ in
-            presentTask = Task {
-                if isPresented {
-                    isIdling = true
-                    try? await Task.sleep(nanoseconds: 3_000_000_000)
-                    if isIdling {
-                        isPresented = false
-                        isIdling = false
-                    }
-                }
+        .onChange(of: isSliderHandleDragging) { _ in
+            if !isSliderHandleDragging {
+                playerCommand.send(.seek(seconds: sliderValue))
             }
         }
-        .onChange(of: isSliderHandleDragging) { _ in
-            position = sliderValue
-        }
         .onChange(of: position) { _ in
-            isIdling = false
-            if !isSliderHandleDragging {
+            if !isSliderHandleDragging && !isSeeking {
                 sliderValue = position
             }
         }
         .onTapGesture {
             presentTask = nil
             isPresented = false
-            isIdling = false
         }
     }
 

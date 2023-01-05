@@ -14,6 +14,7 @@ final class InternalVideoPlayer: ObservableObject {
         case status(value: AVPlayerItem.Status)
         case duration(value: Double)
         case position(value: Double)
+        case seeking(value: Bool)
     }
 
     private var asset: AVURLAsset?
@@ -80,6 +81,18 @@ final class InternalVideoPlayer: ObservableObject {
         if let timeObserverToken {
             player.removeTimeObserver(timeObserverToken)
             self.timeObserverToken = nil
+        }
+    }
+
+    func seek(seconds: Double) async {
+        _properties.send(.seeking(value: true))
+
+        let scale = CMTimeScale(NSEC_PER_SEC)
+        let time = CMTime(seconds: seconds, preferredTimescale: scale)
+
+        let isFinished = await player.seek(to: time, toleranceBefore: .zero, toleranceAfter: .zero)
+        if isFinished {
+            _properties.send(.seeking(value: false))
         }
     }
 
