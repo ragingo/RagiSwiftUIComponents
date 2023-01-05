@@ -94,11 +94,6 @@ private struct VideoPlayerOverlay: View {
     @Binding var isPictureInPictureEnabled: Bool
     @State private var isSliderHandleDragging = false
     @State private var sliderValue = 0.0 // second(s)
-    @State private var presentTask: Task<(), Never>? {
-        willSet {
-            presentTask?.cancel()
-        }
-    }
 
     var body: some View {
         ZStack {
@@ -162,7 +157,6 @@ private struct VideoPlayerOverlay: View {
             }
         }
         .onTapGesture {
-            presentTask = nil
             isPresented = false
         }
     }
