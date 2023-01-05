@@ -108,12 +108,16 @@ final class InternalVideoPlayer: ObservableObject {
     @KVOBuilder
     private func observeProperties() -> [KVOBuilder.Element] {
         // AVPlayerItem.status
-        player.currentItem?.observe(\.status) { [weak self] playerItem, _ in
-            self?._properties.send(.status(value: playerItem.status))
+        player.currentItem?.observe(\.status, options: [.initial, .new]) { [weak self] playerItem, change in
+            self?._properties.send(.status(value: change.newValue ?? .unknown))
         }
         // AVPlayerItem.duration
-        player.currentItem?.observe(\.duration) { [weak self] playerItem, _ in
-            self?._properties.send(.duration(value: playerItem.duration.seconds))
+        player.currentItem?.observe(\.duration, options: [.initial, .new]) { [weak self] playerItem, change in
+            var value = change.newValue?.seconds ?? .zero
+            if value.isNaN {
+                value = .zero
+            }
+            self?._properties.send(.duration(value: value))
         }
     }
 }

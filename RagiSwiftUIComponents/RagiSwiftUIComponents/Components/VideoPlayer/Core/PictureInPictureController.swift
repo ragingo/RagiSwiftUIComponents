@@ -13,6 +13,7 @@ import Combine
 final class PictureInPictureController: NSObject, AVPictureInPictureControllerDelegate {
     enum Properties {
         case isActive(value: Bool)
+        case isPossible(value: Bool)
         case starting
         case started
         case stopping
@@ -80,8 +81,11 @@ final class PictureInPictureController: NSObject, AVPictureInPictureControllerDe
 
     @KVOBuilder
     private func observeProperties() -> [KVOBuilder.Element] {
-        pictureInPictureController?.observe(\.isPictureInPictureActive) { [weak self] controller, _ in
-            self?._properties.send(.isActive(value: controller.isPictureInPictureActive))
+        pictureInPictureController?.observe(\.isPictureInPictureActive, options: [.initial, .new]) { [weak self] controller, change in
+            self?._properties.send(.isActive(value: change.newValue ?? false))
+        }
+        pictureInPictureController?.observe(\.isPictureInPicturePossible, options: [.initial, .new]) { [weak self] controller, change in
+            self?._properties.send(.isPossible(value: change.newValue ?? false))
         }
     }
 }

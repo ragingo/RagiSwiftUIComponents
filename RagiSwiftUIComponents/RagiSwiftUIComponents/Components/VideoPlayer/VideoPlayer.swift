@@ -13,13 +13,14 @@ public struct VideoPlayer: View {
     @StateObject private var player = InternalVideoPlayer()
     private let videoPlayerID = UUID()
 
-    private let pictureInPictureEnabled: Binding<Bool>
+    private let isPictureInPictureEnabled: Binding<Bool>
     private let playerCommand: AnyPublisher<PlayerCommand, Never>
     private let url: URL
     private let autoPlay: Bool
 
     private var durationChanged: ((Double) -> Void)?
     private var positionChanged: ((Double) -> Void)?
+    private var pictureInPicturePossible: ((Bool) -> Void)?
     private var pictureInPictureActivated: ((Bool) -> Void)?
     private var pictureInPictureStarting: (() -> Void)?
     private var pictureInPictureStarted: (() -> Void)?
@@ -30,12 +31,12 @@ public struct VideoPlayer: View {
         url: URL,
         autoPlay: Bool = true,
         playerCommand: AnyPublisher<PlayerCommand, Never>,
-        pictureInPictureEnabled: Binding<Bool> = .constant(false)
+        isPictureInPictureEnabled: Binding<Bool> = .constant(false)
     ) {
         self.url = url
         self.autoPlay = autoPlay
         self.playerCommand = playerCommand
-        self.pictureInPictureEnabled = pictureInPictureEnabled
+        self.isPictureInPictureEnabled = isPictureInPictureEnabled
     }
 
     public var body: some View {
@@ -73,7 +74,7 @@ public struct VideoPlayer: View {
                     positionChanged?(value)
                 }
             }
-            .onChange(of: pictureInPictureEnabled.wrappedValue) { isEnabled in
+            .onChange(of: isPictureInPictureEnabled.wrappedValue) { isEnabled in
                 if isEnabled {
                     player.pictureInPictureController.start()
                 } else {
@@ -82,6 +83,8 @@ public struct VideoPlayer: View {
             }
             .onReceive(player.pictureInPictureController.properties) { properties in
                 switch properties {
+                case .isPossible(let value):
+                    pictureInPicturePossible?(value)
                 case .isActive(let value):
                     pictureInPictureActivated?(value)
                 case .starting:
@@ -91,7 +94,7 @@ public struct VideoPlayer: View {
                 case .stopping:
                     pictureInPictureStopping?()
                 case .stopped:
-                    pictureInPictureEnabled.wrappedValue = false
+                    isPictureInPictureEnabled.wrappedValue = false
                     pictureInPictureStopped?()
                 }
             }
@@ -106,6 +109,12 @@ public struct VideoPlayer: View {
     public func onPositionChanged(_ perform: @escaping (Double) -> Void) -> VideoPlayer {
         var videoPlayer = self
         videoPlayer.positionChanged = perform
+        return videoPlayer
+    }
+
+    public func onPictureInPicturePossible(_ perform: @escaping (Bool) -> Void) -> VideoPlayer {
+        var videoPlayer = self
+        videoPlayer.pictureInPicturePossible = perform
         return videoPlayer
     }
 

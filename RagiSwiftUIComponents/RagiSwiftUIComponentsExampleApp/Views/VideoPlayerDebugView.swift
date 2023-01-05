@@ -12,12 +12,13 @@ import RagiSwiftUIComponents
 struct VideoPlayerDebugView: View {
     private let url = URL(string: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4")!
     @State private var playerCommand = PassthroughSubject<VideoPlayer.PlayerCommand, Never>()
-    @State private var pictureInPictureEnabled = false
+    @State private var isPictureInPictureEnabled = false
     @State private var isPlaying = false
     @State private var showOverlay = false
     @State private var duration = 0.0
     @State private var position = 0.0
     @State private var isPictureInPictureMode = false
+    @State private var isPictureInPicturePossible = false
     @State private var isPictureInPictureActivated = false
 
     var body: some View {
@@ -26,13 +27,16 @@ struct VideoPlayerDebugView: View {
                 url: url,
                 autoPlay: false,
                 playerCommand: playerCommand.eraseToAnyPublisher(),
-                pictureInPictureEnabled: $pictureInPictureEnabled
+                isPictureInPictureEnabled: $isPictureInPictureEnabled
             )
             .onDurationChanged { duration in
                 self.duration = duration
             }
             .onPositionChanged { position in
                 self.position = position
+            }
+            .onPictureInPicturePossible { isPossible in
+                isPictureInPicturePossible = isPossible
             }
             .onPictureInPictureActivated { isActivated in
                 isPictureInPictureActivated = isActivated
@@ -62,7 +66,8 @@ struct VideoPlayerDebugView: View {
                     duration: $duration,
                     position: $position,
                     playerCommand: $playerCommand,
-                    pictureInPictureEnabled: $pictureInPictureEnabled
+                    isPictureInPicturePossible: $isPictureInPicturePossible,
+                    isPictureInPictureEnabled: $isPictureInPictureEnabled
                 )
             }
             .overlay {
@@ -89,7 +94,8 @@ private struct VideoPlayerOverlay: View {
     @Binding var duration: Double
     @Binding var position: Double
     @Binding var playerCommand: PassthroughSubject<VideoPlayer.PlayerCommand, Never>
-    @Binding var pictureInPictureEnabled: Bool
+    @Binding var isPictureInPicturePossible: Bool
+    @Binding var isPictureInPictureEnabled: Bool
 
     @State private var presentTask: Task<(), Never>? {
         willSet {
@@ -103,11 +109,12 @@ private struct VideoPlayerOverlay: View {
                 HStack {
                     Spacer()
                     Button {
-                        pictureInPictureEnabled.toggle()
+                        isPictureInPictureEnabled.toggle()
                     } label: {
                         Image(systemName: "pip.enter")
                             .foregroundColor(.white)
                     }
+                    .disabled(!isPictureInPicturePossible)
                 }
 
                 Spacer()
