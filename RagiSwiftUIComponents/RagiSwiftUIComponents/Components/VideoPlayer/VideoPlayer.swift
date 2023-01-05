@@ -44,6 +44,8 @@ public struct VideoPlayer: View {
         VideoSurfaceView(playerLayer: player.playerLayer)
             .id(videoPlayerID)
             .aspectRatio(16.0 / 9.0, contentMode: .fit)
+            .background(.black)
+            .border(.white)
             .onReceive(playerCommand) { command in
                 Task {
                     switch command {
