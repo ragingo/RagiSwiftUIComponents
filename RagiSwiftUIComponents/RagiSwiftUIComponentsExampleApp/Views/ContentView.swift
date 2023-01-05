@@ -16,6 +16,11 @@ struct ContentView: View {
                     destination: { CardDebugView() },
                     description: "Card の動作確認用画面"
                 )
+                makeLink(
+                    icon: { Image(systemName: "play.rectangle.fill") },
+                    destination: { VideoPlayerDebugView() },
+                    description: "VideoPlayer の動作確認用画面"
+                )
             }
         }
         .navigationViewStyle(.stack)

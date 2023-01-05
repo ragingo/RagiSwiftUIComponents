@@ -39,6 +39,12 @@
 		52C6BF9E2962F6F0009F92DC /* ExpanderHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52C6BF9D2962F6F0009F92DC /* ExpanderHeader.swift */; };
 		52C6BFA02962FFAF009F92DC /* ExpanderStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52C6BF9F2962FFAF009F92DC /* ExpanderStyle.swift */; };
 		52C6BFA329630B85009F92DC /* ExpanderOutlinedStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52C6BFA229630B85009F92DC /* ExpanderOutlinedStyle.swift */; };
+		52C6BFA629631B93009F92DC /* InternalVideoPlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52C6BFA529631B93009F92DC /* InternalVideoPlayer.swift */; };
+		52C6BFA82963243A009F92DC /* VideoSurfaceView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52C6BFA72963243A009F92DC /* VideoSurfaceView.swift */; };
+		52C6BFAA296325AD009F92DC /* VideoPlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52C6BFA9296325AD009F92DC /* VideoPlayer.swift */; };
+		52C6BFAC296447E6009F92DC /* VideoPlayerDebugView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52C6BFAB296447E6009F92DC /* VideoPlayerDebugView.swift */; };
+		52C6BFAE2965553A009F92DC /* KVOBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52C6BFAD2965553A009F92DC /* KVOBuilder.swift */; };
+		52C6BFB1296671D9009F92DC /* PictureInPictureController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52C6BFB0296671D9009F92DC /* PictureInPictureController.swift */; };
 		52CE190B296089F7008FB630 /* VideoPlayerSlider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52CE190A296089F7008FB630 /* VideoPlayerSlider.swift */; };
 /* End PBXBuildFile section */
 
@@ -100,6 +106,13 @@
 		52C6BF9D2962F6F0009F92DC /* ExpanderHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpanderHeader.swift; sourceTree = "<group>"; };
 		52C6BF9F2962FFAF009F92DC /* ExpanderStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpanderStyle.swift; sourceTree = "<group>"; };
 		52C6BFA229630B85009F92DC /* ExpanderOutlinedStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpanderOutlinedStyle.swift; sourceTree = "<group>"; };
+		52C6BFA529631B93009F92DC /* InternalVideoPlayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InternalVideoPlayer.swift; sourceTree = "<group>"; };
+		52C6BFA72963243A009F92DC /* VideoSurfaceView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoSurfaceView.swift; sourceTree = "<group>"; };
+		52C6BFA9296325AD009F92DC /* VideoPlayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoPlayer.swift; sourceTree = "<group>"; };
+		52C6BFAB296447E6009F92DC /* VideoPlayerDebugView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoPlayerDebugView.swift; sourceTree = "<group>"; };
+		52C6BFAD2965553A009F92DC /* KVOBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KVOBuilder.swift; sourceTree = "<group>"; };
+		52C6BFAF2965CD9C009F92DC /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		52C6BFB0296671D9009F92DC /* PictureInPictureController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PictureInPictureController.swift; sourceTree = "<group>"; };
 		52CE190A296089F7008FB630 /* VideoPlayerSlider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoPlayerSlider.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -164,6 +177,7 @@
 		523DCD7029557AB000D0BA72 /* RagiSwiftUIComponentsExampleApp */ = {
 			isa = PBXGroup;
 			children = (
+				52C6BFAF2965CD9C009F92DC /* Info.plist */,
 				5249E633295C0FD9006ECDE0 /* Views */,
 				523DCD7129557AB000D0BA72 /* RagiSwiftUIComponentsExampleAppApp.swift */,
 				523DCD7529557AB200D0BA72 /* Assets.xcassets */,
@@ -244,6 +258,7 @@
 			children = (
 				5249E62F295B2015006ECDE0 /* CardDebugView.swift */,
 				523DCD7329557AB000D0BA72 /* ContentView.swift */,
+				52C6BFAB296447E6009F92DC /* VideoPlayerDebugView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -263,7 +278,9 @@
 		5249E63F296089A2006ECDE0 /* VideoPlayer */ = {
 			isa = PBXGroup;
 			children = (
+				52C6BFA429631B4C009F92DC /* Core */,
 				5249E640296089D6006ECDE0 /* Slider */,
+				52C6BFA9296325AD009F92DC /* VideoPlayer.swift */,
 			);
 			path = VideoPlayer;
 			sourceTree = "<group>";
@@ -312,6 +329,17 @@
 				52C6BFA229630B85009F92DC /* ExpanderOutlinedStyle.swift */,
 			);
 			path = Expander;
+			sourceTree = "<group>";
+		};
+		52C6BFA429631B4C009F92DC /* Core */ = {
+			isa = PBXGroup;
+			children = (
+				52C6BFA529631B93009F92DC /* InternalVideoPlayer.swift */,
+				52C6BFA72963243A009F92DC /* VideoSurfaceView.swift */,
+				52C6BFAD2965553A009F92DC /* KVOBuilder.swift */,
+				52C6BFB0296671D9009F92DC /* PictureInPictureController.swift */,
+			);
+			path = Core;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -427,16 +455,20 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				52C6BFAA296325AD009F92DC /* VideoPlayer.swift in Sources */,
 				523DCD8C2955D10200D0BA72 /* CardMedia.swift in Sources */,
 				523DCD922955D13B00D0BA72 /* CardActions.swift in Sources */,
 				52857DAD295AB1E800E538D8 /* CardFilledStyle.swift in Sources */,
 				52CE190B296089F7008FB630 /* VideoPlayerSlider.swift in Sources */,
 				523DCD902955D12900D0BA72 /* CardContent.swift in Sources */,
+				52C6BFA629631B93009F92DC /* InternalVideoPlayer.swift in Sources */,
 				52C6BF9E2962F6F0009F92DC /* ExpanderHeader.swift in Sources */,
 				5249E63A295D5DD2006ECDE0 /* SliderTrack.swift in Sources */,
 				5249E63C295D6011006ECDE0 /* SliderStyle.swift in Sources */,
+				52C6BFAE2965553A009F92DC /* KVOBuilder.swift in Sources */,
 				524557B529589C0300CF6EFB /* Card+Initializers.swift in Sources */,
 				5249E62E295AC1B0006ECDE0 /* Shadow.swift in Sources */,
+				52C6BFA82963243A009F92DC /* VideoSurfaceView.swift in Sources */,
 				523DCD8A2955CC3700D0BA72 /* Card.swift in Sources */,
 				52C6BF9C2962F6B4009F92DC /* Expander.swift in Sources */,
 				524557B82959521A00CF6EFB /* CardStyle.swift in Sources */,
@@ -451,6 +483,7 @@
 				52C6BFA329630B85009F92DC /* ExpanderOutlinedStyle.swift in Sources */,
 				524557BA2959DC5000CF6EFB /* CardConstants.swift in Sources */,
 				5249E62B295ABDC9006ECDE0 /* CardElevatedStyle.swift in Sources */,
+				52C6BFB1296671D9009F92DC /* PictureInPictureController.swift in Sources */,
 				524557B329574BAE00CF6EFB /* CardHeader+Initializers.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -462,6 +495,7 @@
 				5249E630295B2015006ECDE0 /* CardDebugView.swift in Sources */,
 				523DCD7429557AB000D0BA72 /* ContentView.swift in Sources */,
 				523DCD7229557AB000D0BA72 /* RagiSwiftUIComponentsExampleAppApp.swift in Sources */,
+				52C6BFAC296447E6009F92DC /* VideoPlayerDebugView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -659,11 +693,14 @@
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"RagiSwiftUIComponentsExampleApp/Preview Content\"";
+				DEVELOPMENT_TEAM = "";
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = RagiSwiftUIComponentsExampleApp/Info.plist;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -676,6 +713,7 @@
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.ragingo.ios.RagiSwiftUIComponentsExampleApp;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -688,11 +726,14 @@
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"RagiSwiftUIComponentsExampleApp/Preview Content\"";
+				DEVELOPMENT_TEAM = "";
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = RagiSwiftUIComponentsExampleApp/Info.plist;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -705,6 +746,7 @@
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.ragingo.ios.RagiSwiftUIComponentsExampleApp;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
