@@ -38,6 +38,7 @@ class InternalVideoPlayer: ObservableObject {
 
     func open(url: URL) async {
         reset()
+        setupAudio()
 
         let asset = AVURLAsset(url: url)
         self.asset = asset
@@ -90,6 +91,16 @@ class InternalVideoPlayer: ObservableObject {
         }
 
         return nil
+    }
+
+    private func setupAudio() {
+        let audioSession = AVAudioSession.sharedInstance()
+        do {
+            try audioSession.setCategory(.playback, mode: .moviePlayback)
+            try audioSession.setActive(true)
+        } catch {
+            print(error)
+        }
     }
 
     @KVOBuilder
