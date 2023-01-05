@@ -12,6 +12,7 @@ import RagiSwiftUIComponents
 struct VideoPlayerDebugView: View {
     private let url = URL(string: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4")!
     @State private var playerCommand = PassthroughSubject<VideoPlayer.PlayerCommand, Never>()
+    @State private var pictureInPictureEnabled = false
     @State private var isPlaying = false
     @State private var showOverlay = false
     @State private var duration = 0.0
@@ -19,28 +20,34 @@ struct VideoPlayerDebugView: View {
 
     var body: some View {
         VStack(spacing: 0) {
-            VideoPlayer(url: url, autoPlay: false, playerCommand: playerCommand.eraseToAnyPublisher())
-                .onDurationChanged { duration in
-                    self.duration = duration
-                }
-                .onPositionChanged { position in
-                    self.position = position
-                }
-                .onAppear {
-                    playerCommand.send(.open(url: url))
-                }
-                .onTapGesture {
-                    showOverlay.toggle()
-                }
-                .overlay {
-                    VideoPlayerOverlay(
-                        isPresented: $showOverlay,
-                        isPlaying: $isPlaying,
-                        duration: $duration,
-                        position: $position,
-                        playerCommand: $playerCommand
-                    )
-                }
+            VideoPlayer(
+                url: url,
+                autoPlay: false,
+                playerCommand: playerCommand.eraseToAnyPublisher(),
+                pictureInPictureEnabled: $pictureInPictureEnabled
+            )
+            .onDurationChanged { duration in
+                self.duration = duration
+            }
+            .onPositionChanged { position in
+                self.position = position
+            }
+            .onAppear {
+                playerCommand.send(.open(url: url))
+            }
+            .onTapGesture {
+                showOverlay.toggle()
+            }
+            .overlay {
+                VideoPlayerOverlay(
+                    isPresented: $showOverlay,
+                    isPlaying: $isPlaying,
+                    duration: $duration,
+                    position: $position,
+                    playerCommand: $playerCommand,
+                    pictureInPictureEnabled: $pictureInPictureEnabled
+                )
+            }
 
             Spacer()
         }
@@ -55,6 +62,7 @@ private struct VideoPlayerOverlay: View {
     @Binding var duration: Double
     @Binding var position: Double
     @Binding var playerCommand: PassthroughSubject<VideoPlayer.PlayerCommand, Never>
+    @Binding var pictureInPictureEnabled: Bool
 
     @State private var presentTask: Task<(), Never>? {
         willSet {
@@ -65,7 +73,17 @@ private struct VideoPlayerOverlay: View {
     var body: some View {
         ZStack {
             VStack {
+                HStack {
+                    Spacer()
+                    Button {
+                        pictureInPictureEnabled.toggle()
+                    } label: {
+                        Image(systemName: "pip.enter")
+                    }
+                }
+
                 Spacer()
+
                 HStack(spacing: 4) {
                     Text(formatTime(seconds: position))
                         .foregroundColor(.white)
@@ -75,8 +93,8 @@ private struct VideoPlayerOverlay: View {
                         .foregroundColor(.gray)
                     Spacer()
                 }
-                .padding(16)
             }
+            .padding(16)
 
             HStack {
                 playButton

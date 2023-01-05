@@ -9,7 +9,7 @@ import Foundation
 import AVFoundation
 import Combine
 
-class InternalVideoPlayer: ObservableObject {
+final class InternalVideoPlayer: ObservableObject {
     enum Properties {
         case status(value: AVPlayerItem.Status)
         case duration(value: Double)

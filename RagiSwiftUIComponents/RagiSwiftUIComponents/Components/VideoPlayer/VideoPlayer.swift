@@ -13,6 +13,7 @@ public struct VideoPlayer: View {
     @StateObject private var player = InternalVideoPlayer()
     private let videoPlayerID = UUID()
 
+    private let pictureInPictureEnabled: Binding<Bool>
     private let playerCommand: AnyPublisher<PlayerCommand, Never>
     private let url: URL
     private let autoPlay: Bool
@@ -20,14 +21,20 @@ public struct VideoPlayer: View {
     private var durationChanged: ((Double) -> Void)?
     private var positionChanged: ((Double) -> Void)?
 
-    public init(url: URL, autoPlay: Bool = true, playerCommand: AnyPublisher<PlayerCommand, Never>) {
+    public init(
+        url: URL,
+        autoPlay: Bool = true,
+        playerCommand: AnyPublisher<PlayerCommand, Never>,
+        pictureInPictureEnabled: Binding<Bool> = .constant(false)
+    ) {
         self.url = url
         self.autoPlay = autoPlay
         self.playerCommand = playerCommand
+        self.pictureInPictureEnabled = pictureInPictureEnabled
     }
 
     public var body: some View {
-        VideoSurfaceView(playerLayer: player.playerLayer)
+        VideoSurfaceView(playerLayer: player.playerLayer, pictureInPictureEnabled: pictureInPictureEnabled)
             .id(videoPlayerID)
             .aspectRatio(16.0 / 9.0, contentMode: .fit)
             .onReceive(playerCommand) { command in
