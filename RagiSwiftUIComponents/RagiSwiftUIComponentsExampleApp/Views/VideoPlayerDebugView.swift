@@ -96,7 +96,9 @@ private struct VideoPlayerOverlay: View {
     @Binding var playerCommand: PassthroughSubject<VideoPlayer.PlayerCommand, Never>
     @Binding var isPictureInPicturePossible: Bool
     @Binding var isPictureInPictureEnabled: Bool
-
+    @State private var isIdling = false
+    @State private var isSliderHandleDragging = false
+    @State private var sliderValue = 0.0 // second(s)
     @State private var presentTask: Task<(), Never>? {
         willSet {
             presentTask?.cancel()
@@ -121,7 +123,7 @@ private struct VideoPlayerOverlay: View {
                 Spacer()
 
                 HStack(spacing: 4) {
-                    Text(formatTime(seconds: position))
+                    Text(formatTime(seconds: isSliderHandleDragging ? sliderValue : position))
                         .foregroundColor(.white)
                     Text("/")
                         .foregroundColor(.gray)
@@ -130,10 +132,25 @@ private struct VideoPlayerOverlay: View {
                     Spacer()
                 }
             }
-            .padding(16)
+            .padding(.horizontal, 16)
+            .padding(.top, 16)
+            .padding(.bottom, 32)
 
             HStack {
                 playButton
+            }
+
+            VStack {
+                Spacer()
+
+                VideoPlayerSlider(
+                    position: $sliderValue,
+                    duration: $duration,
+                    loadedRange: .constant((0, 0)),
+                    isDragging: $isSliderHandleDragging
+                )
+                .padding(.horizontal, 16)
+                .padding(.vertical, 8)
             }
         }
         .id(id)
@@ -142,14 +159,28 @@ private struct VideoPlayerOverlay: View {
         .onChange(of: isPresented) { _ in
             presentTask = Task {
                 if isPresented {
+                    isIdling = true
                     try? await Task.sleep(nanoseconds: 3_000_000_000)
-                    isPresented = false
+                    if isIdling {
+                        isPresented = false
+                        isIdling = false
+                    }
                 }
+            }
+        }
+        .onChange(of: isSliderHandleDragging) { _ in
+            position = sliderValue
+        }
+        .onChange(of: position) { _ in
+            isIdling = false
+            if !isSliderHandleDragging {
+                sliderValue = position
             }
         }
         .onTapGesture {
             presentTask = nil
             isPresented = false
+            isIdling = false
         }
     }
 

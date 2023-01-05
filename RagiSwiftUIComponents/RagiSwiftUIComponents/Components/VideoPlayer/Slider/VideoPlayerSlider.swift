@@ -9,7 +9,6 @@ import SwiftUI
 
 public struct VideoPlayerSlider: View {
     private static let trackHeight: CGFloat = 4
-    @State private var isDragging = false
     @State private var handlePositionX: CGFloat = 0
     @State private var rangeStart: CGFloat = 0
     @State private var rangeEnd: CGFloat = 0
@@ -17,14 +16,20 @@ public struct VideoPlayerSlider: View {
     private var onValueChanged: ((Double) -> Void)?
 
     private var position: Binding<Double>
+    private var duration: Binding<Double>
     private var loadedRange: Binding<(Double, Double)>
+    private var isDragging: Binding<Bool>
 
     public init(
         position: Binding<Double>,
-        loadedRange: Binding<(Double, Double)> = .constant((0, 0))
+        duration: Binding<Double>,
+        loadedRange: Binding<(Double, Double)> = .constant((0, 0)),
+        isDragging: Binding<Bool> = .constant(false)
     ) {
         self.position = position
+        self.duration = duration
         self.loadedRange = loadedRange
+        self.isDragging = isDragging
     }
 
     public var body: some View {
@@ -33,12 +38,19 @@ public struct VideoPlayerSlider: View {
 
             makeTrackContainer(maxWidth: width)
                 .onChange(of: handlePositionX) { _ in
-                    let newValue = handlePositionX / width
+                    let newValue = duration.wrappedValue * (handlePositionX / width)
                     position.wrappedValue = newValue
                     onValueChanged?(newValue)
                 }
                 .onChange(of: position.wrappedValue) { _ in
-                    handlePositionX = width * position.wrappedValue
+                    if !isDragging.wrappedValue {
+                        handlePositionX = width * (position.wrappedValue / duration.wrappedValue)
+                    }
+                }
+                .onChange(of: duration.wrappedValue) { _ in
+                    if !isDragging.wrappedValue {
+                        handlePositionX = width * (position.wrappedValue / duration.wrappedValue)
+                    }
                 }
                 .onAppear {
                     updateBufferTrack(maxWidth: width)
@@ -69,10 +81,10 @@ public struct VideoPlayerSlider: View {
             .onChanged { value in
                 let x = min(max(value.location.x, 0), maxWidth)
                 handlePositionX = x
-                isDragging = true
+                isDragging.wrappedValue = true
             }
             .onEnded { _ in
-                isDragging = false
+                isDragging.wrappedValue = false
             }
         )
     }
@@ -98,8 +110,8 @@ public struct VideoPlayerSlider: View {
                             Circle()
                                 .fill(.gray.opacity(0.2))
                                 .scaleEffect(2.0)
-                                .opacity(isDragging ? 1 : 0)
-                                .animation(.default, value: isDragging)
+                                .opacity(isDragging.wrappedValue ? 1 : 0)
+                                .animation(.default, value: isDragging.wrappedValue)
                         )
                 }
                 .offset(y: Self.trackHeight * 0.5)
@@ -123,13 +135,15 @@ public struct VideoPlayerSlider: View {
 struct VideoPlayerSlider_Previews: PreviewProvider {
     struct PreviewView: View {
         private let timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
-        @State private var position = 0.0
+        @State private var position = 30.0
+        @State private var duration = 120.0
         @State private var range = (0.5, 0.0)
 
         var body: some View {
-            VideoPlayerSlider(position: $position, loadedRange: $range)
+            VideoPlayerSlider(position: $position, duration: $duration, loadedRange: $range)
                 .padding(.horizontal, 50)
                 .onReceive(timer) { _ in
+                    position += 1.0
                     if range.1 >= 1.0 {
                         range.1 = 0.0
                     }
