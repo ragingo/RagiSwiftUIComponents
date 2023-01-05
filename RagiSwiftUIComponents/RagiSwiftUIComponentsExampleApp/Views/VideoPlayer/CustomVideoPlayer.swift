@@ -19,6 +19,8 @@ struct CustomVideoPlayer: View {
     @State private var isSeeking = false
     @State private var isPictureInPictureMode = false
     @State private var isPictureInPicturePossible = false
+    @State private var error: Error?
+    @State private var isErrorDetailExpanded = false
 
     let selectedVideo: Video
 
@@ -48,6 +50,9 @@ struct CustomVideoPlayer: View {
             .onPictureInPictureStarting {
                 isPictureInPictureMode = true
             }
+            .onError { error in
+                self.error = error
+            }
             .onTapGesture {
                 showOverlay.toggle()
             }
@@ -72,6 +77,24 @@ struct CustomVideoPlayer: View {
                                 .font(.largeTitle)
                         }
                 }
+            }
+            .overlay {
+                Rectangle()
+                    .fill(LinearGradient(colors: [.red, .orange], startPoint: .topLeading, endPoint: .bottomTrailing))
+                    .overlay {
+                        ScrollView {
+                            Expander(
+                                isExpanded: $isErrorDetailExpanded,
+                                header: { _ in
+                                    Text("エラー発生！")
+                                },
+                                content: { _ in
+                                    Text("\(error?.localizedDescription ?? "")")
+                                }
+                            )
+                        }
+                    }
+                    .opacity(error != nil ? 1 : 0)
             }
 
             Spacer()

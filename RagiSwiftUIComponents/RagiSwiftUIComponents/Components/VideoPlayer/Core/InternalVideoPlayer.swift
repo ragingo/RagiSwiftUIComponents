@@ -15,6 +15,7 @@ final class InternalVideoPlayer: ObservableObject {
         case duration(value: Double)
         case position(value: Double)
         case seeking(value: Bool)
+        case error(value: Error)
     }
 
     private var asset: AVURLAsset?
@@ -133,6 +134,12 @@ final class InternalVideoPlayer: ObservableObject {
                 value = .zero
             }
             self?._properties.send(.duration(value: value))
+        }
+        // AVPlayerItem.error
+        player.currentItem?.observe(\.error, options: [.new]) { [weak self] playerItem, change in
+            if let value = change.newValue, let error = value {
+                self?._properties.send(.error(value: error))
+            }
         }
     }
 }

@@ -27,6 +27,7 @@ public struct VideoPlayer: View {
     private var pictureInPictureStarted: (() -> Void)?
     private var pictureInPictureStopping: (() -> Void)?
     private var pictureInPictureStopped: (() -> Void)?
+    private var error: ((Error) -> Void)?
 
     public init(
         url: URL,
@@ -80,6 +81,8 @@ public struct VideoPlayer: View {
                     positionChanged?(value)
                 case .seeking(let value):
                     seeking?(value)
+                case .error(let value):
+                    error?(value)
                 }
             }
             .onChange(of: isPictureInPictureEnabled.wrappedValue) { isEnabled in
@@ -159,6 +162,12 @@ public struct VideoPlayer: View {
     public func onPictureInPictureStopped(_ perform: @escaping () -> Void) -> VideoPlayer {
         var videoPlayer = self
         videoPlayer.pictureInPictureStopped = perform
+        return videoPlayer
+    }
+
+    public func onError(_ perform: @escaping (Error) -> Void) -> VideoPlayer {
+        var videoPlayer = self
+        videoPlayer.error = perform
         return videoPlayer
     }
 
