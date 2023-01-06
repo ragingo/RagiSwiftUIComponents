@@ -21,6 +21,7 @@ public struct VideoPlayer: View {
     private var durationChanged: ((Double) -> Void)?
     private var positionChanged: ((Double) -> Void)?
     private var seeking: ((Bool) -> Void)?
+    private var loadedRangeChanged: (((Double, Double)) -> Void)?
     private var pictureInPicturePossible: ((Bool) -> Void)?
     private var pictureInPictureActivated: ((Bool) -> Void)?
     private var pictureInPictureStarting: (() -> Void)?
@@ -81,6 +82,9 @@ public struct VideoPlayer: View {
                     positionChanged?(value)
                 case .seeking(let value):
                     seeking?(value)
+                case .loadedRange(let value):
+                    loadedRangeChanged?(value)
+                    break
                 case .error(let value):
                     error?(value)
                 }
@@ -126,6 +130,12 @@ public struct VideoPlayer: View {
     public func onSeeking(_ perform: @escaping (Bool) -> Void) -> VideoPlayer {
         var videoPlayer = self
         videoPlayer.seeking = perform
+        return videoPlayer
+    }
+
+    public func onLoadedRangeChanged(_ perform: @escaping ((Double, Double)) -> Void) -> VideoPlayer {
+        var videoPlayer = self
+        videoPlayer.loadedRangeChanged = perform
         return videoPlayer
     }
 

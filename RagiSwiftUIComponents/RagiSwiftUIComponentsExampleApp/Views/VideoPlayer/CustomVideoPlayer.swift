@@ -17,6 +17,7 @@ struct CustomVideoPlayer: View {
     @State private var duration = 0.0
     @State private var position = 0.0
     @State private var isSeeking = false
+    @State private var loadedRange = (0.0, 0.0)
     @State private var isPictureInPictureMode = false
     @State private var isPictureInPicturePossible = false
     @State private var error: Error?
@@ -41,6 +42,9 @@ struct CustomVideoPlayer: View {
             .onSeeking { isSeeking in
                 self.isSeeking = isSeeking
             }
+            .onLoadedRangeChanged { loadedRange in
+                self.loadedRange = loadedRange
+            }
             .onPictureInPicturePossible { isPossible in
                 isPictureInPicturePossible = isPossible
             }
@@ -63,6 +67,7 @@ struct CustomVideoPlayer: View {
                     duration: $duration,
                     position: $position,
                     isSeeking: $isSeeking,
+                    loadedRange: $loadedRange,
                     playerCommand: $playerCommand,
                     isPictureInPicturePossible: $isPictureInPicturePossible,
                     isPictureInPictureEnabled: $isPictureInPictureEnabled
@@ -110,6 +115,7 @@ private struct VideoPlayerOverlay: View {
     @Binding var duration: Double
     @Binding var position: Double
     @Binding var isSeeking: Bool
+    @Binding var loadedRange: (Double, Double)
     @Binding var playerCommand: PassthroughSubject<VideoPlayer.PlayerCommand, Never>
     @Binding var isPictureInPicturePossible: Bool
     @Binding var isPictureInPictureEnabled: Bool
@@ -157,7 +163,7 @@ private struct VideoPlayerOverlay: View {
                 VideoPlayerSlider(
                     position: $sliderValue,
                     duration: $duration,
-                    loadedRange: .constant((0, 0)),
+                    loadedRange: $loadedRange,
                     isDragging: $isSliderHandleDragging
                 )
                 .padding(.horizontal, 16)

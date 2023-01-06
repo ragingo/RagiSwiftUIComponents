@@ -15,6 +15,7 @@ final class InternalVideoPlayer: ObservableObject {
         case duration(value: Double)
         case position(value: Double)
         case seeking(value: Bool)
+        case loadedRange(value: (Double, Double))
         case error(value: Error)
     }
 
@@ -139,6 +140,24 @@ final class InternalVideoPlayer: ObservableObject {
         player.currentItem?.observe(\.error, options: [.new]) { [weak self] playerItem, change in
             if let value = change.newValue, let error = value {
                 self?._properties.send(.error(value: error))
+            }
+        }
+        // AVPlayerItem.loadedTimeRanges
+        player.currentItem?.observe(\.loadedTimeRanges, options: [.initial, .new]) { [weak self] playerItem, change in
+            if let value = change.newValue, let ranges = value as? [CMTimeRange] {
+                if ranges.isEmpty {
+                    return
+                }
+                let range = ranges[0]
+                var start = floor(range.start.seconds)
+                var end = floor(range.end.seconds)
+                if start.isNaN {
+                    start = .zero
+                }
+                if end.isNaN {
+                    end = .zero
+                }
+                self?._properties.send(.loadedRange(value: (start, end)))
             }
         }
     }

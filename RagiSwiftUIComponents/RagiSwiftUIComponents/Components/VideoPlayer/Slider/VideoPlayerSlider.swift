@@ -127,8 +127,8 @@ public struct VideoPlayerSlider: View {
 
     private func updateBufferTrack(maxWidth: CGFloat) {
         let (start, end) = loadedRange.wrappedValue
-        rangeStart = min(max(maxWidth * start, 0), maxWidth)
-        rangeEnd = min(max(maxWidth * (end - start), 0), maxWidth)
+        rangeStart = min(max(maxWidth * (start / duration.wrappedValue), 0), maxWidth)
+        rangeEnd = min(max(maxWidth * ((end - start) / duration.wrappedValue), 0), maxWidth)
     }
 }
 
@@ -137,17 +137,17 @@ struct VideoPlayerSlider_Previews: PreviewProvider {
         private let timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
         @State private var position = 30.0
         @State private var duration = 120.0
-        @State private var range = (0.5, 0.0)
+        @State private var range = (40.0, 50.0)
 
         var body: some View {
             VideoPlayerSlider(position: $position, duration: $duration, loadedRange: $range)
                 .padding(.horizontal, 50)
                 .onReceive(timer) { _ in
                     position += 1.0
-                    if range.1 >= 1.0 {
-                        range.1 = 0.0
+                    if range.1 >= duration {
+                        range.1 = position
                     }
-                    range.1 += 0.2
+                    range.1 = position + 10.0
                 }
         }
     }
