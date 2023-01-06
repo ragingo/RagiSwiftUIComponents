@@ -8,6 +8,8 @@
 import Foundation
 import AVFoundation
 import Combine
+import CoreImage
+import CoreImage.CIFilterBuiltins
 
 final class InternalVideoPlayer: ObservableObject {
     enum Properties {
@@ -20,12 +22,16 @@ final class InternalVideoPlayer: ObservableObject {
     }
 
     private var asset: AVURLAsset?
+    private let videoOutput: AVPlayerItemVideoOutput
+    private let ciContext: CIContext
+    private var displayLink: CADisplayLink?
     private let player: AVPlayer
     private(set) var playerLayer: AVPlayerLayer
     private var keyValueObservations: [NSKeyValueObservation] = []
     private var timeObserverToken: Any?
     @MainActor private let _properties = PassthroughSubject<Properties, Never>()
 
+    var filters: [CIFilter] = []
     let pictureInPictureController: PictureInPictureController
     @MainActor var properties: AnyPublisher<Properties, Never> {
         _properties
@@ -34,8 +40,10 @@ final class InternalVideoPlayer: ObservableObject {
     }
 
     init() {
+        self.videoOutput = .init()
+        self.ciContext = .init(options: [.workingColorSpace : NSNull()])
         self.player = AVPlayer()
-        self.playerLayer = AVPlayerLayer(player: self.player)
+        self.playerLayer = AVPlayerLayer()
         self.pictureInPictureController = PictureInPictureController(playerLayer: self.playerLayer)
     }
 
@@ -50,8 +58,14 @@ final class InternalVideoPlayer: ObservableObject {
         let asset = AVURLAsset(url: url)
         self.asset = asset
 
+        let isPlayable = (try? await asset.load(.isPlayable)) ?? false
+        if !isPlayable {
+            return
+        }
+
         let playerItem = AVPlayerItem(asset: asset)
         player.replaceCurrentItem(with: playerItem)
+        playerItem.add(videoOutput)
 
         keyValueObservations += observeProperties()
 
@@ -76,6 +90,9 @@ final class InternalVideoPlayer: ObservableObject {
     }
 
     func reset() {
+        displayLink?.invalidate()
+        displayLink = nil
+
         // KVO
         keyValueObservations.forEach {
             $0.invalidate()
@@ -122,11 +139,59 @@ final class InternalVideoPlayer: ObservableObject {
         }
     }
 
+    private func setupDisplayLink() {
+        if displayLink != nil {
+            return
+        }
+        displayLink = CADisplayLink(target: self, selector: #selector(onDisplayLinkUpdated(sender:)))
+        displayLink?.preferredFramesPerSecond = 60
+        displayLink?.add(to: .main, forMode: .common)
+    }
+
+    @objc private func onDisplayLinkUpdated(sender: CADisplayLink) {
+        if filters.isEmpty {
+            if playerLayer.player == nil {
+                playerLayer.player = player
+            }
+            return
+        }
+
+        let time = videoOutput.itemTime(forHostTime: CACurrentMediaTime())
+        if !videoOutput.hasNewPixelBuffer(forItemTime: time) {
+            return
+        }
+
+        guard let pixelBuffer = videoOutput.copyPixelBuffer(forItemTime: time, itemTimeForDisplay: nil) else {
+            return
+        }
+
+        let image = CIImage(cvImageBuffer: pixelBuffer)
+        var nextInputImage = image
+
+        for filter in filters {
+            filter.setValue(nextInputImage, forKey: kCIInputImageKey)
+            guard let outputImage = filter.outputImage else { continue }
+            nextInputImage = outputImage.cropped(to: nextInputImage.extent)
+        }
+
+        guard let cgImage = ciContext.createCGImage(nextInputImage, from: nextInputImage.extent) else {
+            return
+        }
+
+        playerLayer.contents = cgImage
+    }
+
     @KVOBuilder
     private func observeProperties() -> [KVOBuilder.Element] {
+        // AVPlayer.timeControlStatus
+        player.observe(\.timeControlStatus, options: [.initial, .new]) { [weak self] player, change in
+            if self?.player.timeControlStatus == .playing {
+                self?.setupDisplayLink()
+            }
+        }
         // AVPlayerItem.status
-        player.currentItem?.observe(\.status, options: [.initial, .new]) { [weak self] playerItem, change in
-            self?._properties.send(.status(value: change.newValue ?? .unknown))
+        player.currentItem?.observe(\.status, options: [.initial, .new]) { [weak self] playerItem, _ in
+            self?._properties.send(.status(value: self?.player.currentItem?.status ?? .unknown))
         }
         // AVPlayerItem.duration
         player.currentItem?.observe(\.duration, options: [.initial, .new]) { [weak self] playerItem, change in
