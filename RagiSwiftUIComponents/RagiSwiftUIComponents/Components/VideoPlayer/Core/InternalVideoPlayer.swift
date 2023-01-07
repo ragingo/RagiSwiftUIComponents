@@ -54,6 +54,7 @@ final class InternalVideoPlayer: ObservableObject {
     func open(url: URL) async {
         reset()
         setupAudio()
+        setupDisplayLink()
 
         let asset = AVURLAsset(url: url)
         self.asset = asset
@@ -144,7 +145,7 @@ final class InternalVideoPlayer: ObservableObject {
             return
         }
         displayLink = CADisplayLink(target: self, selector: #selector(onDisplayLinkUpdated(sender:)))
-        displayLink?.preferredFramesPerSecond = 60
+        displayLink?.preferredFrameRateRange = .init(minimum: 30, maximum: 60, preferred: 60)
         displayLink?.add(to: .main, forMode: .common)
     }
 
@@ -184,11 +185,8 @@ final class InternalVideoPlayer: ObservableObject {
     @KVOBuilder
     private func observeProperties() -> [KVOBuilder.Element] {
         // AVPlayer.timeControlStatus
-        player.observe(\.timeControlStatus, options: [.initial, .new]) { [weak self] player, change in
-            if self?.player.timeControlStatus == .playing {
-                self?.setupDisplayLink()
-            }
-        }
+//        player.observe(\.timeControlStatus, options: [.initial, .new]) { [weak self] player, change in
+//        }
         // AVPlayerItem.status
         player.currentItem?.observe(\.status, options: [.initial, .new]) { [weak self] playerItem, _ in
             self?._properties.send(.status(value: self?.player.currentItem?.status ?? .unknown))

@@ -72,6 +72,9 @@ public struct VideoPlayer: View {
                     }
                 }
             }
+            .onDisappear {
+                player.reset()
+            }
             .onReceive(player.properties) { properties in
                 switch properties {
                 case .status(let value):
