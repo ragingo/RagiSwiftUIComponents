@@ -166,13 +166,23 @@ final class InternalVideoPlayer: ObservableObject {
             return
         }
 
-        let image = CIImage(cvImageBuffer: pixelBuffer)
-        var nextInputImage = image
+        let originalImage = CIImage(cvImageBuffer: pixelBuffer)
+        var nextInputImage = originalImage
 
-        for filter in filters {
-            filter.setValue(nextInputImage, forKey: kCIInputImageKey)
-            guard let outputImage = filter.outputImage else { continue }
-            nextInputImage = outputImage.cropped(to: nextInputImage.extent)
+        filters.forEach { filter in
+            let parameters = filter.inputKeys
+                .map { key in
+                    (key, filter.value(forKey: key))
+                }
+                .reduce([String: Any]()) { (result, pair) in
+                    var result = result
+                    result[pair.0] = pair.1
+                    return result
+                }
+            nextInputImage = nextInputImage
+                .clampedToExtent()
+                .applyingFilter(filter.name, parameters: parameters)
+                .cropped(to: nextInputImage.extent)
         }
 
         guard let cgImage = ciContext.createCGImage(nextInputImage, from: nextInputImage.extent) else {
