@@ -97,7 +97,6 @@ struct ExpanderStyle_Previews: PreviewProvider {
         var body: some View {
             VStack {
                 Expander(
-                    isExpanded: $isExpanded,
                     header: { _ in
                         Text("header")
                     },

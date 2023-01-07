@@ -89,7 +89,6 @@ struct CustomVideoPlayer: View {
                     .overlay {
                         ScrollView {
                             Expander(
-                                isExpanded: $isErrorDetailExpanded,
                                 header: { _ in
                                     Text("エラー発生！")
                                 },

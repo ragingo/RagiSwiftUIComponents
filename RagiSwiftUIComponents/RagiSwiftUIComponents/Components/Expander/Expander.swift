@@ -9,29 +9,29 @@ import SwiftUI
 
 public struct Expander<Header: View, Content: View>: View {
     @Environment(\.expanderStyle) var expanderStyle
-    private var isExpanded: Binding<Bool>
+    @State private var isExpanded = false
     private let header: (Binding<Bool>) -> Header
     private let content: (Binding<Bool>) -> Content
 
     public init(
-        isExpanded: Binding<Bool>,
+        isExpanded: Bool = false,
         header: @escaping (Binding<Bool>) -> Header,
         content: @escaping (Binding<Bool>) -> Content
     ) {
-        self.isExpanded = isExpanded
+        self._isExpanded = .init(initialValue: isExpanded)
         self.header = header
         self.content = content
     }
 
     public var body: some View {
         expanderStyle.makeBody(configuration: .init(
-            isExpanded: isExpanded,
-            header: .init(body: .init(header(isExpanded))),
+            isExpanded: $isExpanded,
+            header: .init(body: .init(header($isExpanded))),
             content: .init(body: .init(
-                content(isExpanded)
-                    .frame(minHeight: 0, maxHeight: isExpanded.wrappedValue ? nil : 0)
+                content($isExpanded)
+                    .frame(minHeight: 0, maxHeight: isExpanded ? nil : 0)
                     .clipped()
-                    .allowsHitTesting(isExpanded.wrappedValue)
+                    .allowsHitTesting(isExpanded)
             ))
         ))
     }
@@ -39,16 +39,12 @@ public struct Expander<Header: View, Content: View>: View {
 
 struct Expander_Previews: PreviewProvider {
     struct PreviewView: View {
-        @State var isExpanded1 = false
         @State var showAlert1 = false
         @State var selectedItem: Int?
-
-        @State var isExpanded2 = false
 
         var body: some View {
             VStack(spacing: 8) {
                 Expander(
-                    isExpanded: $isExpanded1,
                     header: { isExpanded in
                         Text(isExpanded.wrappedValue ? "expanded" : "collapsed")
                     },
@@ -71,7 +67,6 @@ struct Expander_Previews: PreviewProvider {
                 .expanderStyle(.outlined(border: .init(color: .gray, radius: 10, lineWidth: 1)))
 
                 Expander(
-                    isExpanded: $isExpanded2,
                     header: { isExpanded in
                         ExpanderHeader(
                             isExpanded: isExpanded,
