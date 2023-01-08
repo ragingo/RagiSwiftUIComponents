@@ -108,8 +108,14 @@ struct CustomVideoPlayer: View {
     }
 }
 
-private struct VideoPlayerOverlay: View {
-    private let id = UUID()
+private struct VideoPlayerInformationLayer: View {
+    var body: some View {
+        VStack {
+        }
+    }
+}
+
+private struct VideoPlayerOperationLayer: View {
     @Binding var isPresented: Bool
     @Binding var isPlaying: Bool
     @Binding var duration: Double
@@ -119,72 +125,66 @@ private struct VideoPlayerOverlay: View {
     @Binding var playerCommand: PassthroughSubject<VideoPlayer.PlayerCommand, Never>
     @Binding var isPictureInPicturePossible: Bool
     @Binding var isPictureInPictureEnabled: Bool
-    @State private var isSliderHandleDragging = false
-    @State private var sliderValue = 0.0 // second(s)
+    @Binding var isSliderHandleDragging: Bool
+    @Binding var sliderValue: Double
 
     var body: some View {
         ZStack {
-            VStack {
-                HStack {
-                    Spacer()
+            topItemsLayer
+            centerItemsLayer
+            bottomItemsLayer
+        }
+    }
 
-                    Button {
-                        isPictureInPictureEnabled.toggle()
-                    } label: {
-                        Image(systemName: isPictureInPicturePossible ? "pip.enter" : "rectangle.on.rectangle.slash.fill")
-                            .foregroundColor(.white)
-                    }
-                    .disabled(!isPictureInPicturePossible)
-                }
-
-                Spacer()
-
-                HStack(spacing: 4) {
-                    Text(formatTime(seconds: isSliderHandleDragging || isSeeking ? sliderValue : position))
-                        .foregroundColor(.white)
-                    Text("/")
-                        .foregroundColor(.gray)
-                    Text(formatTime(seconds: duration))
-                        .foregroundColor(.gray)
-                    Spacer()
-                }
-            }
-            .padding(.horizontal, 16)
-            .padding(.top, 16)
-            .padding(.bottom, 32)
-
+    private var topItemsLayer: some View {
+        VStack {
             HStack {
-                playButton
-            }
-
-            VStack {
                 Spacer()
 
-                VideoPlayerSlider(
-                    position: $sliderValue,
-                    duration: $duration,
-                    loadedRange: $loadedRange,
-                    isDragging: $isSliderHandleDragging
-                )
-                .padding(.horizontal, 16)
-                .padding(.vertical, 8)
+                Button {
+                    isPictureInPictureEnabled.toggle()
+                } label: {
+                    Image(systemName: isPictureInPicturePossible ? "pip.enter" : "rectangle.on.rectangle.slash.fill")
+                        .foregroundColor(.white)
+                }
+                .disabled(!isPictureInPicturePossible)
+            }
+
+            Spacer()
+
+            HStack(spacing: 4) {
+                Text(formatTime(seconds: isSliderHandleDragging || isSeeking ? sliderValue : position))
+                    .foregroundColor(.white)
+                Text("/")
+                    .foregroundColor(.gray)
+                Text(formatTime(seconds: duration))
+                    .foregroundColor(.gray)
+                Spacer()
             }
         }
-        .id(id)
-        .background(.black.opacity(0.5))
-        .opacity(isPresented ? 1 : 0)
-        .onChange(of: isSliderHandleDragging) { _ in
-            if !isSliderHandleDragging {
-                playerCommand.send(.seek(seconds: sliderValue))
-            }
+        .padding(.horizontal, 16)
+        .padding(.top, 16)
+        .padding(.bottom, 32)
+    }
+
+    private var centerItemsLayer: some View {
+        HStack {
+            playButton
         }
-        .onChange(of: position) { _ in
-            if !isSliderHandleDragging && !isSeeking {
-                sliderValue = position
-            }
-        }
-        .onTapGesture {
-            isPresented = false
+    }
+
+    private var bottomItemsLayer: some View {
+        VStack {
+            Spacer()
+
+            VideoPlayerSlider(
+                position: $sliderValue,
+                duration: $duration,
+                loadedRange: $loadedRange,
+                isDragging: $isSliderHandleDragging
+            )
+            .padding(.horizontal, 16)
+            .padding(.vertical, 8)
         }
     }
 
@@ -203,6 +203,45 @@ private struct VideoPlayerOverlay: View {
                 .foregroundColor(.white)
         }
         .buttonStyle(.plain)
+    }
+
+}
+
+private struct VideoPlayerOverlay: View {
+    private let id = UUID()
+    @Binding var isPresented: Bool
+    @Binding var isPlaying: Bool
+    @Binding var duration: Double
+    @Binding var position: Double
+    @Binding var isSeeking: Bool
+    @Binding var loadedRange: (Double, Double)
+    @Binding var playerCommand: PassthroughSubject<VideoPlayer.PlayerCommand, Never>
+    @Binding var isPictureInPicturePossible: Bool
+    @Binding var isPictureInPictureEnabled: Bool
+    @State private var isSliderHandleDragging = false
+    @State private var sliderValue = 0.0 // second(s)
+
+    var body: some View {
+        ZStack {
+            VideoPlayerInformationLayer()
+            VideoPlayerOperationLayer(isPresented: $isPresented, isPlaying: $isPlaying, duration: $duration, position: $position, isSeeking: $isSeeking, loadedRange: $loadedRange, playerCommand: $playerCommand, isPictureInPicturePossible: $isPictureInPicturePossible, isPictureInPictureEnabled: $isPictureInPictureEnabled, isSliderHandleDragging: $isSliderHandleDragging, sliderValue: $sliderValue)
+        }
+        .id(id)
+        .background(.black.opacity(0.5))
+        .opacity(isPresented ? 1 : 0)
+        .onChange(of: isSliderHandleDragging) { _ in
+            if !isSliderHandleDragging {
+                playerCommand.send(.seek(seconds: sliderValue))
+            }
+        }
+        .onChange(of: position) { _ in
+            if !isSliderHandleDragging && !isSeeking {
+                sliderValue = position
+            }
+        }
+        .onTapGesture {
+            isPresented = false
+        }
     }
 }
 
