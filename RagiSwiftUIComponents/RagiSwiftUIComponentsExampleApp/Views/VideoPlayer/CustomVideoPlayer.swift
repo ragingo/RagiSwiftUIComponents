@@ -10,6 +10,7 @@ import SwiftUI
 import RagiSwiftUIComponents
 
 struct CustomVideoPlayer: View {
+    @AppStorage("CustomVideoPlayer_AutoPlay") var autoPlay = false
     @State private var playerCommand = PassthroughSubject<VideoPlayer.PlayerCommand, Never>()
     @State private var isPictureInPictureEnabled = false
     @State private var isPlaying = false
@@ -29,7 +30,7 @@ struct CustomVideoPlayer: View {
         VStack(spacing: 0) {
             VideoPlayer(
                 url: selectedVideo.url,
-                autoPlay: false,
+                autoPlay: autoPlay,
                 playerCommand: playerCommand.eraseToAnyPublisher(),
                 isPictureInPictureEnabled: $isPictureInPictureEnabled
             )
