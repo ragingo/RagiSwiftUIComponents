@@ -22,6 +22,7 @@ final class InternalVideoPlayer: ObservableObject {
     }
 
     private var asset: AVURLAsset?
+    private let legibleOutput: AVPlayerItemLegibleOutput
     private let videoOutput: AVPlayerItemVideoOutput
     private let ciContext: CIContext
     private var displayLink: CADisplayLink?
@@ -40,6 +41,7 @@ final class InternalVideoPlayer: ObservableObject {
     }
 
     init() {
+        self.legibleOutput = .init(mediaSubtypesForNativeRepresentation: [])
         self.videoOutput = .init()
         self.ciContext = .init(options: [.workingColorSpace : NSNull()])
         self.player = AVPlayer()
@@ -65,8 +67,9 @@ final class InternalVideoPlayer: ObservableObject {
         }
 
         let playerItem = AVPlayerItem(asset: asset)
-        player.replaceCurrentItem(with: playerItem)
+        playerItem.add(legibleOutput)
         playerItem.add(videoOutput)
+        player.replaceCurrentItem(with: playerItem)
 
         keyValueObservations += observeProperties()
 
@@ -76,15 +79,7 @@ final class InternalVideoPlayer: ObservableObject {
             self?._properties.send(.position(value: time.seconds))
         }
 
-        playerItem.textStyleRules = []
-        if let textStyleRule = AVTextStyleRule(textMarkupAttributes: [
-            // LtoR なら 左端 0% から 右端 100% までの値を指定。字幕の文字列の長さのこともあるので、いい感じに配置される
-            kCMTextMarkupAttribute_TextPositionPercentageRelativeToWritingDirection as String: 0.0,
-            // 上端 0% から 下端 100% までの値を指定。複数行の可能性もあるので、先頭行基準でいい感じに配置される。
-            kCMTextMarkupAttribute_OrthogonalLinePositionPercentageRelativeToWritingDirection as String: 100.0
-        ]) {
-            playerItem.textStyleRules?.append(textStyleRule)
-        }
+        setupClosedCaption()
     }
 
     @MainActor
@@ -157,6 +152,22 @@ final class InternalVideoPlayer: ObservableObject {
         displayLink = CADisplayLink(target: self, selector: #selector(onDisplayLinkUpdated(sender:)))
         displayLink?.preferredFrameRateRange = .init(minimum: 30, maximum: 60, preferred: 60)
         displayLink?.add(to: .main, forMode: .common)
+    }
+
+    private func setupClosedCaption() {
+        legibleOutput.suppressesPlayerRendering = false
+        legibleOutput.textStylingResolution = .sourceAndRulesOnly
+        legibleOutput.setDelegate(LegibleOutput(), queue: .main)
+
+        player.currentItem?.textStyleRules = []
+        if let textStyleRule = AVTextStyleRule(textMarkupAttributes: [
+            // 左端 0% から 右端 100% までの値を指定。字幕の文字列の長さのこともあるので、いい感じに配置される
+            kCMTextMarkupAttribute_TextPositionPercentageRelativeToWritingDirection as String: 0.0,
+            // 上端 0% から 下端 100% までの値を指定。複数行の可能性もあるので、先頭行基準でいい感じに配置される。
+            kCMTextMarkupAttribute_OrthogonalLinePositionPercentageRelativeToWritingDirection as String: 100.0
+        ]) {
+            player.currentItem?.textStyleRules?.append(textStyleRule)
+        }
     }
 
     @objc private func onDisplayLinkUpdated(sender: CADisplayLink) {
@@ -242,6 +253,18 @@ final class InternalVideoPlayer: ObservableObject {
                 }
                 self?._properties.send(.loadedRange(value: (start, end)))
             }
+        }
+    }
+
+    private class LegibleOutput: NSObject, AVPlayerItemLegibleOutputPushDelegate {
+        func legibleOutput(
+            _ output: AVPlayerItemLegibleOutput,
+            didOutputAttributedStrings strings: [NSAttributedString],
+            nativeSampleBuffers nativeSamples: [Any],
+            forItemTime itemTime: CMTime
+        ) {
+            // TODO: 呼ばれない原因を調べる
+            print("\(strings.first?.string ?? "")")
         }
     }
 }
