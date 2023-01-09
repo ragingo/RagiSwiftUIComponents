@@ -19,6 +19,8 @@ final class InternalVideoPlayer: ObservableObject {
         case seeking(value: Bool)
         case loadedRange(value: (Double, Double))
         case error(value: Error)
+
+        case finished
     }
 
     private var asset: AVURLAsset?
@@ -72,6 +74,7 @@ final class InternalVideoPlayer: ObservableObject {
         player.replaceCurrentItem(with: playerItem)
 
         keyValueObservations += observeProperties()
+        subscribeNotifications()
 
         let timeScale = CMTimeScale(NSEC_PER_SEC)
         let interval = CMTime(seconds: 0.5, preferredTimescale: timeScale)
@@ -93,6 +96,7 @@ final class InternalVideoPlayer: ObservableObject {
     }
 
     func stop() async {
+        await seek(seconds: 0)
     }
 
     func reset() {
@@ -253,6 +257,31 @@ final class InternalVideoPlayer: ObservableObject {
                 }
                 self?._properties.send(.loadedRange(value: (start, end)))
             }
+        }
+    }
+
+    private func subscribeNotifications() {
+        Notifications.shared.register(.AVPlayerItemDidPlayToEndTime) { [weak self] in
+            self?._properties.send(.finished)
+        }
+    }
+
+    private class Notifications {
+        private var cancellables: [AnyCancellable] = []
+        static let shared = Notifications()
+
+        private init() {
+        }
+
+        deinit {
+        }
+
+        func register(_ name: Notification.Name, action: @escaping () -> Void) {
+            NotificationCenter.Publisher(center: .default, name: name)
+                .sink { _ in
+                    action()
+                }
+                .store(in: &cancellables)
         }
     }
 

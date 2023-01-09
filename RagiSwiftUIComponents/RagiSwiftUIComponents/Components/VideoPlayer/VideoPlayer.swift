@@ -28,6 +28,7 @@ public struct VideoPlayer: View {
     private var _onPictureInPictureStopped: (() -> Void)?
     private var _onError: ((Error) -> Void)?
     private var _onStatusChanged: ((AVPlayerItem.Status) -> Void)?
+    private var _onFinished: (() -> Void)?
 
     public init(
         playerCommand: AnyPublisher<PlayerCommand, Never>,
@@ -74,9 +75,10 @@ public struct VideoPlayer: View {
                     _onSeeking?(value)
                 case .loadedRange(let value):
                     _onLoadedRangeChanged?(value)
-                    break
                 case .error(let value):
                     _onError?(value)
+                case .finished:
+                    _onFinished?()
                 }
             }
             .onChange(of: isPictureInPictureEnabled.wrappedValue) { isEnabled in
@@ -174,6 +176,12 @@ public struct VideoPlayer: View {
     public func onStatusChanged(_ perform: @escaping (AVPlayerItem.Status) -> Void) -> VideoPlayer {
         var videoPlayer = self
         videoPlayer._onStatusChanged = perform
+        return videoPlayer
+    }
+
+    public func onFinished(_ perform: @escaping () -> Void) -> VideoPlayer {
+        var videoPlayer = self
+        videoPlayer._onFinished = perform
         return videoPlayer
     }
 }

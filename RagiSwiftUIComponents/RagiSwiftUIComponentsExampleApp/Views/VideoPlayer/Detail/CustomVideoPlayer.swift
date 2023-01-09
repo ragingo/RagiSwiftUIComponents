@@ -68,6 +68,10 @@ struct CustomVideoPlayer: View {
                     isPlaying = false
                 }
             }
+            .onFinished {
+                isPlaying = false
+                playerCommand.send(.stop)
+            }
             .onAppear {
                 playerCommand.send(.open(url: selectedVideo.url))
                 if autoPlay {
