@@ -57,6 +57,8 @@ public struct VideoPlayer: View {
                         await player.stop()
                     case .seek(let seconds):
                         await player.seek(seconds: seconds)
+                    case .rate(let value):
+                        player.setRate(value: value)
                     }
                 }
             }
@@ -193,6 +195,7 @@ extension VideoPlayer {
         case pause
         case stop
         case seek(seconds: Double)
+        case rate(value: Float)
     }
 }
 

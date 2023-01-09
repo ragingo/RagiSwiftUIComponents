@@ -99,6 +99,10 @@ final class InternalVideoPlayer: ObservableObject {
         await seek(seconds: 0)
     }
 
+    func setRate(value: Float) {
+        player.rate = value
+    }
+
     func reset() {
         displayLink?.invalidate()
         displayLink = nil
