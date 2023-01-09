@@ -25,6 +25,10 @@ public struct Slider<Label: View>: View {
         self.label = label
     }
 
+    public init(value: Binding<Double> = .constant(0)) where Label == EmptyView {
+        self.init(value: value, label: { EmptyView() })
+    }
+
     public var body: some View {
         GeometryReader { geometry in
             sliderStyle.makeBody(configuration: .init(content: .init(body: .init(
