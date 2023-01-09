@@ -75,6 +75,16 @@ final class InternalVideoPlayer: ObservableObject {
         timeObserverToken = player.addPeriodicTimeObserver(forInterval: interval, queue: .main) { [weak self] time in
             self?._properties.send(.position(value: time.seconds))
         }
+
+        playerItem.textStyleRules = []
+        if let textStyleRule = AVTextStyleRule(textMarkupAttributes: [
+            // LtoR なら 左端 0% から 右端 100% までの値を指定。字幕の文字列の長さのこともあるので、いい感じに配置される
+            kCMTextMarkupAttribute_TextPositionPercentageRelativeToWritingDirection as String: 0.0,
+            // 上端 0% から 下端 100% までの値を指定。複数行の可能性もあるので、先頭行基準でいい感じに配置される。
+            kCMTextMarkupAttribute_OrthogonalLinePositionPercentageRelativeToWritingDirection as String: 100.0
+        ]) {
+            playerItem.textStyleRules?.append(textStyleRule)
+        }
     }
 
     @MainActor
