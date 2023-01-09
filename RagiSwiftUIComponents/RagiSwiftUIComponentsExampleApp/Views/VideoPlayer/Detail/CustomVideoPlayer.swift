@@ -29,8 +29,6 @@ struct CustomVideoPlayer: View {
     var body: some View {
         VStack(spacing: 0) {
             VideoPlayer(
-                url: selectedVideo.url,
-                autoPlay: autoPlay,
                 playerCommand: playerCommand.eraseToAnyPublisher(),
                 isPictureInPictureEnabled: $isPictureInPictureEnabled
             )
@@ -57,6 +55,24 @@ struct CustomVideoPlayer: View {
             }
             .onError { error in
                 self.error = error
+            }
+            .onStatusChanged { status in
+                switch status {
+                case .unknown:
+                    isPlaying = false
+                case .readyToPlay:
+                    isPlaying = true
+                case .failed:
+                    isPlaying = false
+                @unknown default:
+                    isPlaying = false
+                }
+            }
+            .onAppear {
+                playerCommand.send(.open(url: selectedVideo.url))
+                if autoPlay {
+                    playerCommand.send(.play)
+                }
             }
             .onTapGesture {
                 showOverlay.toggle()

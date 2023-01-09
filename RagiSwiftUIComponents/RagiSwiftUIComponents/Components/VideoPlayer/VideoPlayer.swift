@@ -15,29 +15,24 @@ public struct VideoPlayer: View {
 
     private let isPictureInPictureEnabled: Binding<Bool>
     private let playerCommand: AnyPublisher<PlayerCommand, Never>
-    private let url: URL
-    private let autoPlay: Bool
 
-    private var durationChanged: ((Double) -> Void)?
-    private var positionChanged: ((Double) -> Void)?
-    private var seeking: ((Bool) -> Void)?
-    private var loadedRangeChanged: (((Double, Double)) -> Void)?
-    private var pictureInPicturePossible: ((Bool) -> Void)?
-    private var pictureInPictureActivated: ((Bool) -> Void)?
-    private var pictureInPictureStarting: (() -> Void)?
-    private var pictureInPictureStarted: (() -> Void)?
-    private var pictureInPictureStopping: (() -> Void)?
-    private var pictureInPictureStopped: (() -> Void)?
-    private var error: ((Error) -> Void)?
+    private var _onDurationChanged: ((Double) -> Void)?
+    private var _onPositionChanged: ((Double) -> Void)?
+    private var _onSeeking: ((Bool) -> Void)?
+    private var _onLoadedRangeChanged: (((Double, Double)) -> Void)?
+    private var _onPictureInPicturePossible: ((Bool) -> Void)?
+    private var _onPictureInPictureActivated: ((Bool) -> Void)?
+    private var _onPictureInPictureStarting: (() -> Void)?
+    private var _onPictureInPictureStarted: (() -> Void)?
+    private var _onPictureInPictureStopping: (() -> Void)?
+    private var _onPictureInPictureStopped: (() -> Void)?
+    private var _onError: ((Error) -> Void)?
+    private var _onStatusChanged: ((AVPlayerItem.Status) -> Void)?
 
     public init(
-        url: URL,
-        autoPlay: Bool = true,
         playerCommand: AnyPublisher<PlayerCommand, Never>,
         isPictureInPictureEnabled: Binding<Bool> = .constant(false)
     ) {
-        self.url = url
-        self.autoPlay = autoPlay
         self.playerCommand = playerCommand
         self.isPictureInPictureEnabled = isPictureInPictureEnabled
     }
@@ -64,32 +59,24 @@ public struct VideoPlayer: View {
                     }
                 }
             }
-            .onAppear {
-                Task {
-                    await player.open(url: url)
-                    if autoPlay {
-                        player.play()
-                    }
-                }
-            }
             .onDisappear {
                 player.reset()
             }
             .onReceive(player.properties) { properties in
                 switch properties {
                 case .status(let value):
-                    onStatusChanged(value: value)
+                    _onStatusChanged?(value)
                 case .duration(let value):
-                    durationChanged?(value)
+                    _onDurationChanged?(value)
                 case .position(let value):
-                    positionChanged?(value)
+                    _onPositionChanged?(value)
                 case .seeking(let value):
-                    seeking?(value)
+                    _onSeeking?(value)
                 case .loadedRange(let value):
-                    loadedRangeChanged?(value)
+                    _onLoadedRangeChanged?(value)
                     break
                 case .error(let value):
-                    error?(value)
+                    _onError?(value)
                 }
             }
             .onChange(of: isPictureInPictureEnabled.wrappedValue) { isEnabled in
@@ -102,101 +89,92 @@ public struct VideoPlayer: View {
             .onReceive(player.pictureInPictureController.properties) { properties in
                 switch properties {
                 case .isPossible(let value):
-                    pictureInPicturePossible?(value)
+                    _onPictureInPicturePossible?(value)
                 case .isActive(let value):
-                    pictureInPictureActivated?(value)
+                    _onPictureInPictureActivated?(value)
                 case .starting:
-                    pictureInPictureStarting?()
+                    _onPictureInPictureStarting?()
                 case .started:
-                    pictureInPictureStarted?()
+                    _onPictureInPictureStarted?()
                 case .stopping:
-                    pictureInPictureStopping?()
+                    _onPictureInPictureStopping?()
                 case .stopped:
                     isPictureInPictureEnabled.wrappedValue = false
-                    pictureInPictureStopped?()
+                    _onPictureInPictureStopped?()
                 }
             }
     }
 
     public func onDurationChanged(_ perform: @escaping (Double) -> Void) -> VideoPlayer {
         var videoPlayer = self
-        videoPlayer.durationChanged = perform
+        videoPlayer._onDurationChanged = perform
         return videoPlayer
     }
 
     public func onPositionChanged(_ perform: @escaping (Double) -> Void) -> VideoPlayer {
         var videoPlayer = self
-        videoPlayer.positionChanged = perform
+        videoPlayer._onPositionChanged = perform
         return videoPlayer
     }
 
     public func onSeeking(_ perform: @escaping (Bool) -> Void) -> VideoPlayer {
         var videoPlayer = self
-        videoPlayer.seeking = perform
+        videoPlayer._onSeeking = perform
         return videoPlayer
     }
 
     public func onLoadedRangeChanged(_ perform: @escaping ((Double, Double)) -> Void) -> VideoPlayer {
         var videoPlayer = self
-        videoPlayer.loadedRangeChanged = perform
+        videoPlayer._onLoadedRangeChanged = perform
         return videoPlayer
     }
 
     public func onPictureInPicturePossible(_ perform: @escaping (Bool) -> Void) -> VideoPlayer {
         var videoPlayer = self
-        videoPlayer.pictureInPicturePossible = perform
+        videoPlayer._onPictureInPicturePossible = perform
         return videoPlayer
     }
 
     public func onPictureInPictureActivated(_ perform: @escaping (Bool) -> Void) -> VideoPlayer {
         var videoPlayer = self
-        videoPlayer.pictureInPictureActivated = perform
+        videoPlayer._onPictureInPictureActivated = perform
         return videoPlayer
     }
 
     public func onPictureInPictureStarting(_ perform: @escaping () -> Void) -> VideoPlayer {
         var videoPlayer = self
-        videoPlayer.pictureInPictureStarting = perform
+        videoPlayer._onPictureInPictureStarting = perform
         return videoPlayer
     }
 
     public func onPictureInPictureStarted(_ perform: @escaping () -> Void) -> VideoPlayer {
         var videoPlayer = self
-        videoPlayer.pictureInPictureStarted = perform
+        videoPlayer._onPictureInPictureStarted = perform
         return videoPlayer
     }
 
     public func onPictureInPictureStopping(_ perform: @escaping () -> Void) -> VideoPlayer {
         var videoPlayer = self
-        videoPlayer.pictureInPictureStopping = perform
+        videoPlayer._onPictureInPictureStopping = perform
         return videoPlayer
     }
 
     public func onPictureInPictureStopped(_ perform: @escaping () -> Void) -> VideoPlayer {
         var videoPlayer = self
-        videoPlayer.pictureInPictureStopped = perform
+        videoPlayer._onPictureInPictureStopped = perform
         return videoPlayer
     }
 
     public func onError(_ perform: @escaping (Error) -> Void) -> VideoPlayer {
         var videoPlayer = self
-        videoPlayer.error = perform
+        videoPlayer._onError = perform
         return videoPlayer
     }
 
-    private func onStatusChanged(value: AVPlayerItem.Status) {
-        switch value {
-        case .unknown:
-            break
-        case .readyToPlay:
-            if autoPlay {
-                player.play()
-            }
-        case .failed:
-            break
-        @unknown default:
-            break
-        }
+    public func onStatusChanged(_ perform: @escaping (AVPlayerItem.Status) -> Void) -> VideoPlayer {
+        var videoPlayer = self
+        videoPlayer._onStatusChanged = perform
+        return videoPlayer
     }
 }
 
@@ -229,7 +207,7 @@ struct VideoPlayer_Previews: PreviewProvider {
                     Image(systemName: isPlaying ? "pause.fill" : "play.fill")
                 }
 
-                VideoPlayer(url: videoURL, autoPlay: true, playerCommand: playerCommand.eraseToAnyPublisher())
+                VideoPlayer(playerCommand: playerCommand.eraseToAnyPublisher())
             }
         }
     }
