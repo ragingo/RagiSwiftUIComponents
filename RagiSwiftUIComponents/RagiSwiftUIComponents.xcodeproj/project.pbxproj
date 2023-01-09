@@ -35,6 +35,12 @@
 		52857DAB295AB1D100E538D8 /* CardOutlinedStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52857DAA295AB1D100E538D8 /* CardOutlinedStyle.swift */; };
 		52857DAD295AB1E800E538D8 /* CardFilledStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52857DAC295AB1E800E538D8 /* CardFilledStyle.swift */; };
 		52857DAF295ABC8000E538D8 /* Elevation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52857DAE295ABC8000E538D8 /* Elevation.swift */; };
+		52ABB3E7296BA66F002E92AF /* VideoPlayerInformationLayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52ABB3E6296BA66F002E92AF /* VideoPlayerInformationLayer.swift */; };
+		52ABB3E9296BA691002E92AF /* VideoPlayerHUDLayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52ABB3E8296BA691002E92AF /* VideoPlayerHUDLayer.swift */; };
+		52ABB3EB296BA6B9002E92AF /* VideoPlayerOperationLayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52ABB3EA296BA6B9002E92AF /* VideoPlayerOperationLayer.swift */; };
+		52ABB3ED296BA7F2002E92AF /* VideoPlayerPictureInPictureCover.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52ABB3EC296BA7F2002E92AF /* VideoPlayerPictureInPictureCover.swift */; };
+		52ABB3EF296BA8DF002E92AF /* VideoPlayerErrorLayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52ABB3EE296BA8DF002E92AF /* VideoPlayerErrorLayer.swift */; };
+		52ABB3F1296BAA05002E92AF /* VideoPlayerOverlay.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52ABB3F0296BAA05002E92AF /* VideoPlayerOverlay.swift */; };
 		52C42CC82966FEF3004B4B19 /* VideosResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52C42CC72966FEF3004B4B19 /* VideosResponse.swift */; };
 		52C42CCA29670112004B4B19 /* CustomVideoPlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52C42CC929670112004B4B19 /* CustomVideoPlayer.swift */; };
 		52C6BF9C2962F6B4009F92DC /* Expander.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52C6BF9B2962F6B4009F92DC /* Expander.swift */; };
@@ -105,6 +111,12 @@
 		52857DAA295AB1D100E538D8 /* CardOutlinedStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardOutlinedStyle.swift; sourceTree = "<group>"; };
 		52857DAC295AB1E800E538D8 /* CardFilledStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardFilledStyle.swift; sourceTree = "<group>"; };
 		52857DAE295ABC8000E538D8 /* Elevation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Elevation.swift; sourceTree = "<group>"; };
+		52ABB3E6296BA66F002E92AF /* VideoPlayerInformationLayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoPlayerInformationLayer.swift; sourceTree = "<group>"; };
+		52ABB3E8296BA691002E92AF /* VideoPlayerHUDLayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoPlayerHUDLayer.swift; sourceTree = "<group>"; };
+		52ABB3EA296BA6B9002E92AF /* VideoPlayerOperationLayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoPlayerOperationLayer.swift; sourceTree = "<group>"; };
+		52ABB3EC296BA7F2002E92AF /* VideoPlayerPictureInPictureCover.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoPlayerPictureInPictureCover.swift; sourceTree = "<group>"; };
+		52ABB3EE296BA8DF002E92AF /* VideoPlayerErrorLayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoPlayerErrorLayer.swift; sourceTree = "<group>"; };
+		52ABB3F0296BAA05002E92AF /* VideoPlayerOverlay.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoPlayerOverlay.swift; sourceTree = "<group>"; };
 		52C42CC72966FEF3004B4B19 /* VideosResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideosResponse.swift; sourceTree = "<group>"; };
 		52C42CC929670112004B4B19 /* CustomVideoPlayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomVideoPlayer.swift; sourceTree = "<group>"; };
 		52C6BF9B2962F6B4009F92DC /* Expander.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Expander.swift; sourceTree = "<group>"; };
@@ -319,6 +331,37 @@
 			path = Card;
 			sourceTree = "<group>";
 		};
+		52ABB3E3296BA61B002E92AF /* List */ = {
+			isa = PBXGroup;
+			children = (
+				52C6BFAB296447E6009F92DC /* VideoPlayerDebugView.swift */,
+			);
+			path = List;
+			sourceTree = "<group>";
+		};
+		52ABB3E4296BA629002E92AF /* Detail */ = {
+			isa = PBXGroup;
+			children = (
+				52C42CC929670112004B4B19 /* CustomVideoPlayer.swift */,
+				52ABB3E6296BA66F002E92AF /* VideoPlayerInformationLayer.swift */,
+				52ABB3E8296BA691002E92AF /* VideoPlayerHUDLayer.swift */,
+				52ABB3EA296BA6B9002E92AF /* VideoPlayerOperationLayer.swift */,
+				52ABB3EC296BA7F2002E92AF /* VideoPlayerPictureInPictureCover.swift */,
+				52ABB3EE296BA8DF002E92AF /* VideoPlayerErrorLayer.swift */,
+				52ABB3F0296BAA05002E92AF /* VideoPlayerOverlay.swift */,
+			);
+			path = Detail;
+			sourceTree = "<group>";
+		};
+		52ABB3E5296BA63E002E92AF /* Common */ = {
+			isa = PBXGroup;
+			children = (
+				52C6BFB32966FCEC009F92DC /* Video.swift */,
+				52C42CC72966FEF3004B4B19 /* VideosResponse.swift */,
+			);
+			path = Common;
+			sourceTree = "<group>";
+		};
 		52C6BF9A2962F6A3009F92DC /* Expander */ = {
 			isa = PBXGroup;
 			children = (
@@ -351,10 +394,9 @@
 		52C6BFB22966FB99009F92DC /* VideoPlayer */ = {
 			isa = PBXGroup;
 			children = (
-				52C6BFAB296447E6009F92DC /* VideoPlayerDebugView.swift */,
-				52C6BFB32966FCEC009F92DC /* Video.swift */,
-				52C42CC72966FEF3004B4B19 /* VideosResponse.swift */,
-				52C42CC929670112004B4B19 /* CustomVideoPlayer.swift */,
+				52ABB3E5296BA63E002E92AF /* Common */,
+				52ABB3E4296BA629002E92AF /* Detail */,
+				52ABB3E3296BA61B002E92AF /* List */,
 			);
 			path = VideoPlayer;
 			sourceTree = "<group>";
@@ -509,10 +551,16 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				52ABB3E9296BA691002E92AF /* VideoPlayerHUDLayer.swift in Sources */,
+				52ABB3EF296BA8DF002E92AF /* VideoPlayerErrorLayer.swift in Sources */,
+				52ABB3F1296BAA05002E92AF /* VideoPlayerOverlay.swift in Sources */,
 				52C42CCA29670112004B4B19 /* CustomVideoPlayer.swift in Sources */,
+				52ABB3E7296BA66F002E92AF /* VideoPlayerInformationLayer.swift in Sources */,
 				52C42CC82966FEF3004B4B19 /* VideosResponse.swift in Sources */,
 				5249E630295B2015006ECDE0 /* CardDebugView.swift in Sources */,
+				52ABB3ED296BA7F2002E92AF /* VideoPlayerPictureInPictureCover.swift in Sources */,
 				523DCD7429557AB000D0BA72 /* ContentView.swift in Sources */,
+				52ABB3EB296BA6B9002E92AF /* VideoPlayerOperationLayer.swift in Sources */,
 				523DCD7229557AB000D0BA72 /* RagiSwiftUIComponentsExampleAppApp.swift in Sources */,
 				52C6BFAC296447E6009F92DC /* VideoPlayerDebugView.swift in Sources */,
 				52C6BFB42966FCEC009F92DC /* Video.swift in Sources */,
