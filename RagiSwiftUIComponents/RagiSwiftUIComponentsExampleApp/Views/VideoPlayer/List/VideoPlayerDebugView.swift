@@ -10,7 +10,7 @@ import SwiftUI
 import RagiSwiftUIComponents
 
 struct VideoPlayerDebugView: View {
-    private static let jsonURL = URL(string: "https://gist.githubusercontent.com/ragingo/99f944df4c9164eae97c63b3b8e2a37d/raw/42d2864f8bc51539be3f578c31d3223954a1192c/videos.json")!
+    private static let jsonURL = URL(string: "https://gist.githubusercontent.com/ragingo/99f944df4c9164eae97c63b3b8e2a37d/raw/4e473dc29a8d52ec7877b1b02614be82269ce238/videos.json")!
 
     @State private var videos: [Video] = []
     @State private var selectedVideo: Video?
