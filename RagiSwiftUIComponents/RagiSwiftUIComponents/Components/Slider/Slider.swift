@@ -12,7 +12,8 @@ public struct Slider<Label: View>: View {
     @State private var isDragging = false
     @State private var handlePositionX: CGFloat = 0
     private let sliderTrackSpaceName = UUID()
-    private var onValueChanged: ((Double) -> Void)?
+    private var _onValueChanged: ((Double) -> Void)?
+    private var _onHandleDragging: ((Bool) -> Void)?
 
     private var value: Binding<Double>
     private var label: () -> Label
@@ -37,10 +38,13 @@ public struct Slider<Label: View>: View {
             .onChange(of: handlePositionX) { _ in
                 let newValue = handlePositionX / geometry.size.width
                 value.wrappedValue = newValue
-                onValueChanged?(newValue)
+                _onValueChanged?(newValue)
             }
             .onChange(of: value.wrappedValue) { _ in
                 handlePositionX = geometry.size.width * value.wrappedValue
+            }
+            .onChange(of: isDragging) { _ in
+                _onHandleDragging?(isDragging)
             }
         }
         .fixedSize(horizontal: false, vertical: true)
@@ -48,7 +52,13 @@ public struct Slider<Label: View>: View {
 
     public func onValueChanged(_ action: @escaping (Double) -> Void) -> Self {
         var slider = self
-        slider.onValueChanged = action
+        slider._onValueChanged = action
+        return slider
+    }
+
+    public func onHandleDragging(_ action: @escaping (Bool) -> Void) -> Self {
+        var slider = self
+        slider._onHandleDragging = action
         return slider
     }
 

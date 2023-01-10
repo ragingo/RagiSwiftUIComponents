@@ -21,13 +21,19 @@ struct VideoPlayerOperationLayer: View {
     @Binding var isSliderHandleDragging: Bool
     @Binding var sliderValue: Double
 
+    @State private var showSettings = false
     @State private var rateSliderValue = 0.0
 
     var body: some View {
         ZStack {
             baseLayer
             centerItemsLayer
+
+            if showSettings {
+                settingsLayer
+            }
         }
+        .animation(.default, value: showSettings)
     }
 
     private var baseLayer: some View {
@@ -35,6 +41,7 @@ struct VideoPlayerOperationLayer: View {
             HStack {
                 Spacer()
                 pictureInPictureButton
+                settingsButton
             }
 
             Spacer()
@@ -43,12 +50,6 @@ struct VideoPlayerOperationLayer: View {
                 HStack(spacing: 4) {
                     timeText
                     Spacer()
-                }
-
-                HStack {
-                    Spacer()
-                    rateSlider
-                        .frame(width: 100)
                 }
 
                 VideoPlayerSlider(
@@ -70,18 +71,55 @@ struct VideoPlayerOperationLayer: View {
         }
     }
 
+    private var settingsLayer: some View {
+        ZStack {
+            VStack {
+                HStack {
+                    Spacer()
+                    settingsLayerCloseButton
+                }
+                Spacer()
+            }
+
+            VStack {
+                HStack(spacing: 32) {
+                    Text("再生速度")
+                        .foregroundColor(.white)
+                    rateSlider
+                }
+                Spacer()
+            }
+            .padding(.trailing, 32)
+        }
+        .padding(16)
+        .background(.black.opacity(0.8))
+        .transition(.move(edge: .trailing))
+    }
+
     private var rateSlider: some View {
         RagiSwiftUIComponents.Slider(value: $rateSliderValue)
-            .sliderStyle(RateSliderStyle())
-            .onChange(of: rateSliderValue) { _ in
-                let rate = Float((rateSliderValue * 100.0 * 5.0).rounded(.down)) / 100.0
-                playerCommand.send(.rate(value: rate))
+            .onHandleDragging { isDragging in
+                if !isDragging {
+                    let rate = Float((rateSliderValue * 100.0 * 5.0).rounded(.down)) / 100.0
+                    playerCommand.send(.rate(value: rate))
+                }
             }
+            .sliderStyle(RateSliderStyle())
             .overlay {
                 let rate = Float((rateSliderValue * 100.0 * 5.0).rounded(.down)) / 100.0
                 Text("x \(rate, specifier: "%.2f")")
-                    .offset(y: -20)
+                    .foregroundColor(.white)
+                    .offset(y: -16)
             }
+    }
+
+    private var settingsLayerCloseButton: some View {
+        Button {
+            showSettings = false
+        } label: {
+            Image(systemName: "xmark.circle")
+                .foregroundColor(.white)
+        }
     }
 
     private var playButton: some View {
@@ -109,6 +147,15 @@ struct VideoPlayerOperationLayer: View {
                 .foregroundColor(.white)
         }
         .disabled(!isPictureInPicturePossible)
+    }
+
+    private var settingsButton: some View {
+        Button {
+            showSettings = true
+        } label: {
+            Image(systemName: "gearshape.fill")
+                .foregroundColor(.white)
+        }
     }
 
     private var timeText: some View {
@@ -154,6 +201,7 @@ private struct RateSliderStyle: SliderStyle {
         SliderHandle {
             Image(systemName: "speedometer")
                 .resizable()
+                .foregroundColor(.white)
                 .frame(width: 20, height: 20)
                 .clipShape(Circle())
                 .shadow(elevation: .level1, cornerRadius: 10)
@@ -170,5 +218,32 @@ private struct RateSliderStyle: SliderStyle {
 
     public func makeBody(configuration: SliderConfiguration) -> some View {
         configuration.content
+    }
+}
+
+struct VideoPlayerOperationLayer_Previews: PreviewProvider {
+    struct PreviewView: View {
+        var body: some View {
+            VStack {
+                VideoPlayerOperationLayer(
+                    isPlaying: .constant(false),
+                    duration: .constant(120),
+                    position: .constant(60),
+                    isSeeking: .constant(false),
+                    loadedRange: .constant((0, 100)),
+                    playerCommand: .constant(.init()),
+                    isPictureInPicturePossible: .constant(true),
+                    isPictureInPictureEnabled: .constant(false),
+                    isSliderHandleDragging: .constant(false),
+                    sliderValue: .constant(0)
+                )
+            }
+            .aspectRatio(16.0 / 9.0, contentMode: .fit)
+            .background(.black.opacity(0.5))
+        }
+    }
+
+    static var previews: some View {
+        PreviewView()
     }
 }
