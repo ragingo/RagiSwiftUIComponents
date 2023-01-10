@@ -83,6 +83,8 @@ final class InternalVideoPlayer: ObservableObject {
         }
 
         setupClosedCaption()
+
+        await changeClosedCaption()
     }
 
     @MainActor
@@ -99,8 +101,26 @@ final class InternalVideoPlayer: ObservableObject {
         await seek(seconds: 0)
     }
 
-    func setRate(value: Float) {
-        player.rate = value
+    var rate: Float {
+        get { player.rate }
+        set { player.rate = newValue }
+    }
+
+    func changeClosedCaption(locale: Locale? = nil) async {
+        guard let asset else {
+            return
+        }
+        guard let legibleGroup = try? await asset.loadMediaSelectionGroup(for: .legible) else {
+            return
+        }
+        if let locale {
+            let options = AVMediaSelectionGroup.mediaSelectionOptions(from: legibleGroup.options, with: locale)
+            if let option = options.first {
+                await player.currentItem?.select(option, in: legibleGroup)
+            }
+        } else {
+            await player.currentItem?.select(nil, in: legibleGroup)
+        }
     }
 
     func reset() {

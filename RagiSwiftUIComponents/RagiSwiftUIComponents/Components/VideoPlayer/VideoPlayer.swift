@@ -58,7 +58,10 @@ public struct VideoPlayer: View {
                     case .seek(let seconds):
                         await player.seek(seconds: seconds)
                     case .rate(let value):
-                        player.setRate(value: value)
+                        player.rate = value
+                    case .showClosedCaption(let value):
+                        let locale = Locale(identifier: Locale.preferredLanguages.first ?? Locale.current.identifier)
+                        await player.changeClosedCaption(locale: value ? locale : nil)
                     }
                 }
             }
@@ -196,6 +199,7 @@ extension VideoPlayer {
         case stop
         case seek(seconds: Double)
         case rate(value: Float)
+        case showClosedCaption(Bool)
     }
 }
 

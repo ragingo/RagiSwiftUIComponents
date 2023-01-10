@@ -22,6 +22,7 @@ struct VideoPlayerOperationLayer: View {
     @Binding var sliderValue: Double
 
     @State private var showSettings = false
+    @State private var showClosedCaption = false
     @State private var rateSliderValue = 0.0
 
     var body: some View {
@@ -40,6 +41,7 @@ struct VideoPlayerOperationLayer: View {
         VStack {
             HStack {
                 Spacer()
+                closedCaptionButton
                 pictureInPictureButton
                 settingsButton
             }
@@ -137,6 +139,16 @@ struct VideoPlayerOperationLayer: View {
                 .foregroundColor(.white)
         }
         .buttonStyle(.plain)
+    }
+
+    private var closedCaptionButton: some View {
+        Button {
+            showClosedCaption.toggle()
+            playerCommand.send(.showClosedCaption(showClosedCaption))
+        } label: {
+            Image(systemName: showClosedCaption ? "captions.bubble.fill" : "captions.bubble")
+                .foregroundColor(.white)
+        }
     }
 
     private var pictureInPictureButton: some View {
