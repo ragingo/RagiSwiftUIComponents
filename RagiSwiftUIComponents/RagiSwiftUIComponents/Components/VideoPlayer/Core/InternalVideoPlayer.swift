@@ -106,15 +106,31 @@ final class InternalVideoPlayer: ObservableObject {
         set { player.rate = newValue }
     }
 
-    func changeClosedCaption(locale: Locale? = nil) async {
+    func closedCaptionLanguages() async -> [(id: String, displayName: String)] {
+        guard let asset else {
+            return []
+        }
+        guard let legibleGroup = try? await asset.loadMediaSelectionGroup(for: .legible) else {
+            return []
+        }
+        return legibleGroup.options
+            .compactMap {
+                guard let locale = $0.locale else {
+                    return nil
+                }
+                return (id: locale.identifier, displayName: $0.displayName)
+            }
+    }
+
+    func changeClosedCaption(id: String? = nil) async {
         guard let asset else {
             return
         }
         guard let legibleGroup = try? await asset.loadMediaSelectionGroup(for: .legible) else {
             return
         }
-        if let locale {
-            let options = AVMediaSelectionGroup.mediaSelectionOptions(from: legibleGroup.options, with: locale)
+        if let id {
+            let options = AVMediaSelectionGroup.mediaSelectionOptions(from: legibleGroup.options, with: .init(identifier: id))
             if let option = options.first {
                 await player.currentItem?.select(option, in: legibleGroup)
             }

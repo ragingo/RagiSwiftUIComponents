@@ -29,6 +29,7 @@ public struct VideoPlayer: View {
     private var _onError: ((Error) -> Void)?
     private var _onStatusChanged: ((AVPlayerItem.Status) -> Void)?
     private var _onFinished: (() -> Void)?
+    private var _onClosedCaptionLanguagesLoaded: (([(id: String, displayName: String)]) -> Void)?
 
     public init(
         playerCommand: AnyPublisher<PlayerCommand, Never>,
@@ -59,9 +60,11 @@ public struct VideoPlayer: View {
                         await player.seek(seconds: seconds)
                     case .rate(let value):
                         player.rate = value
-                    case .showClosedCaption(let value):
-                        let locale = Locale(identifier: Locale.preferredLanguages.first ?? Locale.current.identifier)
-                        await player.changeClosedCaption(locale: value ? locale : nil)
+                    case .showClosedCaption(let id):
+                        await player.changeClosedCaption(id: id)
+                    case .getClosedCaptionLanguages:
+                        let languages = await player.closedCaptionLanguages()
+                        _onClosedCaptionLanguagesLoaded?(languages)
                     }
                 }
             }
@@ -189,6 +192,14 @@ public struct VideoPlayer: View {
         videoPlayer._onFinished = perform
         return videoPlayer
     }
+
+    public func onClosedCaptionLanguagesLoaded(
+        _ perform: @escaping ([(id: String, displayName: String)]) -> Void
+    ) -> VideoPlayer {
+        var videoPlayer = self
+        videoPlayer._onClosedCaptionLanguagesLoaded = perform
+        return videoPlayer
+    }
 }
 
 extension VideoPlayer {
@@ -199,7 +210,8 @@ extension VideoPlayer {
         case stop
         case seek(seconds: Double)
         case rate(value: Float)
-        case showClosedCaption(Bool)
+        case showClosedCaption(id: String?)
+        case getClosedCaptionLanguages
     }
 }
 

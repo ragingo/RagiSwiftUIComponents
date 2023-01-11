@@ -20,10 +20,11 @@ struct VideoPlayerOperationLayer: View {
     @Binding var isPictureInPictureEnabled: Bool
     @Binding var isSliderHandleDragging: Bool
     @Binding var sliderValue: Double
+    @Binding var closedCaptionLanguages: [(id: String, displayName: String)]
 
     @State private var showSettings = false
-    @State private var showClosedCaption = false
     @State private var rateSliderValue = 0.0
+    @State private var selectedClosedCaptionLanguage: (id: String, displayName: String)?
 
     var body: some View {
         ZStack {
@@ -142,11 +143,37 @@ struct VideoPlayerOperationLayer: View {
     }
 
     private var closedCaptionButton: some View {
-        Button {
-            showClosedCaption.toggle()
-            playerCommand.send(.showClosedCaption(showClosedCaption))
+        Menu {
+            Button {
+                selectedClosedCaptionLanguage = nil
+                playerCommand.send(.showClosedCaption(id: nil))
+            } label: {
+                HStack {
+                    Text("非表示")
+
+                    if selectedClosedCaptionLanguage == nil {
+                        Image(systemName: "checkmark")
+                            .foregroundColor(.white)
+                    }
+                }
+            }
+            ForEach(closedCaptionLanguages, id: \.id) { language in
+                Button {
+                    selectedClosedCaptionLanguage = language
+                    playerCommand.send(.showClosedCaption(id: language.id))
+                } label: {
+                    HStack {
+                        Text("\(language.displayName) (\(language.id))")
+
+                        if selectedClosedCaptionLanguage?.id == language.id {
+                            Image(systemName: "checkmark")
+                                .foregroundColor(.white)
+                        }
+                    }
+                }
+            }
         } label: {
-            Image(systemName: showClosedCaption ? "captions.bubble.fill" : "captions.bubble")
+            Image(systemName: selectedClosedCaptionLanguage != nil ? "captions.bubble.fill" : "captions.bubble")
                 .foregroundColor(.white)
         }
     }
@@ -247,7 +274,11 @@ struct VideoPlayerOperationLayer_Previews: PreviewProvider {
                     isPictureInPicturePossible: .constant(true),
                     isPictureInPictureEnabled: .constant(false),
                     isSliderHandleDragging: .constant(false),
-                    sliderValue: .constant(0)
+                    sliderValue: .constant(0),
+                    closedCaptionLanguages: .constant([
+                        (id: "en", displayName: "英語"),
+                        (id: "ja", displayName: "日本語"),
+                    ])
                 )
             }
             .aspectRatio(16.0 / 9.0, contentMode: .fit)

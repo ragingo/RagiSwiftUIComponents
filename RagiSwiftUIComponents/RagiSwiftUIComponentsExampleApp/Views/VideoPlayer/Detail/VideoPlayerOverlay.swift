@@ -20,13 +20,26 @@ struct VideoPlayerOverlay: View {
     @Binding var playerCommand: PassthroughSubject<VideoPlayer.PlayerCommand, Never>
     @Binding var isPictureInPicturePossible: Bool
     @Binding var isPictureInPictureEnabled: Bool
+    @Binding var closedCaptionLanguages: [(id: String, displayName: String)]
     @State private var isSliderHandleDragging = false
     @State private var sliderValue = 0.0 // second(s)
 
     var body: some View {
         ZStack {
             VideoPlayerInformationLayer()
-            VideoPlayerOperationLayer(isPlaying: $isPlaying, duration: $duration, position: $position, isSeeking: $isSeeking, loadedRange: $loadedRange, playerCommand: $playerCommand, isPictureInPicturePossible: $isPictureInPicturePossible, isPictureInPictureEnabled: $isPictureInPictureEnabled, isSliderHandleDragging: $isSliderHandleDragging, sliderValue: $sliderValue)
+            VideoPlayerOperationLayer(
+                isPlaying: $isPlaying,
+                duration: $duration,
+                position: $position,
+                isSeeking: $isSeeking,
+                loadedRange: $loadedRange,
+                playerCommand: $playerCommand,
+                isPictureInPicturePossible: $isPictureInPicturePossible,
+                isPictureInPictureEnabled: $isPictureInPictureEnabled,
+                isSliderHandleDragging: $isSliderHandleDragging,
+                sliderValue: $sliderValue,
+                closedCaptionLanguages: $closedCaptionLanguages
+            )
             VideoPlayerHUDLayer()
         }
         .id(id)
