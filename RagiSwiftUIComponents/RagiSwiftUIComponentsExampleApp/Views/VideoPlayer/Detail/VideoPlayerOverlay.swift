@@ -21,6 +21,7 @@ struct VideoPlayerOverlay: View {
     @Binding var isPictureInPicturePossible: Bool
     @Binding var isPictureInPictureEnabled: Bool
     @Binding var closedCaptionLanguages: [(id: String, displayName: String)]
+    @Binding var audioTracks: [(id: String, displayName: String)]
     @State private var isSliderHandleDragging = false
     @State private var sliderValue = 0.0 // second(s)
 
@@ -38,7 +39,8 @@ struct VideoPlayerOverlay: View {
                 isPictureInPictureEnabled: $isPictureInPictureEnabled,
                 isSliderHandleDragging: $isSliderHandleDragging,
                 sliderValue: $sliderValue,
-                closedCaptionLanguages: $closedCaptionLanguages
+                closedCaptionLanguages: $closedCaptionLanguages,
+                audioTracks: $audioTracks
             )
             VideoPlayerHUDLayer()
         }

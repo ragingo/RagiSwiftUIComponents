@@ -106,6 +106,37 @@ final class InternalVideoPlayer: ObservableObject {
         set { player.rate = newValue }
     }
 
+    func audioTracks() async -> [(id: String, displayName: String)] {
+        guard let asset else {
+            return []
+        }
+        guard let audibleGroup = try? await asset.loadMediaSelectionGroup(for: .audible) else {
+            return []
+        }
+        return audibleGroup.options
+            .compactMap {
+                guard let locale = $0.locale else {
+                    return nil
+                }
+                return (id: locale.identifier, displayName: $0.displayName)
+            }
+    }
+
+    func changeAudioTrack(id: String? = nil) async {
+        guard let asset else {
+            return
+        }
+        guard let audibleGroup = try? await asset.loadMediaSelectionGroup(for: .audible) else {
+            return
+        }
+        if let id {
+            let options = AVMediaSelectionGroup.mediaSelectionOptions(from: audibleGroup.options, with: .init(identifier: id))
+            if let option = options.first {
+                await player.currentItem?.select(option, in: audibleGroup)
+            }
+        }
+    }
+
     func closedCaptionLanguages() async -> [(id: String, displayName: String)] {
         guard let asset else {
             return []

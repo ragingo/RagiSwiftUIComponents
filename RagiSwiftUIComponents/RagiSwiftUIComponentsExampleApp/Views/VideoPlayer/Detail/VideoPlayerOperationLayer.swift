@@ -21,10 +21,12 @@ struct VideoPlayerOperationLayer: View {
     @Binding var isSliderHandleDragging: Bool
     @Binding var sliderValue: Double
     @Binding var closedCaptionLanguages: [(id: String, displayName: String)]
+    @Binding var audioTracks: [(id: String, displayName: String)]
 
     @State private var showSettings = false
     @State private var rateSliderValue = 0.0
     @State private var selectedClosedCaptionLanguage: (id: String, displayName: String)?
+    @State private var selectedAudioTrack: (id: String, displayName: String)?
 
     var body: some View {
         ZStack {
@@ -42,6 +44,7 @@ struct VideoPlayerOperationLayer: View {
         VStack {
             HStack {
                 Spacer()
+                audioTracksButton
                 closedCaptionButton
                 pictureInPictureButton
                 settingsButton
@@ -140,6 +143,32 @@ struct VideoPlayerOperationLayer: View {
                 .foregroundColor(.white)
         }
         .buttonStyle(.plain)
+    }
+
+    private var audioTracksButton: some View {
+        Menu {
+            if audioTracks.isEmpty {
+                Text("副音声なし")
+            }
+
+            ForEach(audioTracks, id: \.id) { audioTrack in
+                Button {
+                    selectedAudioTrack = audioTrack
+                    playerCommand.send(.changeAudioTrack(id: audioTrack.id))
+                } label: {
+                    HStack {
+                        Text("\(audioTrack.displayName) (\(audioTrack.id))")
+                        if selectedAudioTrack?.id == audioTrack.id {
+                            Image(systemName: "checkmark")
+                                .foregroundColor(.white)
+                        }
+                    }
+                }
+            }
+        } label: {
+            Image(systemName: audioTracks.isEmpty ? "waveform.circle" : "waveform.circle.fill")
+                .foregroundColor(.white)
+        }
     }
 
     private var closedCaptionButton: some View {
@@ -278,7 +307,8 @@ struct VideoPlayerOperationLayer_Previews: PreviewProvider {
                     closedCaptionLanguages: .constant([
                         (id: "en", displayName: "英語"),
                         (id: "ja", displayName: "日本語"),
-                    ])
+                    ]),
+                    audioTracks: .constant([])
                 )
             }
             .aspectRatio(16.0 / 9.0, contentMode: .fit)

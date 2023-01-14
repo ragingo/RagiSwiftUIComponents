@@ -24,6 +24,7 @@ struct CustomVideoPlayer: View {
     @State private var error: Error?
     @State private var isErrorDetailExpanded = false
     @State private var closedCaptionLanguages: [(id: String, displayName: String)] = []
+    @State private var audioTracks: [(id: String, displayName: String)] = []
 
     let selectedVideo: Video
 
@@ -64,6 +65,7 @@ struct CustomVideoPlayer: View {
                 case .readyToPlay:
                     isPlaying = true
                     playerCommand.send(.getClosedCaptionLanguages)
+                    playerCommand.send(.getAudioTracks)
                 case .failed:
                     isPlaying = false
                 @unknown default:
@@ -73,6 +75,9 @@ struct CustomVideoPlayer: View {
             .onFinished {
                 isPlaying = false
                 playerCommand.send(.stop)
+            }
+            .onAudioTracksLoaded {
+                audioTracks = $0
             }
             .onClosedCaptionLanguagesLoaded {
                 closedCaptionLanguages = $0
@@ -97,7 +102,8 @@ struct CustomVideoPlayer: View {
                     playerCommand: $playerCommand,
                     isPictureInPicturePossible: $isPictureInPicturePossible,
                     isPictureInPictureEnabled: $isPictureInPictureEnabled,
-                    closedCaptionLanguages: $closedCaptionLanguages
+                    closedCaptionLanguages: $closedCaptionLanguages,
+                    audioTracks: $audioTracks
                 )
             }
             .overlay {

@@ -30,6 +30,7 @@ public struct VideoPlayer: View {
     private var _onStatusChanged: ((AVPlayerItem.Status) -> Void)?
     private var _onFinished: (() -> Void)?
     private var _onClosedCaptionLanguagesLoaded: (([(id: String, displayName: String)]) -> Void)?
+    private var _onAudioTracksLoaded: (([(id: String, displayName: String)]) -> Void)?
 
     public init(
         playerCommand: AnyPublisher<PlayerCommand, Never>,
@@ -65,6 +66,11 @@ public struct VideoPlayer: View {
                     case .getClosedCaptionLanguages:
                         let languages = await player.closedCaptionLanguages()
                         _onClosedCaptionLanguagesLoaded?(languages)
+                    case .getAudioTracks:
+                        let audioTracks = await player.audioTracks()
+                        _onAudioTracksLoaded?(audioTracks)
+                    case .changeAudioTrack(let id):
+                        await player.changeAudioTrack(id: id)
                     }
                 }
             }
@@ -200,6 +206,14 @@ public struct VideoPlayer: View {
         videoPlayer._onClosedCaptionLanguagesLoaded = perform
         return videoPlayer
     }
+
+    public func onAudioTracksLoaded(
+        _ perform: @escaping ([(id: String, displayName: String)]) -> Void
+    ) -> VideoPlayer {
+        var videoPlayer = self
+        videoPlayer._onAudioTracksLoaded = perform
+        return videoPlayer
+    }
 }
 
 extension VideoPlayer {
@@ -212,6 +226,8 @@ extension VideoPlayer {
         case rate(value: Float)
         case showClosedCaption(id: String?)
         case getClosedCaptionLanguages
+        case getAudioTracks
+        case changeAudioTrack(id: String)
     }
 }
 
