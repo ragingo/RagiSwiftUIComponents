@@ -46,8 +46,12 @@ struct VideoPlayerOperationLayer: View {
                 Spacer()
                 audioTracksButton
                 closedCaptionButton
-                pictureInPictureButton
-                settingsButton
+                PictureInPictureButton(isPossible: isPictureInPicturePossible) {
+                    isPictureInPictureEnabled.toggle()
+                }
+                SettingsButton {
+                    showSettings = true
+                }
             }
 
             Spacer()
@@ -73,7 +77,14 @@ struct VideoPlayerOperationLayer: View {
 
     private var centerItemsLayer: some View {
         HStack {
-            playButton
+            PlayButton(isPlaying: isPlaying) {
+                isPlaying.toggle()
+                if isPlaying {
+                    playerCommand.send(.play)
+                } else {
+                    playerCommand.send(.pause)
+                }
+            }
         }
     }
 
@@ -82,7 +93,9 @@ struct VideoPlayerOperationLayer: View {
             VStack {
                 HStack {
                     Spacer()
-                    settingsLayerCloseButton
+                    SettingsLayerCloseButton {
+                        showSettings = false
+                    }
                 }
                 Spacer()
             }
@@ -117,32 +130,6 @@ struct VideoPlayerOperationLayer: View {
                     .foregroundColor(.white)
                     .offset(y: -16)
             }
-    }
-
-    private var settingsLayerCloseButton: some View {
-        Button {
-            showSettings = false
-        } label: {
-            Image(systemName: "xmark.circle")
-                .foregroundColor(.white)
-        }
-    }
-
-    private var playButton: some View {
-        Button {
-            isPlaying.toggle()
-            if isPlaying {
-                playerCommand.send(.play)
-            } else {
-                playerCommand.send(.pause)
-            }
-        } label: {
-            Image(systemName: isPlaying ? "pause.fill" : "play.fill")
-                .resizable()
-                .frame(width: 30, height: 30)
-                .foregroundColor(.white)
-        }
-        .buttonStyle(.plain)
     }
 
     private var audioTracksButton: some View {
@@ -203,25 +190,6 @@ struct VideoPlayerOperationLayer: View {
             }
         } label: {
             Image(systemName: selectedClosedCaptionLanguage != nil ? "captions.bubble.fill" : "captions.bubble")
-                .foregroundColor(.white)
-        }
-    }
-
-    private var pictureInPictureButton: some View {
-        Button {
-            isPictureInPictureEnabled.toggle()
-        } label: {
-            Image(systemName: isPictureInPicturePossible ? "pip.enter" : "rectangle.on.rectangle.slash.fill")
-                .foregroundColor(.white)
-        }
-        .disabled(!isPictureInPicturePossible)
-    }
-
-    private var settingsButton: some View {
-        Button {
-            showSettings = true
-        } label: {
-            Image(systemName: "gearshape.fill")
                 .foregroundColor(.white)
         }
     }

@@ -35,6 +35,10 @@
 		52857DAB295AB1D100E538D8 /* CardOutlinedStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52857DAA295AB1D100E538D8 /* CardOutlinedStyle.swift */; };
 		52857DAD295AB1E800E538D8 /* CardFilledStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52857DAC295AB1E800E538D8 /* CardFilledStyle.swift */; };
 		52857DAF295ABC8000E538D8 /* Elevation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52857DAE295ABC8000E538D8 /* Elevation.swift */; };
+		528ECA7029743B7B00780D9E /* SettingsButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 528ECA6F29743B7B00780D9E /* SettingsButton.swift */; };
+		528ECA7229743C9900780D9E /* PictureInPictureButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 528ECA7129743C9900780D9E /* PictureInPictureButton.swift */; };
+		528ECA7429743E8D00780D9E /* PlayButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 528ECA7329743E8D00780D9E /* PlayButton.swift */; };
+		528ECA7629743F4F00780D9E /* SettingsLayerCloseButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 528ECA7529743F4F00780D9E /* SettingsLayerCloseButton.swift */; };
 		52ABB3E7296BA66F002E92AF /* VideoPlayerInformationLayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52ABB3E6296BA66F002E92AF /* VideoPlayerInformationLayer.swift */; };
 		52ABB3E9296BA691002E92AF /* VideoPlayerHUDLayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52ABB3E8296BA691002E92AF /* VideoPlayerHUDLayer.swift */; };
 		52ABB3EB296BA6B9002E92AF /* VideoPlayerOperationLayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52ABB3EA296BA6B9002E92AF /* VideoPlayerOperationLayer.swift */; };
@@ -111,6 +115,10 @@
 		52857DAA295AB1D100E538D8 /* CardOutlinedStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardOutlinedStyle.swift; sourceTree = "<group>"; };
 		52857DAC295AB1E800E538D8 /* CardFilledStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardFilledStyle.swift; sourceTree = "<group>"; };
 		52857DAE295ABC8000E538D8 /* Elevation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Elevation.swift; sourceTree = "<group>"; };
+		528ECA6F29743B7B00780D9E /* SettingsButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsButton.swift; sourceTree = "<group>"; };
+		528ECA7129743C9900780D9E /* PictureInPictureButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PictureInPictureButton.swift; sourceTree = "<group>"; };
+		528ECA7329743E8D00780D9E /* PlayButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayButton.swift; sourceTree = "<group>"; };
+		528ECA7529743F4F00780D9E /* SettingsLayerCloseButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsLayerCloseButton.swift; sourceTree = "<group>"; };
 		52ABB3E6296BA66F002E92AF /* VideoPlayerInformationLayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoPlayerInformationLayer.swift; sourceTree = "<group>"; };
 		52ABB3E8296BA691002E92AF /* VideoPlayerHUDLayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoPlayerHUDLayer.swift; sourceTree = "<group>"; };
 		52ABB3EA296BA6B9002E92AF /* VideoPlayerOperationLayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoPlayerOperationLayer.swift; sourceTree = "<group>"; };
@@ -331,6 +339,28 @@
 			path = Card;
 			sourceTree = "<group>";
 		};
+		528ECA6E29743B5800780D9E /* Buttons */ = {
+			isa = PBXGroup;
+			children = (
+				528ECA7129743C9900780D9E /* PictureInPictureButton.swift */,
+				528ECA7329743E8D00780D9E /* PlayButton.swift */,
+				528ECA6F29743B7B00780D9E /* SettingsButton.swift */,
+				528ECA7529743F4F00780D9E /* SettingsLayerCloseButton.swift */,
+			);
+			path = Buttons;
+			sourceTree = "<group>";
+		};
+		528ECA772974401C00780D9E /* Layers */ = {
+			isa = PBXGroup;
+			children = (
+				52ABB3EE296BA8DF002E92AF /* VideoPlayerErrorLayer.swift */,
+				52ABB3E8296BA691002E92AF /* VideoPlayerHUDLayer.swift */,
+				52ABB3E6296BA66F002E92AF /* VideoPlayerInformationLayer.swift */,
+				52ABB3EA296BA6B9002E92AF /* VideoPlayerOperationLayer.swift */,
+			);
+			path = Layers;
+			sourceTree = "<group>";
+		};
 		52ABB3E3296BA61B002E92AF /* List */ = {
 			isa = PBXGroup;
 			children = (
@@ -342,13 +372,11 @@
 		52ABB3E4296BA629002E92AF /* Detail */ = {
 			isa = PBXGroup;
 			children = (
+				528ECA6E29743B5800780D9E /* Buttons */,
+				528ECA772974401C00780D9E /* Layers */,
 				52C42CC929670112004B4B19 /* CustomVideoPlayer.swift */,
-				52ABB3E6296BA66F002E92AF /* VideoPlayerInformationLayer.swift */,
-				52ABB3E8296BA691002E92AF /* VideoPlayerHUDLayer.swift */,
-				52ABB3EA296BA6B9002E92AF /* VideoPlayerOperationLayer.swift */,
-				52ABB3EC296BA7F2002E92AF /* VideoPlayerPictureInPictureCover.swift */,
-				52ABB3EE296BA8DF002E92AF /* VideoPlayerErrorLayer.swift */,
 				52ABB3F0296BAA05002E92AF /* VideoPlayerOverlay.swift */,
+				52ABB3EC296BA7F2002E92AF /* VideoPlayerPictureInPictureCover.swift */,
 			);
 			path = Detail;
 			sourceTree = "<group>";
@@ -554,14 +582,18 @@
 				52ABB3E9296BA691002E92AF /* VideoPlayerHUDLayer.swift in Sources */,
 				52ABB3EF296BA8DF002E92AF /* VideoPlayerErrorLayer.swift in Sources */,
 				52ABB3F1296BAA05002E92AF /* VideoPlayerOverlay.swift in Sources */,
+				528ECA7629743F4F00780D9E /* SettingsLayerCloseButton.swift in Sources */,
 				52C42CCA29670112004B4B19 /* CustomVideoPlayer.swift in Sources */,
 				52ABB3E7296BA66F002E92AF /* VideoPlayerInformationLayer.swift in Sources */,
 				52C42CC82966FEF3004B4B19 /* VideosResponse.swift in Sources */,
 				5249E630295B2015006ECDE0 /* CardDebugView.swift in Sources */,
+				528ECA7229743C9900780D9E /* PictureInPictureButton.swift in Sources */,
 				52ABB3ED296BA7F2002E92AF /* VideoPlayerPictureInPictureCover.swift in Sources */,
+				528ECA7029743B7B00780D9E /* SettingsButton.swift in Sources */,
 				523DCD7429557AB000D0BA72 /* ContentView.swift in Sources */,
 				52ABB3EB296BA6B9002E92AF /* VideoPlayerOperationLayer.swift in Sources */,
 				523DCD7229557AB000D0BA72 /* RagiSwiftUIComponentsExampleAppApp.swift in Sources */,
+				528ECA7429743E8D00780D9E /* PlayButton.swift in Sources */,
 				52C6BFAC296447E6009F92DC /* VideoPlayerDebugView.swift in Sources */,
 				52C6BFB42966FCEC009F92DC /* Video.swift in Sources */,
 			);
