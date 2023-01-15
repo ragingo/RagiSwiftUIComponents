@@ -29,6 +29,7 @@ struct CustomVideoPlayer: View {
     let selectedVideo: Video
 
     var body: some View {
+        let _ = Self._printChanges()
         VStack(spacing: 0) {
             VideoPlayer(
                 playerCommand: playerCommand.eraseToAnyPublisher(),

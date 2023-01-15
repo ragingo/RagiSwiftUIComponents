@@ -44,8 +44,12 @@ struct VideoPlayerOperationLayer: View {
         VStack {
             HStack {
                 Spacer()
-                audioTracksButton
-                closedCaptionButton
+                AudioTracksMenuButton(tracks: audioTracks) { selectedTrackID in
+                    playerCommand.send(.changeAudioTrack(id: selectedTrackID))
+                }
+                ClosedCaptionMenuButton(languages: closedCaptionLanguages) { selectedLanguageID in
+                    playerCommand.send(.showClosedCaption(id: selectedLanguageID))
+                }
                 PictureInPictureButton(isPossible: isPictureInPicturePossible) {
                     isPictureInPictureEnabled.toggle()
                 }
@@ -130,68 +134,6 @@ struct VideoPlayerOperationLayer: View {
                     .foregroundColor(.white)
                     .offset(y: -16)
             }
-    }
-
-    private var audioTracksButton: some View {
-        Menu {
-            if audioTracks.isEmpty {
-                Text("副音声なし")
-            }
-
-            ForEach(audioTracks, id: \.id) { audioTrack in
-                Button {
-                    selectedAudioTrack = audioTrack
-                    playerCommand.send(.changeAudioTrack(id: audioTrack.id))
-                } label: {
-                    HStack {
-                        Text("\(audioTrack.displayName) (\(audioTrack.id))")
-                        if selectedAudioTrack?.id == audioTrack.id {
-                            Image(systemName: "checkmark")
-                                .foregroundColor(.white)
-                        }
-                    }
-                }
-            }
-        } label: {
-            Image(systemName: audioTracks.isEmpty ? "waveform.circle" : "waveform.circle.fill")
-                .foregroundColor(.white)
-        }
-    }
-
-    private var closedCaptionButton: some View {
-        Menu {
-            Button {
-                selectedClosedCaptionLanguage = nil
-                playerCommand.send(.showClosedCaption(id: nil))
-            } label: {
-                HStack {
-                    Text("非表示")
-
-                    if selectedClosedCaptionLanguage == nil {
-                        Image(systemName: "checkmark")
-                            .foregroundColor(.white)
-                    }
-                }
-            }
-            ForEach(closedCaptionLanguages, id: \.id) { language in
-                Button {
-                    selectedClosedCaptionLanguage = language
-                    playerCommand.send(.showClosedCaption(id: language.id))
-                } label: {
-                    HStack {
-                        Text("\(language.displayName) (\(language.id))")
-
-                        if selectedClosedCaptionLanguage?.id == language.id {
-                            Image(systemName: "checkmark")
-                                .foregroundColor(.white)
-                        }
-                    }
-                }
-            }
-        } label: {
-            Image(systemName: selectedClosedCaptionLanguage != nil ? "captions.bubble.fill" : "captions.bubble")
-                .foregroundColor(.white)
-        }
     }
 
     private var timeText: some View {
