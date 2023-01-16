@@ -15,7 +15,6 @@ struct VideoPlayerOperationLayer: View {
     @Binding var position: Double
     @Binding var isSeeking: Bool
     @Binding var loadedRange: (Double, Double)
-    @Binding var playerCommand: PassthroughSubject<VideoPlayer.PlayerCommand, Never>
     @Binding var isPictureInPicturePossible: Bool
     @Binding var isPictureInPictureEnabled: Bool
     @Binding var isSliderHandleDragging: Bool
@@ -27,6 +26,11 @@ struct VideoPlayerOperationLayer: View {
     @State private var selectedClosedCaptionLanguage: (id: String, displayName: String)?
     @State private var selectedAudioTrack: (id: String, displayName: String)?
 
+    var onPlayButtonTapped: (() -> Void)?
+    var onAudioTrackSelected: ((_ id: String) -> Void)?
+    var onClosedCaptureLanguageSelected: ((_ id: String?) -> Void)?
+    var onPlaybackRateChanged: ((_ rate: Float) -> Void)?
+
     var body: some View {
         let _ = Self._printChanges()
         ZStack {
@@ -34,12 +38,7 @@ struct VideoPlayerOperationLayer: View {
 
             HStack {
                 PlayButton(isPlaying: isPlaying) {
-                    isPlaying.toggle()
-                    if isPlaying {
-                        playerCommand.send(.play)
-                    } else {
-                        playerCommand.send(.pause)
-                    }
+                    onPlayButtonTapped?()
                 }
             }
 
@@ -55,10 +54,10 @@ struct VideoPlayerOperationLayer: View {
             HStack {
                 Spacer()
                 AudioTracksMenuButton(tracks: audioTracks) { selectedTrackID in
-                    playerCommand.send(.changeAudioTrack(id: selectedTrackID))
+                    onAudioTrackSelected?(selectedTrackID)
                 }
                 ClosedCaptionMenuButton(languages: closedCaptionLanguages) { selectedLanguageID in
-                    playerCommand.send(.showClosedCaption(id: selectedLanguageID))
+                    onClosedCaptureLanguageSelected?(selectedLanguageID)
                 }
                 PictureInPictureButton(isPossible: isPictureInPicturePossible) {
                     isPictureInPictureEnabled.toggle()
@@ -106,7 +105,7 @@ struct VideoPlayerOperationLayer: View {
                     Text("再生速度")
                         .foregroundColor(.white)
                     PlaybackRateSlider { rate in
-                        playerCommand.send(.rate(value: rate))
+                        onPlaybackRateChanged?(rate)
                     }
                 }
                 Spacer()
@@ -152,7 +151,6 @@ struct VideoPlayerOperationLayer_Previews: PreviewProvider {
                     position: .constant(60),
                     isSeeking: .constant(false),
                     loadedRange: .constant((0, 100)),
-                    playerCommand: .constant(.init()),
                     isPictureInPicturePossible: .constant(true),
                     isPictureInPictureEnabled: .constant(false),
                     isSliderHandleDragging: .constant(false),

@@ -61,6 +61,19 @@ struct CustomVideoPlayer: View {
             .onError { error in
                 self.error = error
             }
+            .onTimeControlStatusChanged { status in
+                guard let status else { return }
+                switch status {
+                case .paused:
+                    isPlaying = false
+                case .playing:
+                    isPlaying = true
+                case .waitingToPlayAtSpecifiedRate:
+                    isPlaying = false
+                @unknown default:
+                    isPlaying = false
+                }
+            }
             .onStatusChanged { status in
                 switch status {
                 case .unknown:

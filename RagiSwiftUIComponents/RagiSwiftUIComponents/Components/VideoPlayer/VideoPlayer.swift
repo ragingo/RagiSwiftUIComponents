@@ -27,6 +27,7 @@ public struct VideoPlayer: View {
     private var _onPictureInPictureStopping: (() -> Void)?
     private var _onPictureInPictureStopped: (() -> Void)?
     private var _onError: ((Error) -> Void)?
+    private var _onTimeControlStatusChanged: ((AVPlayer.TimeControlStatus?) -> Void)?
     private var _onStatusChanged: ((AVPlayerItem.Status) -> Void)?
     private var _onFinished: (() -> Void)?
     private var _onClosedCaptionLanguagesLoaded: (([(id: String, displayName: String)]) -> Void)?
@@ -79,6 +80,8 @@ public struct VideoPlayer: View {
             }
             .onReceive(player.properties) { properties in
                 switch properties {
+                case .timeControlStatus(let value):
+                    _onTimeControlStatusChanged?(value)
                 case .status(let value):
                     _onStatusChanged?(value)
                 case .duration(let value):
@@ -184,6 +187,12 @@ public struct VideoPlayer: View {
     public func onError(_ perform: @escaping (Error) -> Void) -> VideoPlayer {
         var videoPlayer = self
         videoPlayer._onError = perform
+        return videoPlayer
+    }
+
+    public func onTimeControlStatusChanged(_ perform: @escaping (AVPlayer.TimeControlStatus?) -> Void) -> VideoPlayer {
+        var videoPlayer = self
+        videoPlayer._onTimeControlStatusChanged = perform
         return videoPlayer
     }
 

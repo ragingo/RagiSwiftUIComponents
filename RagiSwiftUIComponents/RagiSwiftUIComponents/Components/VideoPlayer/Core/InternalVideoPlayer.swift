@@ -13,6 +13,7 @@ import CoreImage.CIFilterBuiltins
 
 final class InternalVideoPlayer: ObservableObject {
     enum Properties {
+        case timeControlStatus(value: AVPlayer.TimeControlStatus?)
         case status(value: AVPlayerItem.Status)
         case duration(value: Double)
         case position(value: Double)
@@ -291,8 +292,9 @@ final class InternalVideoPlayer: ObservableObject {
     @KVOBuilder
     private func observeProperties() -> [KVOBuilder.Element] {
         // AVPlayer.timeControlStatus
-//        player.observe(\.timeControlStatus, options: [.initial, .new]) { [weak self] player, change in
-//        }
+        player.observe(\.timeControlStatus, options: [.initial, .new]) { [weak self] player, change in
+            self?._properties.send(.timeControlStatus(value: self?.player.timeControlStatus))
+        }
         // AVPlayerItem.status
         player.currentItem?.observe(\.status, options: [.initial, .new]) { [weak self] playerItem, _ in
             self?._properties.send(.status(value: self?.player.currentItem?.status ?? .unknown))

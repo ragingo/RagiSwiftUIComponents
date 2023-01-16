@@ -40,13 +40,24 @@ struct VideoPlayerOverlay: View {
                 position: $position,
                 isSeeking: $isSeeking,
                 loadedRange: $loadedRange,
-                playerCommand: $playerCommand,
                 isPictureInPicturePossible: $isPictureInPicturePossible,
                 isPictureInPictureEnabled: $isPictureInPictureEnabled,
                 isSliderHandleDragging: $isSliderHandleDragging,
                 sliderValue: $sliderValue,
                 closedCaptionLanguages: $closedCaptionLanguages,
-                audioTracks: $audioTracks
+                audioTracks: $audioTracks,
+                onPlayButtonTapped: {
+                    playerCommand.send(isPlaying ? .pause : .play)
+                },
+                onAudioTrackSelected: { id in
+                    playerCommand.send(.changeAudioTrack(id: id))
+                },
+                onClosedCaptureLanguageSelected: { id in
+                    playerCommand.send(.showClosedCaption(id: id))
+                },
+                onPlaybackRateChanged: { rate in
+                    playerCommand.send(.rate(value: rate))
+                }
             )
             .id(operationLayerID)
 
