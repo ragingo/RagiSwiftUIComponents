@@ -10,7 +10,6 @@ import Combine
 import RagiSwiftUIComponents
 
 struct VideoPlayerOverlay: View {
-    private let id = UUID()
     @Binding var isPresented: Bool
     @Binding var isPlaying: Bool
     @Binding var duration: Double
@@ -25,9 +24,16 @@ struct VideoPlayerOverlay: View {
     @State private var isSliderHandleDragging = false
     @State private var sliderValue = 0.0 // second(s)
 
+    private let informationLayerID = UUID()
+    private let operationLayerID = UUID()
+    private let hudLayerID = UUID()
+
     var body: some View {
+        let _ = Self._printChanges()
         ZStack {
             VideoPlayerInformationLayer()
+                .id(informationLayerID)
+
             VideoPlayerOperationLayer(
                 isPlaying: $isPlaying,
                 duration: $duration,
@@ -42,9 +48,11 @@ struct VideoPlayerOverlay: View {
                 closedCaptionLanguages: $closedCaptionLanguages,
                 audioTracks: $audioTracks
             )
+            .id(operationLayerID)
+
             VideoPlayerHUDLayer()
+                .id(hudLayerID)
         }
-        .id(id)
         .background(.black.opacity(0.5))
         .opacity(isPresented ? 1 : 0)
         .onChange(of: isSliderHandleDragging) { _ in

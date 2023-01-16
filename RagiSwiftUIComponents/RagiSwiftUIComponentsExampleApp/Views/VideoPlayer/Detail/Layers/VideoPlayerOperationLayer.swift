@@ -24,14 +24,24 @@ struct VideoPlayerOperationLayer: View {
     @Binding var audioTracks: [(id: String, displayName: String)]
 
     @State private var showSettings = false
-    @State private var rateSliderValue = 0.0
     @State private var selectedClosedCaptionLanguage: (id: String, displayName: String)?
     @State private var selectedAudioTrack: (id: String, displayName: String)?
 
     var body: some View {
+        let _ = Self._printChanges()
         ZStack {
             baseLayer
-            centerItemsLayer
+
+            HStack {
+                PlayButton(isPlaying: isPlaying) {
+                    isPlaying.toggle()
+                    if isPlaying {
+                        playerCommand.send(.play)
+                    } else {
+                        playerCommand.send(.pause)
+                    }
+                }
+            }
 
             if showSettings {
                 settingsLayer
@@ -79,19 +89,6 @@ struct VideoPlayerOperationLayer: View {
         .padding(.bottom, 8)
     }
 
-    private var centerItemsLayer: some View {
-        HStack {
-            PlayButton(isPlaying: isPlaying) {
-                isPlaying.toggle()
-                if isPlaying {
-                    playerCommand.send(.play)
-                } else {
-                    playerCommand.send(.pause)
-                }
-            }
-        }
-    }
-
     private var settingsLayer: some View {
         ZStack {
             VStack {
@@ -108,7 +105,9 @@ struct VideoPlayerOperationLayer: View {
                 HStack(spacing: 32) {
                     Text("再生速度")
                         .foregroundColor(.white)
-                    rateSlider
+                    PlaybackRateSlider { rate in
+                        playerCommand.send(.rate(value: rate))
+                    }
                 }
                 Spacer()
             }
@@ -117,23 +116,6 @@ struct VideoPlayerOperationLayer: View {
         .padding(16)
         .background(.black.opacity(0.8))
         .transition(.move(edge: .trailing))
-    }
-
-    private var rateSlider: some View {
-        RagiSwiftUIComponents.Slider(value: $rateSliderValue)
-            .onHandleDragging { isDragging in
-                if !isDragging {
-                    let rate = Float((rateSliderValue * 100.0 * 5.0).rounded(.down)) / 100.0
-                    playerCommand.send(.rate(value: rate))
-                }
-            }
-            .sliderStyle(RateSliderStyle())
-            .overlay {
-                let rate = Float((rateSliderValue * 100.0 * 5.0).rounded(.down)) / 100.0
-                Text("x \(rate, specifier: "%.2f")")
-                    .foregroundColor(.white)
-                    .offset(y: -16)
-            }
     }
 
     private var timeText: some View {
@@ -158,45 +140,6 @@ private func formatTime(seconds: Double) -> String {
         return String(format: "%03d:%02d:%02d", h, m, s)
     }
     return String(format: "%02d:%02d", m, s)
-}
-
-private struct RateSliderStyle: SliderStyle {
-    private static let trackHeight: CGFloat = 4
-
-    public func makeActiveTrack(configuration: SliderTrackConfiguration) -> some View {
-        configuration.content
-            .frame(height: Self.trackHeight)
-            .foregroundColor(Color(uiColor: .systemBlue))
-    }
-
-    public func makeInactiveTrack(configuration: SliderTrackConfiguration) -> some View {
-        configuration.content
-            .frame(height: Self.trackHeight)
-            .foregroundColor(Color(uiColor: .systemGray6))
-    }
-
-    public func makeHandle(configuration: SliderHandleConfiguration) -> some View {
-        SliderHandle {
-            Image(systemName: "speedometer")
-                .resizable()
-                .foregroundColor(.white)
-                .frame(width: 20, height: 20)
-                .clipShape(Circle())
-                .shadow(elevation: .level1, cornerRadius: 10)
-                .background(
-                    Circle()
-                        .fill(.gray.opacity(0.2))
-                        .scaleEffect(2.0)
-                        .opacity(configuration.isPressed ? 1 : 0)
-                        .animation(.default, value: configuration.isPressed)
-                )
-        }
-        .offset(y: Self.trackHeight * 0.5)
-    }
-
-    public func makeBody(configuration: SliderConfiguration) -> some View {
-        configuration.content
-    }
 }
 
 struct VideoPlayerOperationLayer_Previews: PreviewProvider {

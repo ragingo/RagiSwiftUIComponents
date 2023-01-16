@@ -26,6 +26,8 @@ struct CustomVideoPlayer: View {
     @State private var closedCaptionLanguages: [(id: String, displayName: String)] = []
     @State private var audioTracks: [(id: String, displayName: String)] = []
 
+    private let overlayID = UUID()
+
     let selectedVideo: Video
 
     var body: some View {
@@ -106,6 +108,7 @@ struct CustomVideoPlayer: View {
                     closedCaptionLanguages: $closedCaptionLanguages,
                     audioTracks: $audioTracks
                 )
+                .id(overlayID)
             }
             .overlay {
                 if isPictureInPictureMode {
