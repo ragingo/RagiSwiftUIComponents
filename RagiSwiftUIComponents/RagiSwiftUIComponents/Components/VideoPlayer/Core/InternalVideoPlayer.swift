@@ -22,6 +22,8 @@ final class InternalVideoPlayer: ObservableObject {
         case error(value: Error)
 
         case finished
+
+        case bandwidths(values: [Int])
     }
 
     private var asset: AVURLAsset?
@@ -60,6 +62,11 @@ final class InternalVideoPlayer: ObservableObject {
         reset()
         setupAudio()
         setupDisplayLink()
+
+        if url.pathExtension == "m3u8" {
+            let bandwidths = await parseMasterPlaylist(url: url)
+            _properties.send(.bandwidths(values: bandwidths))
+        }
 
         let asset = AVURLAsset(url: url)
         self.asset = asset
@@ -169,6 +176,10 @@ final class InternalVideoPlayer: ObservableObject {
         } else {
             await player.currentItem?.select(nil, in: legibleGroup)
         }
+    }
+
+    func changeBandwidth(_ value: Int) {
+        player.currentItem?.preferredPeakBitRate = Double(value)
     }
 
     func reset() {
@@ -369,4 +380,52 @@ final class InternalVideoPlayer: ObservableObject {
             print("\(strings.first?.string ?? "")")
         }
     }
+}
+
+// 画質(bandwidth)一覧を降順で取得
+private func parseMasterPlaylist(url: URL) async -> [Int] {
+    var request = URLRequest(url: url)
+    request.httpMethod = "GET"
+
+    var m3u8Content: String = ""
+
+    // .m3u8 ファイルの中身を取得
+    do {
+        let (data, response) = try await URLSession.shared.data(from: url)
+        guard let response = response as? HTTPURLResponse else {
+            return []
+        }
+        if ![200].contains(response.statusCode) {
+            return []
+        }
+        guard let content = String(data: data, encoding: .utf8) else {
+            return []
+        }
+        m3u8Content = content
+    } catch {
+        print(error)
+    }
+
+    guard let regex = try? NSRegularExpression(pattern: #"[:,]BANDWIDTH=(\d+)(\,|$)"#) else {
+        return []
+    }
+
+    // 改行で分割
+    let lines = m3u8Content.split(separator: "\n")
+    // #EXT-X-STREAM-INF で始まる行だけ取り出す
+    let streamInfs = lines.filter { line in line.starts(with: "#EXT-X-STREAM-INF:") }
+    // BANDWIDTH=xxx の値だけ取り出す
+    let bandwidths = streamInfs
+        .compactMap { inf -> Int? in
+            let inputRange = NSRange(location: 0, length: inf.count)
+            guard let result = regex.firstMatch(in: String(inf), range: inputRange) else {
+                return nil
+            }
+            let group1 = result.range(at: 1)
+            let value = (inf as NSString).substring(with: group1)
+            return Int(value)
+        }
+        .sorted()
+
+    return bandwidths
 }

@@ -46,7 +46,8 @@ struct ClosedCaptionMenuButton: View {
         } label: {
             Image(systemName: selectedID != nil ? "captions.bubble.fill" : "captions.bubble")
                 .tint(.white)
-        }    }
+        }
+    }
 }
 
 struct ClosedCaptionMenuButton_Previews: PreviewProvider {

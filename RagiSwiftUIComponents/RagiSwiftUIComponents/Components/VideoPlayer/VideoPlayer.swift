@@ -32,6 +32,7 @@ public struct VideoPlayer: View {
     private var _onFinished: (() -> Void)?
     private var _onClosedCaptionLanguagesLoaded: (([(id: String, displayName: String)]) -> Void)?
     private var _onAudioTracksLoaded: (([(id: String, displayName: String)]) -> Void)?
+    private var _onBandwidthsLoaded: (([Int]) -> Void)?
 
     public init(
         playerCommand: AnyPublisher<PlayerCommand, Never>,
@@ -72,6 +73,8 @@ public struct VideoPlayer: View {
                         _onAudioTracksLoaded?(audioTracks)
                     case .changeAudioTrack(let id):
                         await player.changeAudioTrack(id: id)
+                    case .changeBandwidth(let value):
+                        player.changeBandwidth(value)
                     }
                 }
             }
@@ -96,6 +99,8 @@ public struct VideoPlayer: View {
                     _onError?(value)
                 case .finished:
                     _onFinished?()
+                case .bandwidths(let values):
+                    _onBandwidthsLoaded?(values)
                 }
             }
             .onChange(of: isPictureInPictureEnabled.wrappedValue) { isEnabled in
@@ -223,6 +228,12 @@ public struct VideoPlayer: View {
         videoPlayer._onAudioTracksLoaded = perform
         return videoPlayer
     }
+
+    public func onBandwidthsLoaded(_ perform: @escaping ([Int]) -> Void) -> VideoPlayer {
+        var videoPlayer = self
+        videoPlayer._onBandwidthsLoaded = perform
+        return videoPlayer
+    }
 }
 
 extension VideoPlayer {
@@ -237,6 +248,7 @@ extension VideoPlayer {
         case getClosedCaptionLanguages
         case getAudioTracks
         case changeAudioTrack(id: String)
+        case changeBandwidth(value: Int)
     }
 }
 

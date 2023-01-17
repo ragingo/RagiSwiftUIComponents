@@ -25,6 +25,7 @@ struct CustomVideoPlayer: View {
     @State private var isErrorDetailExpanded = false
     @State private var closedCaptionLanguages: [(id: String, displayName: String)] = []
     @State private var audioTracks: [(id: String, displayName: String)] = []
+    @State private var bandwidths: [Int] = []
 
     private let overlayID = UUID()
 
@@ -98,6 +99,9 @@ struct CustomVideoPlayer: View {
             .onClosedCaptionLanguagesLoaded {
                 closedCaptionLanguages = $0
             }
+            .onBandwidthsLoaded {
+                bandwidths = $0
+            }
             .onAppear {
                 playerCommand.send(.open(url: selectedVideo.url))
                 if autoPlay {
@@ -119,7 +123,8 @@ struct CustomVideoPlayer: View {
                     isPictureInPicturePossible: $isPictureInPicturePossible,
                     isPictureInPictureEnabled: $isPictureInPictureEnabled,
                     closedCaptionLanguages: $closedCaptionLanguages,
-                    audioTracks: $audioTracks
+                    audioTracks: $audioTracks,
+                    bandwidths: $bandwidths
                 )
                 .id(overlayID)
             }
