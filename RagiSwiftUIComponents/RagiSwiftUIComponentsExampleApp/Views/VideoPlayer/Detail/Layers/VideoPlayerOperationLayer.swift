@@ -33,8 +33,10 @@ struct VideoPlayerOperationLayer: View {
 
     var body: some View {
         let _ = Self._printChanges()
-        ZStack {
-            baseLayer
+        VStack {
+            commandTray
+
+            Spacer()
 
             HStack {
                 PlayButton(isPlaying: isPlaying) {
@@ -42,50 +44,48 @@ struct VideoPlayerOperationLayer: View {
                 }
             }
 
+            Spacer()
+
+            HStack(spacing: 4) {
+                timeText
+                Spacer()
+            }
+
+            VideoPlayerSlider(
+                position: $sliderValue,
+                duration: $duration,
+                loadedRange: $loadedRange,
+                isDragging: $isSliderHandleDragging
+            )
+        }
+        .padding(.horizontal, 16)
+        .padding(.top, 16)
+        .padding(.bottom, 8)
+        .overlay {
             if showSettings {
                 settingsLayer
             }
         }
         .animation(.default, value: showSettings)
+        .clipped()
     }
 
-    private var baseLayer: some View {
-        VStack {
-            HStack {
-                Spacer()
-                AudioTracksMenuButton(tracks: audioTracks) { selectedTrackID in
-                    onAudioTrackSelected?(selectedTrackID)
-                }
-                ClosedCaptionMenuButton(languages: closedCaptionLanguages) { selectedLanguageID in
-                    onClosedCaptureLanguageSelected?(selectedLanguageID)
-                }
-                PictureInPictureButton(isPossible: isPictureInPicturePossible) {
-                    isPictureInPictureEnabled.toggle()
-                }
-                SettingsButton {
-                    showSettings = true
-                }
-            }
-
+    private var commandTray: some View {
+        HStack {
             Spacer()
-
-            VStack {
-                HStack(spacing: 4) {
-                    timeText
-                    Spacer()
-                }
-
-                VideoPlayerSlider(
-                    position: $sliderValue,
-                    duration: $duration,
-                    loadedRange: $loadedRange,
-                    isDragging: $isSliderHandleDragging
-                )
+            AudioTracksMenuButton(tracks: audioTracks) { selectedTrackID in
+                onAudioTrackSelected?(selectedTrackID)
+            }
+            ClosedCaptionMenuButton(languages: closedCaptionLanguages) { selectedLanguageID in
+                onClosedCaptureLanguageSelected?(selectedLanguageID)
+            }
+            PictureInPictureButton(isPossible: isPictureInPicturePossible) {
+                isPictureInPictureEnabled.toggle()
+            }
+            SettingsButton {
+                showSettings = true
             }
         }
-        .padding(.horizontal, 16)
-        .padding(.top, 16)
-        .padding(.bottom, 8)
     }
 
     private var settingsLayer: some View {
@@ -164,6 +164,7 @@ struct VideoPlayerOperationLayer_Previews: PreviewProvider {
             }
             .aspectRatio(16.0 / 9.0, contentMode: .fit)
             .background(.black.opacity(0.5))
+            .padding()
         }
     }
 
