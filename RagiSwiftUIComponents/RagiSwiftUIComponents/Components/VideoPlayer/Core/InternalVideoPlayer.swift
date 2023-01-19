@@ -439,6 +439,8 @@ private func parseBandwidth(masterPlaylist: ParsedMasterPlaylist) async throws -
         .sorted()
 }
 
+// 参考資料: https://datatracker.ietf.org/doc/html/rfc8216
+// 参考実装: https://github.com/videolan/vlc/blob/master/modules/demux/hls/playlist/Parser.cpp
 private func parseMasterPlaylist(url: URL) async throws -> ParsedMasterPlaylist {
     var iterator = url.lines.makeAsyncIterator()
 
