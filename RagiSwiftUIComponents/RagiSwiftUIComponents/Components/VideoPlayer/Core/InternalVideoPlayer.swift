@@ -68,7 +68,6 @@ final class InternalVideoPlayer: ObservableObject {
             do {
                 let playlist = try await parseMasterPlaylist(url: url)
                 let bandwidths = try await parseBandwidth(masterPlaylist: playlist)
-                print("[aaa] \(bandwidths)")
                 _properties.send(.bandwidths(values: bandwidths))
             } catch {
                 print(error)
@@ -429,7 +428,6 @@ private func parseBandwidth(masterPlaylist: ParsedMasterPlaylist) async throws -
             $0.name == "#EXT-X-STREAM-INF"
         }
         .compactMap { inf -> Int? in
-            print(inf)
             let inputRange = NSRange(location: 0, length: inf.value.count)
             guard let result = regex.firstMatch(in: String(inf.value), range: inputRange) else {
                 return nil
