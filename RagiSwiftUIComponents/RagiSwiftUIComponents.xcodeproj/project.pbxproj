@@ -43,6 +43,7 @@
 		528ECA7C297447E800780D9E /* ClosedCaptionMenuButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 528ECA7B297447E800780D9E /* ClosedCaptionMenuButton.swift */; };
 		528ECA7E297598E500780D9E /* PlaybackRateSlider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 528ECA7D297598E500780D9E /* PlaybackRateSlider.swift */; };
 		528ECA802976EBC900780D9E /* VideoQualityMenuButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 528ECA7F2976EBC900780D9E /* VideoQualityMenuButton.swift */; };
+		528ECA832979739600780D9E /* AsyncAlgorithms in Frameworks */ = {isa = PBXBuildFile; productRef = 528ECA822979739600780D9E /* AsyncAlgorithms */; };
 		52ABB3E7296BA66F002E92AF /* VideoPlayerInformationLayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52ABB3E6296BA66F002E92AF /* VideoPlayerInformationLayer.swift */; };
 		52ABB3E9296BA691002E92AF /* VideoPlayerHUDLayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52ABB3E8296BA691002E92AF /* VideoPlayerHUDLayer.swift */; };
 		52ABB3EB296BA6B9002E92AF /* VideoPlayerOperationLayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52ABB3EA296BA6B9002E92AF /* VideoPlayerOperationLayer.swift */; };
@@ -155,6 +156,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				528ECA832979739600780D9E /* AsyncAlgorithms in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -469,6 +471,9 @@
 			dependencies = (
 			);
 			name = RagiSwiftUIComponents;
+			packageProductDependencies = (
+				528ECA822979739600780D9E /* AsyncAlgorithms */,
+			);
 			productName = RagiSwiftUIComponents;
 			productReference = 523DCD5F29557A3D00D0BA72 /* RagiSwiftUIComponents.framework */;
 			productType = "com.apple.product-type.framework";
@@ -520,6 +525,9 @@
 				Base,
 			);
 			mainGroup = 523DCD5529557A3D00D0BA72;
+			packageReferences = (
+				528ECA812979739600780D9E /* XCRemoteSwiftPackageReference "swift-async-algorithms" */,
+			);
 			productRefGroup = 523DCD6029557A3D00D0BA72 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -900,6 +908,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		528ECA812979739600780D9E /* XCRemoteSwiftPackageReference "swift-async-algorithms" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/apple/swift-async-algorithms";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.0.4;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		528ECA822979739600780D9E /* AsyncAlgorithms */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 528ECA812979739600780D9E /* XCRemoteSwiftPackageReference "swift-async-algorithms" */;
+			productName = AsyncAlgorithms;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 523DCD5629557A3D00D0BA72 /* Project object */;
 }

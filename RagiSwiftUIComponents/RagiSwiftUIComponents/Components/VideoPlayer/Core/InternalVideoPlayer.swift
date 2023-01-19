@@ -10,6 +10,7 @@ import AVFoundation
 import Combine
 import CoreImage
 import CoreImage.CIFilterBuiltins
+import AsyncAlgorithms
 
 final class InternalVideoPlayer: ObservableObject {
     enum Properties {
@@ -64,8 +65,14 @@ final class InternalVideoPlayer: ObservableObject {
         setupDisplayLink()
 
         if url.pathExtension == "m3u8" {
-            let bandwidths = await parseMasterPlaylist(url: url)
-            _properties.send(.bandwidths(values: bandwidths))
+            do {
+                let playlist = try await parseMasterPlaylist(url: url)
+                let bandwidths = try await parseBandwidth(masterPlaylist: playlist)
+                print("[aaa] \(bandwidths)")
+                _properties.send(.bandwidths(values: bandwidths))
+            } catch {
+                print(error)
+            }
         }
 
         let asset = AVURLAsset(url: url)
@@ -382,50 +389,86 @@ final class InternalVideoPlayer: ObservableObject {
     }
 }
 
-// 画質(bandwidth)一覧を降順で取得
-private func parseMasterPlaylist(url: URL) async -> [Int] {
+private func downloadText(url: URL) async throws -> String? {
     var request = URLRequest(url: url)
     request.httpMethod = "GET"
 
-    var m3u8Content: String = ""
+    let (data, response) = try await URLSession.shared.data(from: url)
 
-    // .m3u8 ファイルの中身を取得
-    do {
-        let (data, response) = try await URLSession.shared.data(from: url)
-        guard let response = response as? HTTPURLResponse else {
-            return []
-        }
-        if ![200].contains(response.statusCode) {
-            return []
-        }
-        guard let content = String(data: data, encoding: .utf8) else {
-            return []
-        }
-        m3u8Content = content
-    } catch {
-        print(error)
+    guard let response = response as? HTTPURLResponse else {
+        return nil
     }
 
-    guard let regex = try? NSRegularExpression(pattern: #"[:,]BANDWIDTH=(\d+)(\,|$)"#) else {
+    if ![200].contains(response.statusCode) {
+        return nil
+    }
+
+    return String(data: data, encoding: .utf8)
+}
+
+struct HLSMasterPlaylistInvalidFormat: Error {}
+
+struct HLSPlaylistTag {
+    var name: String
+    var value: String
+}
+
+struct ParsedMasterPlaylist {
+    var tags: [HLSPlaylistTag]
+    var urls: [URL]
+}
+
+// 画質(bandwidth)一覧を降順で取得
+private func parseBandwidth(masterPlaylist: ParsedMasterPlaylist) async throws -> [Int] {
+    guard let regex = try? NSRegularExpression(pattern: #"[:,]?BANDWIDTH=(\d+)(\,|$)"#) else {
         return []
     }
 
-    // 改行で分割
-    let lines = m3u8Content.split(separator: "\n")
-    // #EXT-X-STREAM-INF で始まる行だけ取り出す
-    let streamInfs = lines.filter { line in line.starts(with: "#EXT-X-STREAM-INF:") }
-    // BANDWIDTH=xxx の値だけ取り出す
-    let bandwidths = streamInfs
+    return masterPlaylist.tags
+        .filter {
+            $0.name == "#EXT-X-STREAM-INF"
+        }
         .compactMap { inf -> Int? in
-            let inputRange = NSRange(location: 0, length: inf.count)
-            guard let result = regex.firstMatch(in: String(inf), range: inputRange) else {
+            print(inf)
+            let inputRange = NSRange(location: 0, length: inf.value.count)
+            guard let result = regex.firstMatch(in: String(inf.value), range: inputRange) else {
                 return nil
             }
             let group1 = result.range(at: 1)
-            let value = (inf as NSString).substring(with: group1)
+            let value = (inf.value as NSString).substring(with: group1)
             return Int(value)
         }
         .sorted()
+}
 
-    return bandwidths
+private func parseMasterPlaylist(url: URL) async throws -> ParsedMasterPlaylist {
+    var iterator = url.lines.makeAsyncIterator()
+
+    guard let format = try await iterator.next(), format == "#EXTM3U" else {
+        throw HLSMasterPlaylistInvalidFormat()
+    }
+
+    var tags: [HLSPlaylistTag] = []
+    var urls: [URL] = []
+    var lastTag = ""
+
+    while let line = try await iterator.next() {
+        if line.first == "#" {
+            guard let keyIndex = line.firstIndex(of: ":") else {
+                continue
+            }
+            let key = String(line[line.startIndex..<keyIndex])
+            let value = String(line[line.index(after: keyIndex)...])
+            tags.append(.init(name: key, value: value))
+            lastTag = key
+        } else {
+            if lastTag.starts(with: "#EXT-X-STREAM-INF:") {
+                if let url = URL(string: line) {
+                    urls.append(url)
+                }
+            }
+        }
+    }
+
+    return .init(tags: tags, urls: urls)
 }
