@@ -8,7 +8,7 @@
 import Foundation
 
 struct ParsedMasterPlaylist {
-    var tags: [HLSPlaylistTag]
+    var tags: [any HLSPlaylistTagProtocol]
     var urls: [URL]
 }
 
@@ -26,9 +26,9 @@ struct HLSMasterPlaylistParser {
 
     func parse() throws -> ParsedMasterPlaylist {
         var iterator = m3u8LineIterator
-        var tags: [HLSPlaylistTag] = []
+        var tags: [any HLSPlaylistTagProtocol] = []
         var urls: [URL] = []
-        var lastTag: HLSPlaylistTag?
+        var lastTag: (any HLSPlaylistTagProtocol)?
 
         guard let format = iterator.next(), format == "#EXTM3U" else {
              throw HLSMasterPlaylistInvalidFormat()
@@ -65,17 +65,24 @@ struct HLSMasterPlaylistParser {
         return .init(tags: tags, urls: urls)
     }
 
-    private func parseTag(name: String) -> HLSPlaylistTag? {
+    private func parseTag(name: String) -> (any HLSPlaylistTagProtocol)? {
         guard let type = HLSPlaylistTagType(rawValue: name) else {
             return nil
         }
         return HLSPlaylistTag(type: type)
     }
 
-    private func parseTag(name: String, value: String) -> HLSPlaylistTag? {
+    private func parseTag(name: String, value: String) -> (any HLSPlaylistTagProtocol)? {
         guard let type = HLSPlaylistTagType(rawValue: name) else {
             return nil
         }
-        return HLSPlaylistTag(type: type)
+
+        assert(type.isSingleValue || type.isAttributesValue)
+
+        if type.isSingleValue {
+            return HLSPlaylistSingleValueTag(type: type, value: value)
+        }
+
+        return HLSPlaylistAttributesTag(type: type, rawValue: value)
     }
 }

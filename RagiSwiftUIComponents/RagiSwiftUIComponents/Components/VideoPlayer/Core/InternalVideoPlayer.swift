@@ -68,6 +68,7 @@ final class InternalVideoPlayer: ObservableObject {
             do {
                 if let m3u8 = try await downloadText(url: url) {
                     let playlist = try HLSMasterPlaylistParser(m3u8Content: m3u8).parse()
+                    print(playlist)
                     let bandwidths = try await parseBandwidth(masterPlaylist: playlist)
                     _properties.send(.bandwidths(values: bandwidths))
                 }
@@ -413,18 +414,19 @@ private func parseBandwidth(masterPlaylist: ParsedMasterPlaylist) async throws -
         return []
     }
 
-    return masterPlaylist.tags
-        .filter {
-            $0.name == "#EXT-X-STREAM-INF"
-        }
-        .compactMap { inf -> Int? in
-            let inputRange = NSRange(location: 0, length: inf.value.count)
-            guard let result = regex.firstMatch(in: String(inf.value), range: inputRange) else {
-                return nil
-            }
-            let group1 = result.range(at: 1)
-            let value = (inf.value as NSString).substring(with: group1)
-            return Int(value)
-        }
-        .sorted()
+    return []
+//    return masterPlaylist.tags
+//        .filter {
+//            $0.type == .EXT_X_STREAM_INF
+//        }
+//        .compactMap { inf -> Int? in
+//            let inputRange = NSRange(location: 0, length: inf.value.count)
+//            guard let result = regex.firstMatch(in: String(inf.value), range: inputRange) else {
+//                return nil
+//            }
+//            let group1 = result.range(at: 1)
+//            let value = (inf.value as NSString).substring(with: group1)
+//            return Int(value)
+//        }
+//        .sorted()
 }
