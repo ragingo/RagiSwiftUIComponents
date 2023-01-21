@@ -10,7 +10,6 @@ import AVFoundation
 import Combine
 import CoreImage
 import CoreImage.CIFilterBuiltins
-import AsyncAlgorithms
 
 final class InternalVideoPlayer: ObservableObject {
     enum Properties {
@@ -24,7 +23,7 @@ final class InternalVideoPlayer: ObservableObject {
 
         case finished
 
-        case bandwidths(values: [Int])
+        case videoQuolities(values: [(bandWidth: Int, resolution: String)])
     }
 
     private var asset: AVURLAsset?
@@ -69,8 +68,8 @@ final class InternalVideoPlayer: ObservableObject {
                 if let m3u8 = try await downloadText(url: url) {
                     let playlist = try HLSMasterPlaylistParser(m3u8Content: m3u8).parse()
                     print(playlist)
-                    let bandwidths = try await parseBandwidth(masterPlaylist: playlist)
-                    _properties.send(.bandwidths(values: bandwidths))
+                    let videoQuolities = extractVideoQuolity(masterPlaylist: playlist)
+                    _properties.send(.videoQuolities(values: videoQuolities))
                 }
             } catch {
                 print(error)
@@ -187,7 +186,7 @@ final class InternalVideoPlayer: ObservableObject {
         }
     }
 
-    func changeBandwidth(_ value: Int) {
+    func changeBandWidth(_ value: Int) {
         player.currentItem?.preferredPeakBitRate = Double(value)
     }
 
@@ -408,25 +407,19 @@ private func downloadText(url: URL) async throws -> String? {
     return String(data: data, encoding: .utf8)
 }
 
-// 画質(bandwidth)一覧を降順で取得
-private func parseBandwidth(masterPlaylist: ParsedMasterPlaylist) async throws -> [Int] {
-    guard let regex = try? NSRegularExpression(pattern: #"[:,]?BANDWIDTH=(\d+)(\,|$)"#) else {
-        return []
-    }
-
-    return []
-//    return masterPlaylist.tags
-//        .filter {
-//            $0.type == .EXT_X_STREAM_INF
-//        }
-//        .compactMap { inf -> Int? in
-//            let inputRange = NSRange(location: 0, length: inf.value.count)
-//            guard let result = regex.firstMatch(in: String(inf.value), range: inputRange) else {
-//                return nil
-//            }
-//            let group1 = result.range(at: 1)
-//            let value = (inf.value as NSString).substring(with: group1)
-//            return Int(value)
-//        }
-//        .sorted()
+private func extractVideoQuolity(masterPlaylist: ParsedMasterPlaylist) -> [(bandWidth: Int, resolution: String)] {
+    masterPlaylist.tags
+        .compactMap { tag in
+            tag as? HLSPlaylistAttributesTag
+        }
+        .filter { tag in
+            tag.type == .EXT_X_STREAM_INF
+        }
+        .compactMap { tag -> (bandWidth: Int, resolution: String)? in
+            guard let bandWidth = tag["BANDWIDTH"]?.intValue else {
+                return nil
+            }
+            let resolution = tag["RESOLUTION"]?.value ?? ""
+            return (bandWidth: bandWidth, resolution: resolution)
+        }
 }

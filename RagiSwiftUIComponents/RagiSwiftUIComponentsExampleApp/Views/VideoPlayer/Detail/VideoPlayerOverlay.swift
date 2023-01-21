@@ -21,7 +21,7 @@ struct VideoPlayerOverlay: View {
     @Binding var isPictureInPictureEnabled: Bool
     @Binding var closedCaptionLanguages: [(id: String, displayName: String)]
     @Binding var audioTracks: [(id: String, displayName: String)]
-    @Binding var bandwidths: [Int]
+    @Binding var videoQuolities: [VideoQuolity]
     @State private var isSliderHandleDragging = false
     @State private var sliderValue = 0.0 // second(s)
 
@@ -47,7 +47,7 @@ struct VideoPlayerOverlay: View {
                 sliderValue: $sliderValue,
                 closedCaptionLanguages: $closedCaptionLanguages,
                 audioTracks: $audioTracks,
-                bandwidths: $bandwidths,
+                videoQuolities: $videoQuolities,
                 onPlayButtonTapped: {
                     playerCommand.send(isPlaying ? .pause : .play)
                 },
@@ -61,7 +61,7 @@ struct VideoPlayerOverlay: View {
                     playerCommand.send(.rate(value: rate))
                 },
                 onBandwidthSelected: { bandwidth in
-                    playerCommand.send(.changeBandwidth(value: bandwidth))
+                    playerCommand.send(.changeBandWidth(value: bandwidth))
                 }
             )
             .id(operationLayerID)
