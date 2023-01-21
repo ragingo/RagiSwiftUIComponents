@@ -32,7 +32,7 @@ public struct VideoPlayer: View {
     private var _onFinished: (() -> Void)?
     private var _onClosedCaptionLanguagesLoaded: (([(id: String, displayName: String)]) -> Void)?
     private var _onAudioTracksLoaded: (([(id: String, displayName: String)]) -> Void)?
-    private var _onBandwidthsLoaded: (([Int]) -> Void)?
+    private var _onVideoQuolitiesLoaded: (([VideoQuolity]) -> Void)?
 
     public init(
         playerCommand: AnyPublisher<PlayerCommand, Never>,
@@ -73,8 +73,8 @@ public struct VideoPlayer: View {
                         _onAudioTracksLoaded?(audioTracks)
                     case .changeAudioTrack(let id):
                         await player.changeAudioTrack(id: id)
-                    case .changeBandwidth(let value):
-                        player.changeBandwidth(value)
+                    case .changeBandWidth(let value):
+                        player.changeBandWidth(value)
                     }
                 }
             }
@@ -99,8 +99,8 @@ public struct VideoPlayer: View {
                     _onError?(value)
                 case .finished:
                     _onFinished?()
-                case .bandwidths(let values):
-                    _onBandwidthsLoaded?(values)
+                case .videoQuolities(let values):
+                    _onVideoQuolitiesLoaded?(values.map { .init(bandWidth: $0.bandWidth, resolution: $0.resolution) })
                 }
             }
             .onChange(of: isPictureInPictureEnabled.wrappedValue) { isEnabled in
@@ -229,9 +229,9 @@ public struct VideoPlayer: View {
         return videoPlayer
     }
 
-    public func onBandwidthsLoaded(_ perform: @escaping ([Int]) -> Void) -> VideoPlayer {
+    public func onVideoQuolitiesLoaded(_ perform: @escaping ([VideoQuolity]) -> Void) -> VideoPlayer {
         var videoPlayer = self
-        videoPlayer._onBandwidthsLoaded = perform
+        videoPlayer._onVideoQuolitiesLoaded = perform
         return videoPlayer
     }
 }
@@ -248,7 +248,7 @@ extension VideoPlayer {
         case getClosedCaptionLanguages
         case getAudioTracks
         case changeAudioTrack(id: String)
-        case changeBandwidth(value: Int)
+        case changeBandWidth(value: Int)
     }
 }
 

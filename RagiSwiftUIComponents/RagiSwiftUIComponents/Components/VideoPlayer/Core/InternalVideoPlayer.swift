@@ -10,7 +10,6 @@ import AVFoundation
 import Combine
 import CoreImage
 import CoreImage.CIFilterBuiltins
-import AsyncAlgorithms
 
 final class InternalVideoPlayer: ObservableObject {
     enum Properties {
@@ -24,7 +23,7 @@ final class InternalVideoPlayer: ObservableObject {
 
         case finished
 
-        case bandwidths(values: [Int])
+        case videoQuolities(values: [(bandWidth: Int, resolution: String)])
     }
 
     private var asset: AVURLAsset?
@@ -66,9 +65,12 @@ final class InternalVideoPlayer: ObservableObject {
 
         if url.pathExtension == "m3u8" {
             do {
-                let playlist = try await parseMasterPlaylist(url: url)
-                let bandwidths = try await parseBandwidth(masterPlaylist: playlist)
-                _properties.send(.bandwidths(values: bandwidths))
+                if let m3u8 = try await downloadText(url: url) {
+                    let playlist = try HLSMasterPlaylistParser(m3u8Content: m3u8).parse()
+                    print(playlist)
+                    let videoQuolities = extractVideoQuolity(masterPlaylist: playlist)
+                    _properties.send(.videoQuolities(values: videoQuolities))
+                }
             } catch {
                 print(error)
             }
@@ -184,7 +186,7 @@ final class InternalVideoPlayer: ObservableObject {
         }
     }
 
-    func changeBandwidth(_ value: Int) {
+    func changeBandWidth(_ value: Int) {
         player.currentItem?.preferredPeakBitRate = Double(value)
     }
 
@@ -405,70 +407,19 @@ private func downloadText(url: URL) async throws -> String? {
     return String(data: data, encoding: .utf8)
 }
 
-struct HLSMasterPlaylistInvalidFormat: Error {}
-
-struct HLSPlaylistTag {
-    var name: String
-    var value: String
-}
-
-struct ParsedMasterPlaylist {
-    var tags: [HLSPlaylistTag]
-    var urls: [URL]
-}
-
-// 画質(bandwidth)一覧を降順で取得
-private func parseBandwidth(masterPlaylist: ParsedMasterPlaylist) async throws -> [Int] {
-    guard let regex = try? NSRegularExpression(pattern: #"[:,]?BANDWIDTH=(\d+)(\,|$)"#) else {
-        return []
-    }
-
-    return masterPlaylist.tags
-        .filter {
-            $0.name == "#EXT-X-STREAM-INF"
+private func extractVideoQuolity(masterPlaylist: ParsedMasterPlaylist) -> [(bandWidth: Int, resolution: String)] {
+    masterPlaylist.tags
+        .compactMap { tag in
+            tag as? HLSPlaylistAttributesTag
         }
-        .compactMap { inf -> Int? in
-            let inputRange = NSRange(location: 0, length: inf.value.count)
-            guard let result = regex.firstMatch(in: String(inf.value), range: inputRange) else {
+        .filter { tag in
+            tag.type == .EXT_X_STREAM_INF
+        }
+        .compactMap { tag -> (bandWidth: Int, resolution: String)? in
+            guard let bandWidth = tag["BANDWIDTH"]?.intValue else {
                 return nil
             }
-            let group1 = result.range(at: 1)
-            let value = (inf.value as NSString).substring(with: group1)
-            return Int(value)
+            let resolution = tag["RESOLUTION"]?.value ?? ""
+            return (bandWidth: bandWidth, resolution: resolution)
         }
-        .sorted()
-}
-
-// 参考資料: https://datatracker.ietf.org/doc/html/rfc8216
-// 参考実装: https://github.com/videolan/vlc/blob/master/modules/demux/hls/playlist/Parser.cpp
-private func parseMasterPlaylist(url: URL) async throws -> ParsedMasterPlaylist {
-    var iterator = url.lines.makeAsyncIterator()
-
-    guard let format = try await iterator.next(), format == "#EXTM3U" else {
-        throw HLSMasterPlaylistInvalidFormat()
-    }
-
-    var tags: [HLSPlaylistTag] = []
-    var urls: [URL] = []
-    var lastTag = ""
-
-    while let line = try await iterator.next() {
-        if line.first == "#" {
-            guard let keyIndex = line.firstIndex(of: ":") else {
-                continue
-            }
-            let key = String(line[line.startIndex..<keyIndex])
-            let value = String(line[line.index(after: keyIndex)...])
-            tags.append(.init(name: key, value: value))
-            lastTag = key
-        } else {
-            if lastTag.starts(with: "#EXT-X-STREAM-INF:") {
-                if let url = URL(string: line) {
-                    urls.append(url)
-                }
-            }
-        }
-    }
-
-    return .init(tags: tags, urls: urls)
 }
