@@ -7,11 +7,6 @@
 
 import Foundation
 
-struct HLSPlaylistAttribute {
-    let name: String
-    let value: String
-}
-
 protocol HLSPlaylistTagProtocol {
     associatedtype Value
     var type: HLSPlaylistTagType { get set }
@@ -51,6 +46,10 @@ struct HLSPlaylistAttributesTag: HLSPlaylistTagProtocol, CustomStringConvertible
     init(type: HLSPlaylistTagType, rawValue: String) {
         self.type = type
         self.value = Self.parse(type: type, rawValue: rawValue)
+    }
+
+    subscript(_ name: String) -> HLSPlaylistAttribute? {
+        value.first(where: { $0.name == name })
     }
 
     var description: String {
@@ -102,42 +101,24 @@ struct HLSPlaylistAttributesTag: HLSPlaylistTagProtocol, CustomStringConvertible
 
         return attributes
     }
-
-    private enum Attribute {
-        static let NameValueSeparator: Character = "="
-        static let AttributeSeparator: Character = ","
-
-        enum Name {
-            static func isValidCharacter(character: Character) -> Bool {
-                character.isASCIILetterUpper || character == "-"
-            }
-        }
-
-        enum Value {
-            static func isValidCharacter(character: Character, quoted: Bool) -> Bool {
-                if quoted {
-                    return character != "\"" && !character.isNewline
-                }
-                return character.isASCIIDigit || character.isASCIILetter || character == "-" || character == "."
-            }
-        }
-    }
 }
 
-private extension Character {
-    var isASCIIDigit: Bool {
-        self >= "0" && self <= "9"
+private enum Attribute {
+    static let NameValueSeparator: Character = "="
+    static let AttributeSeparator: Character = ","
+
+    enum Name {
+        static func isValidCharacter(character: Character) -> Bool {
+            character.isASCIILetterUpper || character == "-"
+        }
     }
 
-    var isASCIILetter: Bool {
-        isASCIILetterUpper || isASCIILetterLower
-    }
-
-    var isASCIILetterUpper: Bool {
-        self >= "A" && self <= "Z"
-    }
-
-    var isASCIILetterLower: Bool {
-        self >= "a" && self <= "z"
+    enum Value {
+        static func isValidCharacter(character: Character, quoted: Bool) -> Bool {
+            if quoted {
+                return character != "\"" && !character.isNewline
+            }
+            return character.isASCIIDigit || character.isASCIILetter || character == "-" || character == "."
+        }
     }
 }

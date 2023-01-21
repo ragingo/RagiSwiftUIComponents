@@ -48,6 +48,7 @@
 		528ECA88297ABA5E00780D9E /* HLSError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 528ECA87297ABA5E00780D9E /* HLSError.swift */; };
 		528ECA8A297ABAEC00780D9E /* HLSMasterPlaylistParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 528ECA89297ABAEC00780D9E /* HLSMasterPlaylistParser.swift */; };
 		528ECA8C297ADA0C00780D9E /* HLSPlaylistTagType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 528ECA8B297ADA0C00780D9E /* HLSPlaylistTagType.swift */; };
+		528ECA92297C366C00780D9E /* Character+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 528ECA91297C366C00780D9E /* Character+Extensions.swift */; };
 		52ABB3E7296BA66F002E92AF /* VideoPlayerInformationLayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52ABB3E6296BA66F002E92AF /* VideoPlayerInformationLayer.swift */; };
 		52ABB3E9296BA691002E92AF /* VideoPlayerHUDLayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52ABB3E8296BA691002E92AF /* VideoPlayerHUDLayer.swift */; };
 		52ABB3EB296BA6B9002E92AF /* VideoPlayerOperationLayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52ABB3EA296BA6B9002E92AF /* VideoPlayerOperationLayer.swift */; };
@@ -136,6 +137,7 @@
 		528ECA87297ABA5E00780D9E /* HLSError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HLSError.swift; sourceTree = "<group>"; };
 		528ECA89297ABAEC00780D9E /* HLSMasterPlaylistParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HLSMasterPlaylistParser.swift; sourceTree = "<group>"; };
 		528ECA8B297ADA0C00780D9E /* HLSPlaylistTagType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HLSPlaylistTagType.swift; sourceTree = "<group>"; };
+		528ECA91297C366C00780D9E /* Character+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Character+Extensions.swift"; sourceTree = "<group>"; };
 		52ABB3E6296BA66F002E92AF /* VideoPlayerInformationLayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoPlayerInformationLayer.swift; sourceTree = "<group>"; };
 		52ABB3E8296BA691002E92AF /* VideoPlayerHUDLayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoPlayerHUDLayer.swift; sourceTree = "<group>"; };
 		52ABB3EA296BA6B9002E92AF /* VideoPlayerOperationLayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoPlayerOperationLayer.swift; sourceTree = "<group>"; };
@@ -202,6 +204,7 @@
 		523DCD6129557A3D00D0BA72 /* RagiSwiftUIComponents */ = {
 			isa = PBXGroup;
 			children = (
+				528ECA90297C365A00780D9E /* Extensions */,
 				523DCD862955CAAE00D0BA72 /* Components */,
 				5249E62C295AC17D006ECDE0 /* Effects */,
 				52857DA8295AA54800E538D8 /* Styles */,
@@ -399,6 +402,14 @@
 				528ECA85297ABA3500780D9E /* HLSPlaylistTag.swift */,
 			);
 			path = Tag;
+			sourceTree = "<group>";
+		};
+		528ECA90297C365A00780D9E /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+				528ECA91297C366C00780D9E /* Character+Extensions.swift */,
+			);
+			path = Extensions;
 			sourceTree = "<group>";
 		};
 		52ABB3E3296BA61B002E92AF /* List */ = {
@@ -623,6 +634,7 @@
 				524557BA2959DC5000CF6EFB /* CardConstants.swift in Sources */,
 				5249E62B295ABDC9006ECDE0 /* CardElevatedStyle.swift in Sources */,
 				52C6BFB1296671D9009F92DC /* PictureInPictureController.swift in Sources */,
+				528ECA92297C366C00780D9E /* Character+Extensions.swift in Sources */,
 				524557B329574BAE00CF6EFB /* CardHeader+Initializers.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
