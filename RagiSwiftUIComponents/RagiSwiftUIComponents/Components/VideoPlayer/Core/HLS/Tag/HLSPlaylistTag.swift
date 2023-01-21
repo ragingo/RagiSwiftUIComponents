@@ -18,7 +18,7 @@ protocol HLSPlaylistTagProtocol {
     var value: Value { get set }
 }
 
-struct HLSPlaylistTag: HLSPlaylistTagProtocol {
+struct HLSPlaylistTag: HLSPlaylistTagProtocol, CustomStringConvertible {
     typealias Value = Void
     var type: HLSPlaylistTagType
     var value: Value
@@ -27,15 +27,23 @@ struct HLSPlaylistTag: HLSPlaylistTagProtocol {
         self.type = type
         self.value = ()
     }
+
+    var description: String {
+        "#\(type.rawValue)"
+    }
 }
 
-struct HLSPlaylistSingleValueTag: HLSPlaylistTagProtocol {
+struct HLSPlaylistSingleValueTag: HLSPlaylistTagProtocol, CustomStringConvertible {
     typealias Value = String
     var type: HLSPlaylistTagType
     var value: Value
+
+    var description: String {
+        "#\(type.rawValue): \(value)"
+    }
 }
 
-struct HLSPlaylistAttributesTag: HLSPlaylistTagProtocol {
+struct HLSPlaylistAttributesTag: HLSPlaylistTagProtocol, CustomStringConvertible {
     typealias Value = [HLSPlaylistAttribute]
     var type: HLSPlaylistTagType
     var value: Value
@@ -45,27 +53,91 @@ struct HLSPlaylistAttributesTag: HLSPlaylistTagProtocol {
         self.value = Self.parse(type: type, rawValue: rawValue)
     }
 
-    private static func parse(type: HLSPlaylistTagType, rawValue: String) -> Value {
-        var iterator = rawValue.makeIterator()
-        var attributes: Value = []
+    var description: String {
+        let attributes = value.map { "\($0.name)=\($0.value)" }.joined(separator: ", ")
+        return "#\(type.rawValue): [\(attributes)]"
+    }
 
-        while true {
-            // name
+    private static func parse(type: HLSPlaylistTagType, rawValue: String) -> Value {
+        var attributes: Value = []
+        let lastIndex = rawValue.count - 1
+        var i = 0
+        let characters = rawValue.map { $0 }
+
+        while i <= lastIndex {
             var name = ""
-            while let ch = iterator.next() {
-                if ch >= "A" && ch <= "Z" || ch == "-" {
+            while i <= lastIndex {
+                let ch = characters[i]
+                if Attribute.Name.isValidCharacter(character: ch) {
                     name += String(ch)
-                } else if ch == "=" {
+                    i += 1
+                } else if ch == Attribute.NameValueSeparator {
                     break
                 } else {
-                    // 想定外の文字が含まれている
-                    break
+                    // 想定外の文字
+                    i += 1
                 }
             }
 
-            attributes.append(.init(name: name, value: ""))
+            var value = ""
+            var quoted = false
+            while i <= lastIndex {
+                let ch = characters[i]
+                quoted = ch == "\"" && !quoted
+
+                if ch == Attribute.AttributeSeparator && !quoted {
+                    break
+                } else if Attribute.Value.isValidCharacter(character: ch, quoted: quoted) {
+                    value += String(ch)
+                    i += 1
+                } else {
+                    // 想定外の文字
+                    i += 1
+                }
+            }
+
+            attributes.append(.init(name: name, value: value))
+            i += 1
         }
 
         return attributes
+    }
+
+    private enum Attribute {
+        static let NameValueSeparator: Character = "="
+        static let AttributeSeparator: Character = ","
+
+        enum Name {
+            static func isValidCharacter(character: Character) -> Bool {
+                character.isASCIILetterUpper || character == "-"
+            }
+        }
+
+        enum Value {
+            static func isValidCharacter(character: Character, quoted: Bool) -> Bool {
+                if quoted {
+                    return character != "\"" && !character.isNewline
+                }
+                return character.isASCIIDigit || character.isASCIILetter || character == "-" || character == "."
+            }
+        }
+    }
+}
+
+private extension Character {
+    var isASCIIDigit: Bool {
+        self >= "0" && self <= "9"
+    }
+
+    var isASCIILetter: Bool {
+        isASCIILetterUpper || isASCIILetterLower
+    }
+
+    var isASCIILetterUpper: Bool {
+        self >= "A" && self <= "Z"
+    }
+
+    var isASCIILetterLower: Bool {
+        self >= "a" && self <= "z"
     }
 }
