@@ -1,5 +1,5 @@
 //
-//  HLSMasterPlaylistParser.swift
+//  HLSPlaylistParser.swift
 //  RagiSwiftUIComponents
 //
 //  Created by ragingo on 2023/01/20.
@@ -7,14 +7,14 @@
 
 import Foundation
 
-struct ParsedMasterPlaylist {
+struct ParsedPlaylist {
     var tags: [any HLSPlaylistTagProtocol]
     var urls: [URL]
 }
 
 // 参考資料: https://datatracker.ietf.org/doc/html/rfc8216
 // 参考実装: https://github.com/videolan/vlc/blob/master/modules/demux/hls/playlist/Parser.cpp
-struct HLSMasterPlaylistParser {
+struct HLSPlaylistParser {
     private let m3u8LineIterator: Array<String>.Iterator
 
     init(m3u8Content: String) {
@@ -24,14 +24,14 @@ struct HLSMasterPlaylistParser {
             .makeIterator()
     }
 
-    func parse() throws -> ParsedMasterPlaylist {
+    func parse() throws -> ParsedPlaylist {
         var iterator = m3u8LineIterator
         var tags: [any HLSPlaylistTagProtocol] = []
         var urls: [URL] = []
         var lastTag: (any HLSPlaylistTagProtocol)?
 
         guard let format = iterator.next(), format == "#EXTM3U" else {
-             throw HLSMasterPlaylistInvalidFormat()
+             throw HLSPlaylistInvalidFormat()
          }
 
         while let line = iterator.next() {

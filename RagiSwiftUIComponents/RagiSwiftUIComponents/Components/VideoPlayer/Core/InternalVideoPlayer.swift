@@ -66,7 +66,7 @@ final class InternalVideoPlayer: ObservableObject {
         if url.pathExtension == "m3u8" {
             do {
                 if let m3u8 = try await downloadText(url: url) {
-                    let playlist = try HLSMasterPlaylistParser(m3u8Content: m3u8).parse()
+                    let playlist = try HLSPlaylistParser(m3u8Content: m3u8).parse()
                     print(playlist)
                     let videoQuolities = extractVideoQuolity(masterPlaylist: playlist)
                     _properties.send(.videoQuolities(values: videoQuolities))
@@ -407,7 +407,7 @@ private func downloadText(url: URL) async throws -> String? {
     return String(data: data, encoding: .utf8)
 }
 
-private func extractVideoQuolity(masterPlaylist: ParsedMasterPlaylist) -> [(bandWidth: Int, resolution: String)] {
+private func extractVideoQuolity(masterPlaylist: ParsedPlaylist) -> [(bandWidth: Int, resolution: String)] {
     masterPlaylist.tags
         .compactMap { tag in
             tag as? HLSPlaylistAttributesTag
