@@ -23,7 +23,7 @@ final class InternalVideoPlayer: ObservableObject {
 
         case finished
 
-        case videoQuolities(values: [(bandWidth: Int, resolution: String)])
+        case videoQuolities(values: [(bandWidth: Int, resolution: CGSize?)])
     }
 
     private var asset: AVURLAsset?
@@ -407,19 +407,15 @@ private func downloadText(url: URL) async throws -> String? {
     return String(data: data, encoding: .utf8)
 }
 
-private func extractVideoQuolity(masterPlaylist: ParsedPlaylist) -> [(bandWidth: Int, resolution: String)] {
+private func extractVideoQuolity(masterPlaylist: ParsedPlaylist) -> [(bandWidth: Int, resolution: CGSize?)] {
     masterPlaylist.tags
         .compactMap { tag in
-            tag as? HLSPlaylistAttributesTag
+            tag as? HLSPlaylistStreamInfoTag
         }
-        .filter { tag in
-            tag.type == .EXT_X_STREAM_INF
-        }
-        .compactMap { tag -> (bandWidth: Int, resolution: String)? in
-            guard let bandWidth = tag["BANDWIDTH"]?.intValue else {
+        .compactMap { tag -> (bandWidth: Int, resolution: CGSize?)? in
+            guard let bandWidth = tag.bandWidth else {
                 return nil
             }
-            let resolution = tag["RESOLUTION"]?.value ?? ""
-            return (bandWidth: bandWidth, resolution: resolution)
+            return (bandWidth: bandWidth, resolution: tag.resolution)
         }
 }

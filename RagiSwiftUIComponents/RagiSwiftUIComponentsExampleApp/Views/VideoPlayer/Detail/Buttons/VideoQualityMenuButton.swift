@@ -48,7 +48,7 @@ struct VideoQualityMenuButton_Previews: PreviewProvider {
     static var previews: some View {
         VStack(spacing: 16) {
             VideoQualityMenuButton(items: []) { _ in }
-            VideoQualityMenuButton(items: [.init(bandWidth: 10000, resolution: "1x1")]) { _ in }
+            VideoQualityMenuButton(items: [.init(bandWidth: 10000, resolution: .init(width: 1, height: 1))]) { _ in }
         }
         .padding()
         .background(.gray)

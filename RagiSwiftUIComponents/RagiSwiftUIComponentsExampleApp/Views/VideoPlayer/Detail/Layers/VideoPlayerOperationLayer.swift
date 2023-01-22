@@ -164,8 +164,8 @@ struct VideoPlayerOperationLayer_Previews: PreviewProvider {
                     ]),
                     audioTracks: .constant([]),
                     videoQuolities: .constant([
-                        .init(bandWidth: 100, resolution: "1x1"),
-                        .init(bandWidth: 200, resolution: "2x2"),
+                        .init(bandWidth: 100, resolution: .init(width: 1, height: 1)),
+                        .init(bandWidth: 200, resolution: .init(width: 2, height: 2)),
                     ])
                 )
             }

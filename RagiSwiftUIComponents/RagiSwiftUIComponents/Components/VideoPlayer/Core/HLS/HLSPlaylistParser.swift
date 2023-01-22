@@ -69,7 +69,16 @@ struct HLSPlaylistParser {
         guard let type = HLSPlaylistTagType(rawValue: name) else {
             return nil
         }
-        return HLSPlaylistTag(type: type)
+        switch type {
+        case .EXT_X_DISCONTINUITY:
+            return HLSPlaylistDiscontinuityTag()
+        case .EXT_X_ENDLIST:
+            return HLSPlaylistEndlistTag()
+        case .EXT_X_I_FRAMES_ONLY:
+            return HLSPlaylistIFrameOnlyTag()
+        default:
+            return nil
+        }
     }
 
     private func parseTag(name: String, value: String) -> (any HLSPlaylistTagProtocol)? {
@@ -79,10 +88,37 @@ struct HLSPlaylistParser {
 
         assert(type.isSingleValue || type.isAttributesValue)
 
-        if type.isSingleValue {
-            return HLSPlaylistSingleValueTag(type: type, value: value)
+        switch type {
+        case .EXT_X_VERSION:
+            return HLSPlaylistVersionTag(rawValue: value)
+        case .EXT_X_BYTERANGE:
+            return HLSPlaylistUnknownSingleValueTag(type: type, rawValue: value)
+        case .EXT_X_PROGRAM_DATE_TIME:
+            return HLSPlaylistUnknownSingleValueTag(type: type, rawValue: value)
+        case .EXT_X_TARGETDURATION:
+            return HLSPlaylistUnknownSingleValueTag(type: type, rawValue: value)
+        case .EXT_X_MEDIA_SEQUENCE:
+            return HLSPlaylistUnknownSingleValueTag(type: type, rawValue: value)
+        case .EXT_X_DISCONTINUITY_SEQUENCE:
+            return HLSPlaylistUnknownSingleValueTag(type: type, rawValue: value)
+        case .EXT_X_PLAYLIST_TYPE:
+            return HLSPlaylistUnknownSingleValueTag(type: type, rawValue: value)
+        case .EXT_X_KEY:
+            return HLSPlaylistUnknownAttributesTag(type: type, rawValue: value)
+        case .EXT_X_MAP:
+            return HLSPlaylistUnknownAttributesTag(type: type, rawValue: value)
+        case .EXT_X_MEDIA:
+            return HLSPlaylistUnknownAttributesTag(type: type, rawValue: value)
+        case .EXT_X_START:
+            return HLSPlaylistUnknownAttributesTag(type: type, rawValue: value)
+        case .EXT_X_STREAM_INF:
+            return HLSPlaylistStreamInfoTag(rawValue: value)
+        case .EXT_X_SESSION_KEY:
+            return HLSPlaylistUnknownAttributesTag(type: type, rawValue: value)
+        case .EXTINF:
+            return HLSPlaylistUnknownAttributesTag(type: type, rawValue: value)
+        default:
+            return nil
         }
-
-        return HLSPlaylistAttributesTag(type: type, rawValue: value)
     }
 }
