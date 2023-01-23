@@ -188,6 +188,7 @@ struct HLSPlaylistVersionTag: HLSPlaylistSingleValueTag {
 struct HLSPlaylistStreamInfoTag: HLSPlaylistAttributesTag {
     let type: HLSPlaylistTagType = .EXT_X_STREAM_INF
     let value: [HLSPlaylistAttribute]
+    var url: URL?
 
     var bandWidth: Int? {
         self["BANDWIDTH"]?.intValue

@@ -9,7 +9,6 @@ import Foundation
 
 struct ParsedPlaylist {
     var tags: [any HLSPlaylistTagProtocol]
-    var urls: [URL]
 }
 
 // 参考資料: https://datatracker.ietf.org/doc/html/rfc8216
@@ -27,8 +26,6 @@ struct HLSPlaylistParser {
     func parse() throws -> ParsedPlaylist {
         var iterator = m3u8LineIterator
         var tags: [any HLSPlaylistTagProtocol] = []
-        var urls: [URL] = []
-        var lastTag: (any HLSPlaylistTagProtocol)?
 
         guard let format = iterator.next(), format == "#EXTM3U" else {
              throw HLSPlaylistInvalidFormat()
@@ -42,7 +39,6 @@ struct HLSPlaylistParser {
                     let name = String(line[startIndex...])
                     if let tag = parseTag(name: name) {
                         tags.append(tag)
-                        lastTag = tag
                     }
                     continue
                 }
@@ -51,18 +47,18 @@ struct HLSPlaylistParser {
                 let value = String(line[line.index(after: separatorIndex)...])
                 if let tag = parseTag(name: name, value: value) {
                     tags.append(tag)
-                    lastTag = tag
                 }
             } else {
-                if case .EXT_X_STREAM_INF = lastTag?.type {
+                if var streamInfoTag = tags[tags.count - 1] as? HLSPlaylistStreamInfoTag {
                     if let url = URL(string: line) {
-                        urls.append(url)
+                        streamInfoTag.url = url
+                        tags[tags.count - 1] = streamInfoTag
                     }
                 }
             }
         }
 
-        return .init(tags: tags, urls: urls)
+        return .init(tags: tags)
     }
 
     private func parseTag(name: String) -> (any HLSPlaylistTagProtocol)? {
