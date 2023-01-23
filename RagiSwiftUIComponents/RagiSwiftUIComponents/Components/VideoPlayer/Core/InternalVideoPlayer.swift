@@ -101,6 +101,18 @@ final class InternalVideoPlayer: ObservableObject {
         setupClosedCaption()
 
         await changeClosedCaption()
+
+//        if let variants = try? await asset.load(.variants) {
+//            if let variant = variants.first {
+//                playerItem.preferredMaximumResolution
+//            }
+//        }
+
+        // MEMO
+        // ExpensiveNetworks(= 携帯電話回線) の場合に優先されるビットレート
+        // preferredPeakBitRate < preferredPeakBitRateForExpensiveNetworks は意味がないので効果がないらしい
+        // ※ 1bps にしても 1bps になるわけではない
+        player.currentItem?.preferredPeakBitRateForExpensiveNetworks = 1
     }
 
     @MainActor
