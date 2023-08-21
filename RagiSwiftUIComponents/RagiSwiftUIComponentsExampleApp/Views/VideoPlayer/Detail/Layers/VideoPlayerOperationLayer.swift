@@ -21,7 +21,7 @@ struct VideoPlayerOperationLayer: View {
     @Binding var sliderValue: Double
     @Binding var closedCaptionLanguages: [(id: String, displayName: String)]
     @Binding var audioTracks: [(id: String, displayName: String)]
-    @Binding var videoQuolities: [VideoQuolity]
+    @Binding var videoQualities: [VideoQuality]
 
     @State private var showSettings = false
 
@@ -73,7 +73,7 @@ struct VideoPlayerOperationLayer: View {
     private var commandTray: some View {
         HStack {
             Spacer()
-            VideoQualityMenuButton(items: videoQuolities) { selectedBandwidth in
+            VideoQualityMenuButton(items: videoQualities) { selectedBandwidth in
                 onBandwidthSelected?(selectedBandwidth)
             }
             AudioTracksMenuButton(tracks: audioTracks) { selectedTrackID in
@@ -163,7 +163,7 @@ struct VideoPlayerOperationLayer_Previews: PreviewProvider {
                         (id: "ja", displayName: "日本語"),
                     ]),
                     audioTracks: .constant([]),
-                    videoQuolities: .constant([
+                    videoQualities: .constant([
                         .init(bandWidth: 100, resolution: .init(width: 1, height: 1)),
                         .init(bandWidth: 200, resolution: .init(width: 2, height: 2)),
                     ])

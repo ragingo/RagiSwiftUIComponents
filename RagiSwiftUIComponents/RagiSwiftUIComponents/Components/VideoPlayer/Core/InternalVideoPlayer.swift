@@ -23,7 +23,7 @@ final class InternalVideoPlayer: ObservableObject {
 
         case finished
 
-        case videoQuolities(values: [(bandWidth: Int, resolution: CGSize?)])
+        case videoQualities(values: [(bandWidth: Int, resolution: CGSize?)])
     }
 
     private var asset: AVURLAsset?
@@ -68,8 +68,8 @@ final class InternalVideoPlayer: ObservableObject {
                 if let m3u8 = try await downloadText(url: url) {
                     let playlist = try HLSPlaylistParser(m3u8Content: m3u8).parse()
                     print(playlist)
-                    let videoQuolities = extractVideoQuolity(masterPlaylist: playlist)
-                    _properties.send(.videoQuolities(values: videoQuolities))
+                    let videoQualities = extractVideoQuality(masterPlaylist: playlist)
+                    _properties.send(.videoQualities(values: videoQualities))
                 }
             } catch {
                 print(error)
@@ -419,7 +419,7 @@ private func downloadText(url: URL) async throws -> String? {
     return String(data: data, encoding: .utf8)
 }
 
-private func extractVideoQuolity(masterPlaylist: ParsedPlaylist) -> [(bandWidth: Int, resolution: CGSize?)] {
+private func extractVideoQuality(masterPlaylist: ParsedPlaylist) -> [(bandWidth: Int, resolution: CGSize?)] {
     masterPlaylist.tags
         .compactMap { tag in
             tag as? HLSPlaylistStreamInfoTag

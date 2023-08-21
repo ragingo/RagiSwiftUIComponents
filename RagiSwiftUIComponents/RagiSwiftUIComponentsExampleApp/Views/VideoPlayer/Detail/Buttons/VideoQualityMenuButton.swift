@@ -9,7 +9,7 @@ import SwiftUI
 import RagiSwiftUIComponents
 
 struct VideoQualityMenuButton: View {
-    let items: [VideoQuolity]
+    let items: [VideoQuality]
     let onItemSelected: (Int) -> Void
     @State private var selectedItem: Int?
 

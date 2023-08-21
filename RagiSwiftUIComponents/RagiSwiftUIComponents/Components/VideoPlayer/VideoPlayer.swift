@@ -32,7 +32,7 @@ public struct VideoPlayer: View {
     private var _onFinished: (() -> Void)?
     private var _onClosedCaptionLanguagesLoaded: (([(id: String, displayName: String)]) -> Void)?
     private var _onAudioTracksLoaded: (([(id: String, displayName: String)]) -> Void)?
-    private var _onVideoQuolitiesLoaded: (([VideoQuolity]) -> Void)?
+    private var _onVideoQualitiesLoaded: (([VideoQuality]) -> Void)?
 
     public init(
         playerCommand: AnyPublisher<PlayerCommand, Never>,
@@ -99,8 +99,8 @@ public struct VideoPlayer: View {
                     _onError?(value)
                 case .finished:
                     _onFinished?()
-                case .videoQuolities(let values):
-                    _onVideoQuolitiesLoaded?(values.map { .init(bandWidth: $0.bandWidth, resolution: $0.resolution) })
+                case .videoQualities(let values):
+                    _onVideoQualitiesLoaded?(values.map { .init(bandWidth: $0.bandWidth, resolution: $0.resolution) })
                 }
             }
             .onChange(of: isPictureInPictureEnabled.wrappedValue) { isEnabled in
@@ -229,9 +229,9 @@ public struct VideoPlayer: View {
         return videoPlayer
     }
 
-    public func onVideoQuolitiesLoaded(_ perform: @escaping ([VideoQuolity]) -> Void) -> VideoPlayer {
+    public func onVideoQualitiesLoaded(_ perform: @escaping ([VideoQuality]) -> Void) -> VideoPlayer {
         var videoPlayer = self
-        videoPlayer._onVideoQuolitiesLoaded = perform
+        videoPlayer._onVideoQualitiesLoaded = perform
         return videoPlayer
     }
 }

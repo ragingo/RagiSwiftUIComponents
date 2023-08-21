@@ -1,5 +1,5 @@
 //
-//  VideoQuolity.swift
+//  VideoQuality.swift
 //  RagiSwiftUIComponents
 //
 //  Created by ragingo on 2023/01/22.
@@ -7,7 +7,7 @@
 
 import Foundation
 
-public struct VideoQuolity {
+public struct VideoQuality {
     public let bandWidth: Int
     public let resolution: CGSize?
 
@@ -17,13 +17,13 @@ public struct VideoQuolity {
     }
 }
 
-extension VideoQuolity: Identifiable {
+extension VideoQuality: Identifiable {
     public var id: String {
         "\(bandWidth), \(resolution ?? .zero)"
     }
 }
 
-extension VideoQuolity: Hashable {
+extension VideoQuality: Hashable {
     public func hash(into hasher: inout Hasher) {
         hasher.combine(bandWidth)
     }

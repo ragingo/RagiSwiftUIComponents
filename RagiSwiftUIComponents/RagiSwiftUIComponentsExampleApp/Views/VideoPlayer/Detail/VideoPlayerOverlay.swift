@@ -21,7 +21,7 @@ struct VideoPlayerOverlay: View {
     @Binding var isPictureInPictureEnabled: Bool
     @Binding var closedCaptionLanguages: [(id: String, displayName: String)]
     @Binding var audioTracks: [(id: String, displayName: String)]
-    @Binding var videoQuolities: [VideoQuolity]
+    @Binding var videoQualities: [VideoQuality]
     @State private var isSliderHandleDragging = false
     @State private var sliderValue = 0.0 // second(s)
 
@@ -47,7 +47,7 @@ struct VideoPlayerOverlay: View {
                 sliderValue: $sliderValue,
                 closedCaptionLanguages: $closedCaptionLanguages,
                 audioTracks: $audioTracks,
-                videoQuolities: $videoQuolities,
+                videoQualities: $videoQualities,
                 onPlayButtonTapped: {
                     playerCommand.send(isPlaying ? .pause : .play)
                 },

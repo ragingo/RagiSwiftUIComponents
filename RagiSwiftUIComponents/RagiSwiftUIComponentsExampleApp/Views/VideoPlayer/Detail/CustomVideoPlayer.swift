@@ -25,7 +25,7 @@ struct CustomVideoPlayer: View {
     @State private var isErrorDetailExpanded = false
     @State private var closedCaptionLanguages: [(id: String, displayName: String)] = []
     @State private var audioTracks: [(id: String, displayName: String)] = []
-    @State private var videoQuolities: [VideoQuolity] = []
+    @State private var videoQualities: [VideoQuality] = []
 
     private let overlayID = UUID()
 
@@ -99,8 +99,8 @@ struct CustomVideoPlayer: View {
             .onClosedCaptionLanguagesLoaded {
                 closedCaptionLanguages = $0
             }
-            .onVideoQuolitiesLoaded {
-                videoQuolities = $0
+            .onVideoQualitiesLoaded {
+                videoQualities = $0
             }
             .onAppear {
                 playerCommand.send(.open(url: selectedVideo.url))
@@ -124,7 +124,7 @@ struct CustomVideoPlayer: View {
                     isPictureInPictureEnabled: $isPictureInPictureEnabled,
                     closedCaptionLanguages: $closedCaptionLanguages,
                     audioTracks: $audioTracks,
-                    videoQuolities: $videoQuolities
+                    videoQualities: $videoQualities
                 )
                 .id(overlayID)
             }
